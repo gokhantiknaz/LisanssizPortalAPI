@@ -1,7 +1,7 @@
-using MyApp.Application.Models.Requests;
-using MyApp.Application.Models.Responses;
+using Humanity.Application.Models.Requests;
+using Humanity.Application.Models.Responses;
 
-namespace MyApp.Application.Interfaces
+namespace Humanity.Application.Interfaces
 {
     public interface IUserService
     {

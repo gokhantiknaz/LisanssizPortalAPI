@@ -1,8 +1,8 @@
-using MyApp.Domain.Entities;
-using MyApp.Domain.Enums;
-using MyApp.Domain.Core.Specifications;
+using Humanity.Domain.Entities;
+using Humanity.Domain.Enums;
+using Humanity.Domain.Core.Specifications;
 
-namespace MyApp.Domain.Specifications
+namespace Humanity.Domain.Specifications
 {
     public static class UserSpecifications
     {

@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using MyApp.Domain.Core.Specifications;
-using MyApp.Domain.Core.Models;
+using Humanity.Domain.Core.Specifications;
+using Humanity.Domain.Core.Models;
 
-namespace MyApp.Infrastructure.Repositories
+namespace Humanity.Infrastructure.Repositories
 {
     public class SpecificationEvaluator<T> where T : BaseEntity
     {

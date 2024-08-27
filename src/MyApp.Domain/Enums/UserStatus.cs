@@ -1,4 +1,4 @@
-namespace MyApp.Domain.Enums
+namespace Humanity.Domain.Enums
 {
     public enum UserStatus
     {

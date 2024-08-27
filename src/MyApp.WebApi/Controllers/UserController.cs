@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MyApp.Application.Interfaces;
-using MyApp.Application.Models.Requests;
-using MyApp.Application.Models.Responses;
+using Humanity.Application.Interfaces;
+using Humanity.Application.Models.Requests;
+using Humanity.Application.Models.Responses;
 
-namespace MyApp.WebApi.Controllers
+namespace Humanity.WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]

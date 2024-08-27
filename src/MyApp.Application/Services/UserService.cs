@@ -1,15 +1,15 @@
-using MyApp.Application.Models.Requests;
-using MyApp.Application.Models.Responses;
-using MyApp.Domain.Specifications;
-using MyApp.Domain.Entities;
-using MyApp.Domain.Enums;
-using MyApp.Domain.Exceptions;
-using MyApp.Application.Models.DTOs;
-using MyApp.Application.Interfaces;
-using MyApp.Application.Core.Services;
-using MyApp.Domain.Core.Repositories;
+using Humanity.Application.Models.Requests;
+using Humanity.Application.Models.Responses;
+using Humanity.Domain.Specifications;
+using Humanity.Domain.Entities;
+using Humanity.Domain.Enums;
+using Humanity.Domain.Exceptions;
+using Humanity.Application.Models.DTOs;
+using Humanity.Application.Interfaces;
+using Humanity.Application.Core.Services;
+using Humanity.Domain.Core.Repositories;
 
-namespace MyApp.Application.Services
+namespace Humanity.Application.Services
 {
     public class UserService : IUserService
     {

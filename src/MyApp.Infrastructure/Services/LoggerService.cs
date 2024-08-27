@@ -1,7 +1,7 @@
-﻿using MyApp.Application.Core.Services;
+﻿using Humanity.Application.Core.Services;
 using NLog.Web;
 
-namespace MyApp.Infrastructure.Services
+namespace Humanity.Infrastructure.Services
 {
     public class LoggerService : ILoggerService
     {

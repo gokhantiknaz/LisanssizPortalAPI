@@ -1,8 +1,8 @@
-using MyApp.Domain.Core.Models;
-using MyApp.Domain.Core.Repositories;
-using MyApp.Infrastructure.Data;
+using Humanity.Domain.Core.Models;
+using Humanity.Domain.Core.Repositories;
+using Humanity.Infrastructure.Data;
 
-namespace MyApp.Infrastructure.Repositories
+namespace Humanity.Infrastructure.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {

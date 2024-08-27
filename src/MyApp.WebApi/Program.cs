@@ -1,5 +1,5 @@
-using MyApp.Application;
-using MyApp.Infrastructure;
+using Humanity.Application;
+using Humanity.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 

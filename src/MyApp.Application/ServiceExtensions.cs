@@ -1,8 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
-using MyApp.Application.Interfaces;
-using MyApp.Application.Services;
+using Humanity.Application.Interfaces;
+using Humanity.Application.Services;
 
-namespace MyApp.Application
+namespace Humanity.Application
 {
     public static class ServiceExtensions
     {

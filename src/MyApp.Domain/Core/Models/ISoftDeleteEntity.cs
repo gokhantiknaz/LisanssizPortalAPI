@@ -1,4 +1,4 @@
-namespace MyApp.Domain.Core.Models
+namespace Humanity.Domain.Core.Models
 {
     public interface ISoftDeleteEntity
     {

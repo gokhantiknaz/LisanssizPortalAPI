@@ -1,4 +1,4 @@
-﻿namespace MyApp.Application.Core.Services
+﻿namespace Humanity.Application.Core.Services
 {
     public interface ILoggerService
     {

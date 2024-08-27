@@ -1,11 +1,11 @@
 using Xunit;
 using Microsoft.EntityFrameworkCore;
-using MyApp.Infrastructure.Data;
-using MyApp.Infrastructure.Repositories;
-using MyApp.Domain.Entities;
-using MyApp.Domain.Enums;
+using Humanity.Infrastructure.Data;
+using Humanity.Infrastructure.Repositories;
+using Humanity.Domain.Entities;
+using Humanity.Domain.Enums;
 
-namespace MyApp.Infrastructure.Test.Repositories
+namespace Humanity.Infrastructure.Test.Repositories
 {
     public class BaseRepositoryAsyncTest
     {

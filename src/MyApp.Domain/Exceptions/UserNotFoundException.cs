@@ -1,4 +1,4 @@
-namespace MyApp.Domain.Exceptions
+namespace Humanity.Domain.Exceptions
 {
     public class UserNotFoundException : Exception
     {

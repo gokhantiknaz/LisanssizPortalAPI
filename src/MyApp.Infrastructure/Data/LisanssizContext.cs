@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MyApp.Domain.Entities;
+using Humanity.Domain.Entities;
 
-namespace MyApp.Infrastructure.Data
+namespace Humanity.Infrastructure.Data
 {
     public class LisanssizContext : DbContext
     {

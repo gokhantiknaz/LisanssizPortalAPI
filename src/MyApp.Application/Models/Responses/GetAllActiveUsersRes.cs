@@ -1,6 +1,6 @@
-using MyApp.Application.Models.DTOs;
+using Humanity.Application.Models.DTOs;
 
-namespace MyApp.Application.Models.Responses
+namespace Humanity.Application.Models.Responses
 {
     public class GetAllActiveUsersRes
     {

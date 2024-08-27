@@ -1,15 +1,15 @@
 using Xunit;
-using MyApp.Application.Services;
-using MyApp.Application.Models.Requests;
-using MyApp.Domain.Entities;
-using MyApp.Domain.Enums;
-using MyApp.Domain.Exceptions;
-using MyApp.Domain.Core.Specifications;
-using MyApp.Application.Core.Services;
+using Humanity.Application.Services;
+using Humanity.Application.Models.Requests;
+using Humanity.Domain.Entities;
+using Humanity.Domain.Enums;
+using Humanity.Domain.Exceptions;
+using Humanity.Domain.Core.Specifications;
+using Humanity.Application.Core.Services;
 using Moq;
-using MyApp.Domain.Core.Repositories;
+using Humanity.Domain.Core.Repositories;
 
-namespace MyApp.Application.Test.Services
+namespace Humanity.Application.Test.Services
 {
     public class UserServiceTest
     {

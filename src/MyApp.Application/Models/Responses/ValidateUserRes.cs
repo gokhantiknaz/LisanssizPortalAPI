@@ -1,4 +1,4 @@
-namespace MyApp.Application.Models.Responses
+namespace Humanity.Application.Models.Responses
 {
     public class ValidateUserRes
     {

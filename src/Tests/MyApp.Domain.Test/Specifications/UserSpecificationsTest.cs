@@ -1,10 +1,10 @@
 using Xunit;
-using MyApp.Domain.Specifications;
-using MyApp.Domain.Entities;
-using MyApp.Domain.Enums;
-using MyApp.Domain.Test.Helpers;
+using Humanity.Domain.Specifications;
+using Humanity.Domain.Entities;
+using Humanity.Domain.Enums;
+using Humanity.Domain.Test.Helpers;
 
-namespace MyApp.Domain.Test.Specifications
+namespace Humanity.Domain.Test.Specifications
 {
     public class UserSpecificationsTest
     {

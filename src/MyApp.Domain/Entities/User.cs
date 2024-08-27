@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using MyApp.Domain.Core.Models;
-using MyApp.Domain.Enums;
+using Humanity.Domain.Core.Models;
+using Humanity.Domain.Enums;
 
-namespace MyApp.Domain.Entities
+namespace Humanity.Domain.Entities
 {
     public class User : BaseEntity, IAuditableEntity, ISoftDeleteEntity
     {

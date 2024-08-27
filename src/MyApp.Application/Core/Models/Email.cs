@@ -1,4 +1,4 @@
-namespace MyApp.Application.Core.Models
+namespace Humanity.Application.Core.Models
 {
     public class Email
     {

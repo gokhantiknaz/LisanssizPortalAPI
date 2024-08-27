@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using MyApp.Infrastructure.Data;
-using MyApp.Domain.Core.Specifications;
-using MyApp.Domain.Core.Models;
-using MyApp.Domain.Core.Repositories;
+using Humanity.Infrastructure.Data;
+using Humanity.Domain.Core.Specifications;
+using Humanity.Domain.Core.Models;
+using Humanity.Domain.Core.Repositories;
 
-namespace MyApp.Infrastructure.Repositories
+namespace Humanity.Infrastructure.Repositories
 {
     public class BaseRepositoryAsync<T> : IBaseRepositoryAsync<T> where T : BaseEntity
     {

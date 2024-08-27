@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 
-namespace MyApp.Domain.Core.Specifications
+namespace Humanity.Domain.Core.Specifications
 {
     public class BaseSpecification<T> : ISpecification<T>
     {

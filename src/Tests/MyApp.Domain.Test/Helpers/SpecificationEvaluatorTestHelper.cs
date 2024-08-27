@@ -1,7 +1,7 @@
-using MyApp.Domain.Core.Specifications;
-using MyApp.Domain.Core.Models;
+using Humanity.Domain.Core.Specifications;
+using Humanity.Domain.Core.Models;
 
-namespace MyApp.Domain.Test.Helpers
+namespace Humanity.Domain.Test.Helpers
 {
     public class SpecificationEvaluatorTestHelper<T> where T : BaseEntity
     {

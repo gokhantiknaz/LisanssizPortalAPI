@@ -1,6 +1,6 @@
-using MyApp.Domain.Core.Models;
+using Humanity.Domain.Core.Models;
 
-namespace MyApp.Domain.Core.Repositories
+namespace Humanity.Domain.Core.Repositories
 {
     public interface IUnitOfWork
     {

@@ -1,6 +1,6 @@
-using MyApp.Application.Core.Models;
+using Humanity.Application.Core.Models;
 
-namespace MyApp.Application.Core.Services
+namespace Humanity.Application.Core.Services
 {
     public interface IEmailService
     {

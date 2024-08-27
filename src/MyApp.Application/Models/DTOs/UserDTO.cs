@@ -1,6 +1,6 @@
-using MyApp.Domain.Entities;
+using Humanity.Domain.Entities;
 
-namespace MyApp.Application.Models.DTOs
+namespace Humanity.Application.Models.DTOs
 {
     public class UserDTO
     {

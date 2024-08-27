@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using MyApp.Domain.Enums;
+using Humanity.Domain.Enums;
 
-namespace MyApp.Application.Models.Requests
+namespace Humanity.Application.Models.Requests
 {
     public class CreateUserReq
     {

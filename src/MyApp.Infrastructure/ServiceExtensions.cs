@@ -1,19 +1,19 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using MyApp.Application.Core.Services;
-using MyApp.Domain.Core.Repositories;
-using MyApp.Infrastructure.Data;
-using MyApp.Infrastructure.Repositories;
-using MyApp.Infrastructure.Services;
+using Humanity.Application.Core.Services;
+using Humanity.Domain.Core.Repositories;
+using Humanity.Infrastructure.Data;
+using Humanity.Infrastructure.Repositories;
+using Humanity.Infrastructure.Services;
 
-namespace MyApp.Infrastructure
+namespace Humanity.Infrastructure
 {
     public static class ServiceExtensions
     {
         public static void ConfigureInfrastructure(this IServiceCollection services)
         {
             services.AddDbContext<LisanssizContext>(options =>
-                options.UseNpgsql("Server=.;Port=5432;Database=Humanity;;Username=<Your_Username>;Password=1234qqqQ",
+                options.UseNpgsql("Server=localhost;Port=5432;Database=Humanity;;Username=postgres;Password=1234qqqQ",
                 x => x.MigrationsAssembly("MyApp.Infrastructure")));
 
             services.AddScoped(typeof(IBaseRepositoryAsync<>), typeof(BaseRepositoryAsync<>));

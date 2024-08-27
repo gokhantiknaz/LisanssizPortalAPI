@@ -1,7 +1,7 @@
-using MyApp.Domain.Core.Models;
-using MyApp.Domain.Core.Specifications;
+using Humanity.Domain.Core.Models;
+using Humanity.Domain.Core.Specifications;
 
-namespace MyApp.Domain.Core.Repositories
+namespace Humanity.Domain.Core.Repositories
 {
     public interface IBaseRepositoryAsync<T> where T : BaseEntity
     {

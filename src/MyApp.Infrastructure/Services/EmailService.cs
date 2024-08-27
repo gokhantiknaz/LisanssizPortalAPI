@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Configuration;
-using MyApp.Application.Core.Models;
-using MyApp.Application.Core.Services;
+using Humanity.Application.Core.Models;
+using Humanity.Application.Core.Services;
 using System.Net;
 using System.Net.Mail;
 
-namespace MyApp.Infrastructure.Services
+namespace Humanity.Infrastructure.Services
 {
     public class EmailService : IEmailService
     {
