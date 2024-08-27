@@ -12,8 +12,8 @@ namespace MyApp.Infrastructure
     {
         public static void ConfigureInfrastructure(this IServiceCollection services)
         {
-            services.AddDbContext<MyAppDbContext>(options =>
-                options.UseSqlServer("name=ConnectionStrings:MyAppDatabase",
+            services.AddDbContext<LisanssizContext>(options =>
+                options.UseNpgsql("Server=.;Port=5432;Database=Humanity;;Username=<Your_Username>;Password=1234qqqQ",
                 x => x.MigrationsAssembly("MyApp.Infrastructure")));
 
             services.AddScoped(typeof(IBaseRepositoryAsync<>), typeof(BaseRepositoryAsync<>));
@@ -25,9 +25,9 @@ namespace MyApp.Infrastructure
 
         public static void MigrateDatabase(this IServiceProvider serviceProvider)
         {
-            var dbContextOptions = serviceProvider.GetRequiredService<DbContextOptions<MyAppDbContext>>();
+            var dbContextOptions = serviceProvider.GetRequiredService<DbContextOptions<LisanssizContext>>();
 
-            using (var dbContext = new MyAppDbContext(dbContextOptions))
+            using (var dbContext = new LisanssizContext(dbContextOptions))
             {
                 dbContext.Database.Migrate();
             }

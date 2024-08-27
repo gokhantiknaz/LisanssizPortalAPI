@@ -6,10 +6,10 @@ namespace MyApp.Infrastructure.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        protected readonly MyAppDbContext _dbContext;
+        protected readonly LisanssizContext _dbContext;
         private readonly IDictionary<Type, dynamic> _repositories;
 
-        public UnitOfWork(MyAppDbContext dbContext)
+        public UnitOfWork(LisanssizContext dbContext)
         {
             _dbContext = dbContext;
             _repositories = new Dictionary<Type, dynamic>();

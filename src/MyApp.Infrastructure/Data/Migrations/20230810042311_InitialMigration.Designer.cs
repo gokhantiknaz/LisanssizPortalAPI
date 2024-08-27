@@ -11,7 +11,7 @@ using MyApp.Infrastructure.Data;
 
 namespace MyApp.Infrastructure.Data.Migrations
 {
-    [DbContext(typeof(MyAppDbContext))]
+    [DbContext(typeof(LisanssizContext))]
     [Migration("20230810042311_InitialMigration")]
     partial class InitialMigration
     {

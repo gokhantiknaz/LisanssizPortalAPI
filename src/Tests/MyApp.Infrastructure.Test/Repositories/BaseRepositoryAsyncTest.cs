@@ -9,13 +9,13 @@ namespace MyApp.Infrastructure.Test.Repositories
 {
     public class BaseRepositoryAsyncTest
     {
-        private readonly MyAppDbContext _myAppDbContext;
+        private readonly LisanssizContext _myAppDbContext;
         private readonly UnitOfWork _unitOfWork;
 
         public BaseRepositoryAsyncTest()
         {
-            var options = new DbContextOptionsBuilder<MyAppDbContext>().UseInMemoryDatabase(databaseName: "MyAppDb").Options;
-            _myAppDbContext = new MyAppDbContext(options);
+            var options = new DbContextOptionsBuilder<LisanssizContext>().UseInMemoryDatabase(databaseName: "MyAppDb").Options;
+            _myAppDbContext = new LisanssizContext(options);
             _unitOfWork = new UnitOfWork(_myAppDbContext);
         }
 

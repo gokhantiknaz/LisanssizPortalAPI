@@ -8,9 +8,9 @@ namespace MyApp.Infrastructure.Repositories
 {
     public class BaseRepositoryAsync<T> : IBaseRepositoryAsync<T> where T : BaseEntity
     {
-        protected readonly MyAppDbContext _dbContext;
+        protected readonly LisanssizContext _dbContext;
 
-        public BaseRepositoryAsync(MyAppDbContext dbContext)
+        public BaseRepositoryAsync(LisanssizContext dbContext)
         {
             _dbContext = dbContext;
         }

@@ -10,7 +10,7 @@ using MyApp.Infrastructure.Data;
 
 namespace MyApp.Infrastructure.Data.Migrations
 {
-    [DbContext(typeof(MyAppDbContext))]
+    [DbContext(typeof(LisanssizContext))]
     partial class MyAppDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
