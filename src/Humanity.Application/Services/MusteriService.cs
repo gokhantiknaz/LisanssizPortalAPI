@@ -9,6 +9,7 @@ using Humanity.Domain.Core.Repositories;
 using Humanity.Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -86,12 +87,47 @@ namespace Humanity.Application.Services
                     UretimSekli = req.Abone.LisansBilgileri.UretimSekli
                 };
 
-
                 _ = await _unitOfWork.Repository<UreticiLisans>().AddAsync(lisansBilgi);
+
+                // tüketici listesi.
+
+                if (req.TuketiciList.Count > 0)
+                {
+                    foreach (var item in req.TuketiciList)
+                    {
+                        var tuketici = new AboneTuketici()
+                        {
+                            IsDeleted = false,
+                            BaslamaZamani = DateTime.UtcNow,
+                            Durum = Status.Aktif,
+                            UreticiAbone = abone,
+                            AboneId = item.AboneId,
+                        };
+
+                        _ = await _unitOfWork.Repository<AboneTuketici>().AddAsync(tuketici);
+                    }
+                }
+
             }
 
+            if (req.SayacList.Count > 0)
+            {
+                foreach (var item in req.SayacList)
+                {
+                    var sayacBilgi = new AboneSayac()
+                    {
+                        Abone = abone,
+                        FazAdedi = item.FazAdedi,
+                        Marka = item.Marka,
+                        SayacNo = item.SayacNo
+                    };
 
-            var newiletisimAbone = new Iletisim { CepTel = "", Email = "", Adres = "", Ilid = req.Abone.AboneIletisim.Ilid };
+                    _ = await _unitOfWork.Repository<AboneSayac>().AddAsync(sayacBilgi);
+                }
+
+            }
+
+            var newiletisimAbone = new Iletisim { CepTel = "", Email = "", Adres = "", Ilid = req.Abone.AboneIletisim.Ilid, Ilceid = req.Abone.AboneIletisim.Ilceid };
 
             AboneIletisim iletisimabone = new AboneIletisim
             {

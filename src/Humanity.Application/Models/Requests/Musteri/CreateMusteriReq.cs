@@ -25,6 +25,10 @@ namespace Humanity.Application.Models.Requests.Musteri
 
         public MusteriIletisimDTO MusteriIletisim { get; set; }
 
+        public List<TuketiciListDTO>? TuketiciList { get; set; }
+
+        public List<SayacListDTO>? SayacList { get; set; }
+
 
     }
 }

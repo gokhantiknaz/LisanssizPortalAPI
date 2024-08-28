@@ -6,22 +6,28 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Humanity.Domain.Enums.Enums;
 
 namespace Humanity.Domain.Entities
 {
-    public class AboneSayac:BaseEntity
+    public class AboneTuketici:BaseEntity,ISoftDeleteEntity
     {
         [Key]
         public int Id { get; set; }
-        
-        [ForeignKey("Abone")]
-        public int AboneId { get; set; }
 
+
+        public int AboneId { get; set; }
         [ForeignKey("AboneId")]
         public Abone Abone { get; set; }
 
-        public long SayacNo { get; set; }
-        public string Marka { get; set; }
-        public int FazAdedi { get; set; }
+        public int UreticiAboneId { get; set; }
+        [ForeignKey("UreticiAboneId")]
+        public Abone UreticiAbone { get; set; }
+
+        public DateTime BaslamaZamani { get; set; }
+
+        public Status Durum { get; set; }
+
+        public bool IsDeleted { get ; set ; }
     }
 }

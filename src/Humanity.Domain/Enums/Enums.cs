@@ -39,5 +39,12 @@ namespace Humanity.Domain.Enums
             Gerçek = 1,
             Tuzel
         }
+
+        public enum Status
+        {
+            OK = 0,
+            Aktif=1,
+            Pasif=2
+        }
     }
 }

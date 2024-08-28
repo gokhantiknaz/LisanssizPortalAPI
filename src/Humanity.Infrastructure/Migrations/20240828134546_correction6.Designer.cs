@@ -3,6 +3,7 @@ using System;
 using Humanity.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Humanity.Infrastructure.Migrations
 {
     [DbContext(typeof(LisanssizContext))]
-    partial class LisanssizContextModelSnapshot : ModelSnapshot
+    [Migration("20240828134546_correction6")]
+    partial class correction6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -142,38 +145,6 @@ namespace Humanity.Infrastructure.Migrations
                     b.HasIndex("AboneId");
 
                     b.ToTable("AboneSayac");
-                });
-
-            modelBuilder.Entity("Humanity.Domain.Entities.AboneTuketici", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AboneId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("BaslamaZamani")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Durum")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("UreticiAboneId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AboneId");
-
-                    b.HasIndex("UreticiAboneId");
-
-                    b.ToTable("AboneTuketici");
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.Iletisim", b =>
@@ -438,25 +409,6 @@ namespace Humanity.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Abone");
-                });
-
-            modelBuilder.Entity("Humanity.Domain.Entities.AboneTuketici", b =>
-                {
-                    b.HasOne("Humanity.Domain.Entities.Abone", "Abone")
-                        .WithMany()
-                        .HasForeignKey("AboneId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Humanity.Domain.Entities.Abone", "UreticiAbone")
-                        .WithMany()
-                        .HasForeignKey("UreticiAboneId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Abone");
-
-                    b.Navigation("UreticiAbone");
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.MusteriIletisim", b =>

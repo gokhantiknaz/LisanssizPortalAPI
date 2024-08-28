@@ -10,13 +10,15 @@ namespace Humanity.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<AboneIletisim>().HasKey(table => new {
+            builder.Entity<AboneIletisim>().HasKey(table => new
+            {
                 table.AboneId,
                 table.IletisimId
             });
 
 
-            builder.Entity<MusteriIletisim>().HasKey(table => new {
+            builder.Entity<MusteriIletisim>().HasKey(table => new
+            {
                 table.MusteriId,
                 table.IletisimId
             });
@@ -27,7 +29,7 @@ namespace Humanity.Infrastructure.Data
         public DbSet<Iletisim> letisim { get; set; }
         public DbSet<Musteri> Musteri { get; set; }
 
-        public DbSet<Abone> Abone{ get; set; }
+        public DbSet<Abone> Abone { get; set; }
 
         public DbSet<AboneIletisim> AboneIletisim { get; set; }
 
@@ -38,6 +40,8 @@ namespace Humanity.Infrastructure.Data
         public DbSet<MusteriOzelKod> MusteriOzelKod { get; set; }
 
         public DbSet<UreticiLisans> UreticiLisans { get; set; }
+
+        public DbSet<AboneTuketici> AboneTuketici { get; set; }
 
     }
 }
