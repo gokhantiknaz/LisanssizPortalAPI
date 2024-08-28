@@ -18,6 +18,8 @@ namespace Humanity.Domain.Entities
         [ForeignKey("Musteri")]
         public int MusteriId { get; set; }
 
+        [ForeignKey("MusteriId")]
+        public Musteri Musteri { get; set; }
         public int Tarife { get; set; }
         public string EtsoKodu { get; set; }
         public int DagitimFirmaId { get; set; }
@@ -28,9 +30,6 @@ namespace Humanity.Domain.Entities
         public SahisTip SahisTip { get; set; }
         public int Terim { get; set; }
         public int Agog { get; set; }
-        public UreticiLisans LisansBilgileri { get; set; }
-        public AboneSayac? AboneSayac { get; set; }
-        public AboneIletisim AboneIletisim { get; set; }
 
         public Guid CreatedBy { get; set; }
         public DateTimeOffset CreatedOn { get; set; }

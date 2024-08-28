@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Humanity.Domain.Enums.Enums;
 
 namespace Humanity.Application.Services
 {
@@ -29,8 +30,81 @@ namespace Humanity.Application.Services
         {
             var musteri = await _unitOfWork.Repository<Musteri>().AddAsync(new Musteri
             {
-                Adi="",
+                Adi = req.Adi,
+                Soyadi = req.Soyadi,
+                CreatedOn = DateTime.UtcNow,
+                Durum = 1,
+                GercekTuzel = (Domain.Enums.Enums.GercekTuzel)req.GercekTuzel,
+                IsDeleted = false,
+                Tckn = req.Tckn,
+                Vkn = req.Vkn,
+                Unvan = req.Unvan,
+                OzelkodId1 = req.OzelkodId1,
+                OzelkodId2 = req.OzelkodId2,
+                OzelkodId3 = req.OzelkodId3,
             });
+
+            var newiletisimMusteri = new Iletisim { Email = req.MusteriIletisim.Email ?? "", Adres = req.MusteriIletisim.Adres ?? "", CepTel = req.MusteriIletisim.CepTel ?? "", Ilid = req.MusteriIletisim.Ilid, Ilceid = req.MusteriIletisim.Ilceid };
+
+            MusteriIletisim iletisimMusteri = new MusteriIletisim
+            {
+                Musteri = musteri,
+                Iletisim = newiletisimMusteri,
+                IsDeleted = false,
+                CreatedBy = Guid.Empty,
+                CreatedOn = DateTime.UtcNow,
+            };
+            _ = await _unitOfWork.Repository<MusteriIletisim>().AddAsync(iletisimMusteri);
+
+            var abone = await _unitOfWork.Repository<Abone>().AddAsync(new Abone
+            {
+                SahisTip = req.Abone.SahisTip,
+                SeriNo = req.Abone.SeriNo,
+                SozlesmeGucu = req.Abone.SozlesmeGucu,
+                IsDeleted = false,
+                KuruluGuc = req.Abone.KuruluGuc,
+                EtsoKodu = req.Abone.EtsoKodu,
+                DagitimFirmaId = req.Abone.DagitimFirmaId,
+                Agog = req.Abone.Agog,
+                BaglantiGucu = req.Abone.BaglantiGucu,
+                Tarife = req.Abone.Tarife,
+                Terim = req.Abone.Terim,
+                CreatedBy = Guid.Empty,
+                CreatedOn = DateTime.UtcNow,
+                Musteri = musteri
+            });
+
+            if (SahisTip.Uretici == abone.SahisTip)
+            {
+                var lisansBilgi = new UreticiLisans()
+                {
+                    Abone = abone,
+                    CagrimektupTarihi = req.Abone.LisansBilgileri.CagrimektupTarihi,
+                    LisansBilgisi = req.Abone.LisansBilgileri.LisansBilgisi,
+                    MahsupTipi = req.Abone.LisansBilgileri.MahsupTipi,
+                    UretimBaslama = req.Abone.LisansBilgileri.UretimBaslama,
+                    UretimSekli = req.Abone.LisansBilgileri.UretimSekli
+                };
+
+
+                _ = await _unitOfWork.Repository<UreticiLisans>().AddAsync(lisansBilgi);
+            }
+
+
+            var newiletisimAbone = new Iletisim { CepTel = "", Email = "", Adres = "", Ilid = req.Abone.AboneIletisim.Ilid };
+
+            AboneIletisim iletisimabone = new AboneIletisim
+            {
+                Abone = abone,
+                Iletisim = newiletisimAbone,
+                CreatedBy = Guid.Empty,
+                CreatedOn = DateTime.UtcNow,
+                IsDeleted = false
+            };
+
+            _ = _unitOfWork.Repository<AboneIletisim>().AddAsync(iletisimabone);
+
+
 
             await _unitOfWork.SaveChangesAsync();
 

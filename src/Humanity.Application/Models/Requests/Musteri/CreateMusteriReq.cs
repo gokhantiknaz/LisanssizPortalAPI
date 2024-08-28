@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Humanity.Application.Models.DTOs.Musteri;
+using Humanity.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,6 +21,10 @@ namespace Humanity.Application.Models.Requests.Musteri
         public int? OzelkodId1 { get; set; }
         public int? OzelkodId2 { get; set; }
         public int? OzelkodId3 { get; set; }
-        
+        public AboneDTO Abone { get; set; }
+
+        public MusteriIletisimDTO MusteriIletisim { get; set; }
+
+
     }
 }

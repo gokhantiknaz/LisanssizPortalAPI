@@ -13,6 +13,11 @@ namespace Humanity.Domain.Entities
         public int? IletisimId { get; set; }
         [ForeignKey("Abone")]
         public int AboneId { get; set; }
+
+        public Abone Abone { get; set; }
+
+        public Iletisim Iletisim { get; set; }
+
         public Guid CreatedBy { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
         public Guid? LastModifiedBy { get; set; }

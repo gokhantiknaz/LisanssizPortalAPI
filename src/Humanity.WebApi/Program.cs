@@ -24,6 +24,12 @@ using (var scope = app.Services.CreateScope())
     scope.ServiceProvider.MigrateDatabase();
 }
 
+app.UseCors(builder => builder
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+  );
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

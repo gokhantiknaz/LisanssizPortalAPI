@@ -3,6 +3,7 @@ using System;
 using Humanity.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Humanity.Infrastructure.Migrations
 {
     [DbContext(typeof(LisanssizContext))]
-    partial class LisanssizContextModelSnapshot : ModelSnapshot
+    [Migration("20240828125439_correction2")]
+    partial class correction2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,6 +67,9 @@ namespace Humanity.Infrastructure.Migrations
                     b.Property<DateTimeOffset?>("LastModifiedOn")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("LisansBilgileriId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("MusteriId")
                         .HasColumnType("integer");
 
@@ -85,6 +91,8 @@ namespace Humanity.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AboneSayacId");
+
+                    b.HasIndex("LisansBilgileriId");
 
                     b.HasIndex("MusteriId");
 
@@ -118,8 +126,6 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.HasIndex("AboneId")
                         .IsUnique();
-
-                    b.HasIndex("IletisimId");
 
                     b.ToTable("AboneIletisim");
                 });
@@ -159,12 +165,15 @@ namespace Humanity.Infrastructure.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Adres")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("CepTel")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int?>("Ilceid")
@@ -243,7 +252,7 @@ namespace Humanity.Infrastructure.Migrations
                     b.Property<int>("MusteriId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("IletisimId")
+                    b.Property<int?>("IletisimId")
                         .HasColumnType("integer");
 
                     b.Property<Guid>("CreatedBy")
@@ -262,8 +271,6 @@ namespace Humanity.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("MusteriId", "IletisimId");
-
-                    b.HasIndex("IletisimId");
 
                     b.ToTable("MusteriIletisim");
                 });
@@ -303,9 +310,6 @@ namespace Humanity.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AboneId")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime>("CagrimektupTarihi")
                         .HasColumnType("timestamp with time zone");
 
@@ -315,6 +319,9 @@ namespace Humanity.Infrastructure.Migrations
                     b.Property<int>("MahsupTipi")
                         .HasColumnType("integer");
 
+                    b.Property<int>("MusteriId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("UretimBaslama")
                         .HasColumnType("timestamp with time zone");
 
@@ -322,9 +329,6 @@ namespace Humanity.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AboneId")
-                        .IsUnique();
 
                     b.ToTable("UreticiLisans");
                 });
@@ -380,6 +384,12 @@ namespace Humanity.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("AboneSayacId");
 
+                    b.HasOne("Humanity.Domain.Entities.UreticiLisans", "LisansBilgileri")
+                        .WithMany()
+                        .HasForeignKey("LisansBilgileriId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Humanity.Domain.Entities.Musteri", "Musteri")
                         .WithMany()
                         .HasForeignKey("MusteriId")
@@ -387,64 +397,25 @@ namespace Humanity.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("AboneSayac");
+
+                    b.Navigation("LisansBilgileri");
 
                     b.Navigation("Musteri");
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.AboneIletisim", b =>
                 {
-                    b.HasOne("Humanity.Domain.Entities.Abone", "Abone")
+                    b.HasOne("Humanity.Domain.Entities.Abone", null)
                         .WithOne("AboneIletisim")
                         .HasForeignKey("Humanity.Domain.Entities.AboneIletisim", "AboneId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Humanity.Domain.Entities.Iletisim", "Iletisim")
-                        .WithMany()
-                        .HasForeignKey("IletisimId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Abone");
-
-                    b.Navigation("Iletisim");
-                });
-
-            modelBuilder.Entity("Humanity.Domain.Entities.MusteriIletisim", b =>
-                {
-                    b.HasOne("Humanity.Domain.Entities.Iletisim", "Iletisim")
-                        .WithMany()
-                        .HasForeignKey("IletisimId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Humanity.Domain.Entities.Musteri", "Musteri")
-                        .WithMany()
-                        .HasForeignKey("MusteriId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Iletisim");
-
-                    b.Navigation("Musteri");
-                });
-
-            modelBuilder.Entity("Humanity.Domain.Entities.UreticiLisans", b =>
-                {
-                    b.HasOne("Humanity.Domain.Entities.Abone", "Abone")
-                        .WithOne("LisansBilgileri")
-                        .HasForeignKey("Humanity.Domain.Entities.UreticiLisans", "AboneId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Abone");
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.Abone", b =>
                 {
-                    b.Navigation("AboneIletisim");
-
-                    b.Navigation("LisansBilgileri");
+                    b.Navigation("AboneIletisim")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

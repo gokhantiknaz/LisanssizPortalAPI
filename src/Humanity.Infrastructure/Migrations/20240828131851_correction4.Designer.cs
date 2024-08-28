@@ -3,6 +3,7 @@ using System;
 using Humanity.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Humanity.Infrastructure.Migrations
 {
     [DbContext(typeof(LisanssizContext))]
-    partial class LisanssizContextModelSnapshot : ModelSnapshot
+    [Migration("20240828131851_correction4")]
+    partial class correction4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -431,13 +434,13 @@ namespace Humanity.Infrastructure.Migrations
 
             modelBuilder.Entity("Humanity.Domain.Entities.UreticiLisans", b =>
                 {
-                    b.HasOne("Humanity.Domain.Entities.Abone", "Abone")
+                    b.HasOne("Humanity.Domain.Entities.Abone", "Musteri")
                         .WithOne("LisansBilgileri")
                         .HasForeignKey("Humanity.Domain.Entities.UreticiLisans", "AboneId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Abone");
+                    b.Navigation("Musteri");
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.Abone", b =>
