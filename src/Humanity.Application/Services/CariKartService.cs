@@ -156,7 +156,9 @@ namespace Humanity.Application.Services
 
         public async Task<GetAllActiveCariKartRes> GetAllCariKart()
         {
-            var cariList = await _unitOfWork.Repository<CariKart>().ListAsync(new BaseSpecification<CariKart>(x => x.IsDeleted == false));
+            var spec = new BaseSpecification<CariKart>(x => x.IsDeleted == false);
+            spec.ApplyOrderByDescending(a => a.Id);
+            var cariList = await _unitOfWork.Repository<CariKart>().ListAsync(spec);
 
             return new GetAllActiveCariKartRes()
             {

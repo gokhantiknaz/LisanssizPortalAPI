@@ -33,9 +33,9 @@ namespace Humanity.WebApi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<CreateCariKartRes>> Delete(int cariId)
+        public async Task<ActionResult<CreateCariKartRes>> SoftDelete(UpdateCariKartReq cariKart)
         {
-            var result = await _cariService.Delete(cariId);
+            var result = await _cariService.Delete(cariKart.Id);
             return Ok(result);
         }
 
