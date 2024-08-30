@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Humanity.Domain.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Humanity.Domain.Entities
 {
-    public class Iletisim
+    public class Iletisim:BaseEntity
     {
         [Key]
         public int Id { get; set; }

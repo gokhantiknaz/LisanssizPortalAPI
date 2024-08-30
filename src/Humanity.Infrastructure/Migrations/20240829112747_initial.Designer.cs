@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Humanity.Infrastructure.Migrations
 {
     [DbContext(typeof(LisanssizContext))]
-    [Migration("20240828132547_correction5")]
-    partial class correction5
+    [Migration("20240829112747_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,9 +32,6 @@ namespace Humanity.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("AboneSayacId")
-                        .HasColumnType("integer");
 
                     b.Property<int>("Agog")
                         .HasColumnType("integer");
@@ -87,8 +84,6 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AboneSayacId");
-
                     b.HasIndex("MusteriId");
 
                     b.ToTable("Abone");
@@ -119,9 +114,6 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.HasKey("AboneId", "IletisimId");
 
-                    b.HasIndex("AboneId")
-                        .IsUnique();
-
                     b.HasIndex("IletisimId");
 
                     b.ToTable("AboneIletisim");
@@ -135,6 +127,9 @@ namespace Humanity.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AboneId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("FazAdedi")
                         .HasColumnType("integer");
 
@@ -142,15 +137,139 @@ namespace Humanity.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("MusteriId")
-                        .HasColumnType("integer");
-
                     b.Property<long>("SayacNo")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AboneId");
+
                     b.ToTable("AboneSayac");
+                });
+
+            modelBuilder.Entity("Humanity.Domain.Entities.AboneTuketici", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AboneId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("BaslamaZamani")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Durum")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("UreticiAboneId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AboneId");
+
+                    b.HasIndex("UreticiAboneId");
+
+                    b.ToTable("AboneTuketici");
+                });
+
+            modelBuilder.Entity("Humanity.Domain.Entities.AboneUretici", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AboneId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CagrimektupTarihi")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("LisansBilgisi")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MahsupTipi")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UretimBaslama")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("UretimSekli")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AboneId");
+
+                    b.ToTable("AboneUretici");
+                });
+
+            modelBuilder.Entity("Humanity.Domain.Entities.CariKart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Adi")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Durum")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("GercekTuzel")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("OzelkodId1")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("OzelkodId2")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("OzelkodId3")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Soyadi")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long?>("Tckn")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Unvan")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("Vkn")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CariKart");
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.Iletisim", b =>
@@ -193,13 +312,16 @@ namespace Humanity.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("CariKartId")
+                        .HasColumnType("integer");
+
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("Durum")
+                    b.Property<int>("Durum")
                         .HasColumnType("integer");
 
                     b.Property<int>("GercekTuzel")
@@ -237,6 +359,8 @@ namespace Humanity.Infrastructure.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CariKartId");
 
                     b.ToTable("Musteri");
                 });
@@ -298,40 +422,6 @@ namespace Humanity.Infrastructure.Migrations
                     b.ToTable("MusteriOzelKod");
                 });
 
-            modelBuilder.Entity("Humanity.Domain.Entities.UreticiLisans", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AboneId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CagrimektupTarihi")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("LisansBilgisi")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("MahsupTipi")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("UretimBaslama")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("UretimSekli")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AboneId")
-                        .IsUnique();
-
-                    b.ToTable("UreticiLisans");
-                });
-
             modelBuilder.Entity("Humanity.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -379,17 +469,11 @@ namespace Humanity.Infrastructure.Migrations
 
             modelBuilder.Entity("Humanity.Domain.Entities.Abone", b =>
                 {
-                    b.HasOne("Humanity.Domain.Entities.AboneSayac", "AboneSayac")
-                        .WithMany()
-                        .HasForeignKey("AboneSayacId");
-
                     b.HasOne("Humanity.Domain.Entities.Musteri", "Musteri")
                         .WithMany()
                         .HasForeignKey("MusteriId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("AboneSayac");
 
                     b.Navigation("Musteri");
                 });
@@ -397,8 +481,8 @@ namespace Humanity.Infrastructure.Migrations
             modelBuilder.Entity("Humanity.Domain.Entities.AboneIletisim", b =>
                 {
                     b.HasOne("Humanity.Domain.Entities.Abone", "Abone")
-                        .WithOne("AboneIletisim")
-                        .HasForeignKey("Humanity.Domain.Entities.AboneIletisim", "AboneId")
+                        .WithMany()
+                        .HasForeignKey("AboneId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -411,6 +495,58 @@ namespace Humanity.Infrastructure.Migrations
                     b.Navigation("Abone");
 
                     b.Navigation("Iletisim");
+                });
+
+            modelBuilder.Entity("Humanity.Domain.Entities.AboneSayac", b =>
+                {
+                    b.HasOne("Humanity.Domain.Entities.Abone", "Abone")
+                        .WithMany()
+                        .HasForeignKey("AboneId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Abone");
+                });
+
+            modelBuilder.Entity("Humanity.Domain.Entities.AboneTuketici", b =>
+                {
+                    b.HasOne("Humanity.Domain.Entities.Abone", "Abone")
+                        .WithMany()
+                        .HasForeignKey("AboneId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Humanity.Domain.Entities.Abone", "UreticiAbone")
+                        .WithMany()
+                        .HasForeignKey("UreticiAboneId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Abone");
+
+                    b.Navigation("UreticiAbone");
+                });
+
+            modelBuilder.Entity("Humanity.Domain.Entities.AboneUretici", b =>
+                {
+                    b.HasOne("Humanity.Domain.Entities.Abone", "Abone")
+                        .WithMany()
+                        .HasForeignKey("AboneId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Abone");
+                });
+
+            modelBuilder.Entity("Humanity.Domain.Entities.Musteri", b =>
+                {
+                    b.HasOne("Humanity.Domain.Entities.CariKart", "CariKart")
+                        .WithMany()
+                        .HasForeignKey("CariKartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CariKart");
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.MusteriIletisim", b =>
@@ -430,24 +566,6 @@ namespace Humanity.Infrastructure.Migrations
                     b.Navigation("Iletisim");
 
                     b.Navigation("Musteri");
-                });
-
-            modelBuilder.Entity("Humanity.Domain.Entities.UreticiLisans", b =>
-                {
-                    b.HasOne("Humanity.Domain.Entities.Abone", "Abone")
-                        .WithOne("LisansBilgileri")
-                        .HasForeignKey("Humanity.Domain.Entities.UreticiLisans", "AboneId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Abone");
-                });
-
-            modelBuilder.Entity("Humanity.Domain.Entities.Abone", b =>
-                {
-                    b.Navigation("AboneIletisim");
-
-                    b.Navigation("LisansBilgileri");
                 });
 #pragma warning restore 612, 618
         }

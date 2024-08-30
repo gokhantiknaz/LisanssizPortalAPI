@@ -38,5 +38,12 @@ namespace Humanity.WebApi.Controllers
             var result = await _musteriService.GetAllMusteri();
             return Ok(result);
         }
+
+        [HttpGet]
+        public async Task<ActionResult<GetAllActiveMusteriRes>> GetAllActiveMusteriUretici()
+        {
+            var result = await _musteriService.GetAllMusteriUretici();
+            return Ok(result);
+        }
     }
 }

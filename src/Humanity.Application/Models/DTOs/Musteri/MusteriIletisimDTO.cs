@@ -8,6 +8,7 @@ namespace Humanity.Application.Models.DTOs.Musteri
 {
     public class MusteriIletisimDTO
     {
+        public int IletisimId { get; set; }
         public string? CepTel { get; set; }
         public string? Email { get; set; }
         public int? Ilid { get; set; }

@@ -6,7 +6,9 @@ using Humanity.Application.Models.Requests.Musteri;
 using Humanity.Application.Models.Responses;
 using Humanity.Application.Models.Responses.Musteri;
 using Humanity.Domain.Core.Repositories;
+using Humanity.Domain.Core.Specifications;
 using Humanity.Domain.Entities;
+using Humanity.Domain.Specifications;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,10 +24,12 @@ namespace Humanity.Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILoggerService _loggerService;
 
+
         public MusteriService(IUnitOfWork unitOfWork, ILoggerService loggerService)
         {
             _unitOfWork = unitOfWork;
             _loggerService = loggerService;
+
         }
         public async Task<CreateMusteriRes> CreateMusteri(CreateMusteriReq req)
         {
@@ -34,7 +38,7 @@ namespace Humanity.Application.Services
                 Adi = req.Adi,
                 Soyadi = req.Soyadi,
                 CreatedOn = DateTime.UtcNow,
-                Durum = 1,
+                Durum =  Status.Aktif,
                 GercekTuzel = (Domain.Enums.Enums.GercekTuzel)req.GercekTuzel,
                 IsDeleted = false,
                 Tckn = req.Tckn,
@@ -43,6 +47,7 @@ namespace Humanity.Application.Services
                 OzelkodId1 = req.OzelkodId1,
                 OzelkodId2 = req.OzelkodId2,
                 OzelkodId3 = req.OzelkodId3,
+                CariKartId= req.CariKartId
             });
 
             var newiletisimMusteri = new Iletisim { Email = req.MusteriIletisim.Email ?? "", Adres = req.MusteriIletisim.Adres ?? "", CepTel = req.MusteriIletisim.CepTel ?? "", Ilid = req.MusteriIletisim.Ilid, Ilceid = req.MusteriIletisim.Ilceid };
@@ -77,7 +82,7 @@ namespace Humanity.Application.Services
 
             if (SahisTip.Uretici == abone.SahisTip)
             {
-                var lisansBilgi = new UreticiLisans()
+                var lisansBilgi = new AboneUretici()
                 {
                     Abone = abone,
                     CagrimektupTarihi = req.Abone.LisansBilgileri.CagrimektupTarihi,
@@ -87,7 +92,7 @@ namespace Humanity.Application.Services
                     UretimSekli = req.Abone.LisansBilgileri.UretimSekli
                 };
 
-                _ = await _unitOfWork.Repository<UreticiLisans>().AddAsync(lisansBilgi);
+                _ = await _unitOfWork.Repository<AboneUretici>().AddAsync(lisansBilgi);
 
                 // tüketici listesi.
 
@@ -107,7 +112,6 @@ namespace Humanity.Application.Services
                         _ = await _unitOfWork.Repository<AboneTuketici>().AddAsync(tuketici);
                     }
                 }
-
             }
 
             if (req.SayacList.Count > 0)
@@ -124,7 +128,6 @@ namespace Humanity.Application.Services
 
                     _ = await _unitOfWork.Repository<AboneSayac>().AddAsync(sayacBilgi);
                 }
-
             }
 
             var newiletisimAbone = new Iletisim { CepTel = "", Email = "", Adres = "", Ilid = req.Abone.AboneIletisim.Ilid, Ilceid = req.Abone.AboneIletisim.Ilceid };
@@ -140,21 +143,57 @@ namespace Humanity.Application.Services
 
             _ = _unitOfWork.Repository<AboneIletisim>().AddAsync(iletisimabone);
 
-
-
             await _unitOfWork.SaveChangesAsync();
 
             _loggerService.LogInfo("Yeni Müşteri Eklendi");
 
-            return new CreateMusteriRes() { Data = new MusteriDTO(musteri) };
+            return new CreateMusteriRes() { Data = new MusteriDTO(this, musteri) };
         }
 
         public async Task<GetAllActiveMusteriRes> GetAllMusteri()
         {
-            throw new NotImplementedException();
+            var activeUsersSpec = MusteriSpecifications.GetAllActiveUsersSpec();
+            activeUsersSpec.ApplyOrderByDescending(x => x.Id);
+
+            var musteriler = await _unitOfWork.Repository<Musteri>().ListAsync(activeUsersSpec);
+
+            return new GetAllActiveMusteriRes()
+            {
+                Data = musteriler.Select(x => new MusteriDTO(this, x)).ToList()
+            };
+        }
+
+        public async Task<AboneDTO> GetMusteriUreticiAbone(int musteriId)
+        {
+            var activeSpec = new BaseSpecification<Abone>(a => a.MusteriId == musteriId && a.SahisTip == SahisTip.Uretici);
+            var aboneler = await _unitOfWork.Repository<Abone>().ListAsync(activeSpec);
+            return new AboneDTO();
+        }
+
+        public async Task<MusteriIletisimDTO> GetMusteriIletisim(int musteriId)
+        {
+            var activeSpec = new BaseSpecification<MusteriIletisim>(a => a.MusteriId == musteriId);
+            activeSpec.AddInclude(a => a.Iletisim);
+            var musterilerIletisimler = await _unitOfWork.Repository<MusteriIletisim>().ListAsync(activeSpec);
+
+            if (musterilerIletisimler.Count == 0)
+                return new MusteriIletisimDTO() { };
+            return new MusteriIletisimDTO()
+            {
+                Adres = musterilerIletisimler[0].Iletisim.Adres,
+                CepTel = musterilerIletisimler[0].Iletisim.CepTel,
+                Email = musterilerIletisimler[0].Iletisim.Email,
+                Ilceid = musterilerIletisimler[0].Iletisim.Ilceid,
+                Ilid = musterilerIletisimler[0].Iletisim.Ilid
+            };
         }
 
         public async Task<ValidateMusteriRes> ValidateMusteri(ValidateMusteriReq req)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetAllActiveMusteriRes> GetAllMusteriUretici()
         {
             throw new NotImplementedException();
         }

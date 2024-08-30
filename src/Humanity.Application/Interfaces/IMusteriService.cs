@@ -1,4 +1,5 @@
-﻿using Humanity.Application.Models.Requests;
+﻿using Humanity.Application.Models.DTOs.Musteri;
+using Humanity.Application.Models.Requests;
 using Humanity.Application.Models.Requests.Musteri;
 using Humanity.Application.Models.Responses;
 using Humanity.Application.Models.Responses.Musteri;
@@ -17,5 +18,9 @@ namespace Humanity.Application.Interfaces
         Task<ValidateMusteriRes> ValidateMusteri(ValidateMusteriReq req);
 
         Task<GetAllActiveMusteriRes> GetAllMusteri();
+        Task<MusteriIletisimDTO> GetMusteriIletisim(int musteriId);
+
+        Task<AboneDTO> GetMusteriUreticiAbone(int musteriId);
+        Task<GetAllActiveMusteriRes> GetAllMusteriUretici();
     }
 }

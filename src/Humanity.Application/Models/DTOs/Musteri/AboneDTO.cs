@@ -20,7 +20,7 @@ namespace Humanity.Application.Models.DTOs.Musteri
         public SahisTip SahisTip { get; set; }
         public int Terim { get; set; }
         public int Agog { get; set; }
-        public UreticiLisans LisansBilgileri { get; set; }
+        public AboneUretici LisansBilgileri { get; set; }
         public AboneSayac? AboneSayac { get; set; }
         public AboneIletisimDTO AboneIletisim { get; set; }
     }

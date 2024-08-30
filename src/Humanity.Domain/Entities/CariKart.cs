@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,21 +9,13 @@ using static Humanity.Domain.Enums.Enums;
 
 namespace Humanity.Domain.Entities
 {
-    public class Musteri: BaseEntity, ISoftDeleteEntity, IAuditableEntity
+    public class CariKart : BaseEntity, ISoftDeleteEntity, IAuditableEntity
     {
-
         [Key]
         public int Id { get; set; }
         public string Adi { get; set; }
         public string Soyadi { get; set; }
         public string? Unvan { get; set; }
-
-
-        [ForeignKey("CariKartId")]
-        public CariKart CariKart { get; set; }
-
-        [ForeignKey("CariKart")]
-        public int CariKartId { get; set; }
         public long? Tckn { get; set; }
         public long? Vkn { get; set; }
         public Status Durum { get; set; }
@@ -37,6 +28,5 @@ namespace Humanity.Domain.Entities
         public Guid? LastModifiedBy { get; set; }
         public DateTimeOffset? LastModifiedOn { get; set; }
         public bool IsDeleted { get; set; }
-
     }
 }

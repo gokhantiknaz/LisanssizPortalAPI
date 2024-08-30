@@ -10,7 +10,7 @@ using static Humanity.Domain.Enums.Enums;
 
 namespace Humanity.Domain.Entities
 {
-    public class UreticiLisans:BaseEntity
+    public class AboneUretici:BaseEntity
     {
         [Key]
         public int Id { get; set; }

@@ -12,4 +12,9 @@ namespace Humanity.Application.Models.Requests.Musteri
     {
         public MusteriDTO Data { get; set; }
     }
+
+    public class CreateCariKartRes
+    {
+        public CariKartDTO Data { get; set; }
+    }
 }
