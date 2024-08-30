@@ -19,16 +19,23 @@ namespace Humanity.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CreateCariKartRes>> Create(CreateCariKartReq musteri)
+        public async Task<ActionResult<CreateCariKartRes>> Create(CreateCariKartReq cariKart)
         {
-            var result = await _cariService.Create(musteri);
+            var result = await _cariService.Create(cariKart);
             return Ok(result);
         }
 
         [HttpPut]
-        public async Task<ActionResult<CreateCariKartRes>> Update(UpdateCariKartReq musteri)
+        public async Task<ActionResult<CreateCariKartRes>> Update(UpdateCariKartReq cariKart)
         {
-            var result = await _cariService.Update(musteri);
+            var result = await _cariService.Update(cariKart);
+            return Ok(result);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<CreateCariKartRes>> Delete(int cariId)
+        {
+            var result = await _cariService.Delete(cariId);
             return Ok(result);
         }
 

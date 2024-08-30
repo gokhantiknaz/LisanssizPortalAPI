@@ -123,6 +123,16 @@ namespace Humanity.Application.Services
             return new CreateCariKartRes() { Data = new CariKartDTO(cari, this) };
         }
 
+        public async Task<bool> Delete(int cariId)
+        {
+            var cari = await _unitOfWork.Repository<CariKart>().GetByIdAsync(cariId);
+            cari.IsDeleted = true;
+            _unitOfWork.Repository<CariKart>().Update(cari);
+
+            return await _unitOfWork.SaveChangesAsync() > 0;
+
+        }
+
         public async Task<MusteriIletisimDTO> GetIletisim(int cariId)
         {
             var activeSpec = new BaseSpecification<CariIletisim>(a => a.CariKartId == cariId);

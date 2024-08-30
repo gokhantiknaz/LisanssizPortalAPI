@@ -20,5 +20,6 @@ namespace Humanity.Application.Interfaces
         Task<GetAllActiveCariKartRes> GetAllCariKart();
 
         Task<MusteriIletisimDTO> GetIletisim(int cariId);
+        Task<bool> Delete(int cariId);
     }
 }
