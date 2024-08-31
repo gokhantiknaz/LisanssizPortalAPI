@@ -22,5 +22,11 @@ namespace Humanity.Application.Interfaces
 
         Task<AboneDTO> GetMusteriUreticiAbone(int musteriId);
         Task<GetAllActiveMusteriRes> GetAllMusteriUretici();
+
+        Task<GetAllActiveMusteriRes> CariyeBagliTuketicileriGetir(int cariId);
+
+        Task<GetAllActiveMusteriRes> CariyeBagliUreticiGetir(int cariId);
+        
+        Task<AboneDTO> GetAboneById(int id);
     }
 }

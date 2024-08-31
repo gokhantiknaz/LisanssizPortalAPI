@@ -45,5 +45,7 @@ namespace Humanity.WebApi.Controllers
             var result = await _cariService.GetAllCariKart();
             return Ok(result);
         }
+
+   
     }
 }

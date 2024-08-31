@@ -4,6 +4,7 @@ using Humanity.Application.Services;
 using Humanity.Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -16,21 +17,38 @@ namespace Humanity.Application.Models.DTOs.Musteri
     {
         private readonly IMusteriService _musteriService;
 
-
         public int Id { get; set; }
         public string Adi { get; set; }
         public string Soyadi { get; set; }
-        public int Durum { get; set; }
 
-        public decimal KuruluGuc { get; set; }
+        public string? Unvan { get; set; }
 
-        public decimal SozlesmeGucu { get; set; }
+        public int CariKartId { get; set; }
+        public long? Tckn { get; set; }
+        public long? Vkn { get; set; }
+        public Status Durum { get; set; }
+        public GercekTuzel GercekTuzel { get; set; }
+        public int? OzelkodId1 { get; set; }
+        public int? OzelkodId2 { get; set; }
+        public int? OzelkodId3 { get; set; }
 
-        public AboneDTO Uretici { get; set; }
+        public AboneDTO Abone { get; set; }
 
-        public AboneDTO GetUretici(int musteriId)
+        public async Task<AboneDTO> AboneBilgiGetir(int id)
         {
-            return new AboneDTO();
+           return await  _musteriService.GetAboneById(id);
+        }
+
+        public async Task<AboneDTO> AboneBilgiGetirMusteriId(int id)
+        {
+            return await _musteriService.GetMusteriUreticiAbone(id);
+        }
+
+        public UreticiDTO Uretici { get; set; }
+
+        public UreticiDTO GetUretici(Humanity.Domain.Entities.AboneUretici uretici)
+        {
+            return new UreticiDTO(uretici);
         }
 
         public MusteriIletisimDTO MusteriIletisim { get; set; }
@@ -41,15 +59,45 @@ namespace Humanity.Application.Models.DTOs.Musteri
             return musteriIletisim.Result;
         }
 
+        public MusteriDTO(IMusteriService musteriService, Humanity.Domain.Entities.AboneUretici aboneuretici)
+        {
+            _musteriService = musteriService;
+            Id = aboneuretici.Abone.Musteri.Id;
+            Adi = aboneuretici.Abone.Musteri.Adi;
+            Soyadi = aboneuretici.Abone.Musteri.Soyadi;
+            Unvan = aboneuretici.Abone.Musteri.Unvan;
+            Tckn = aboneuretici.Abone.Musteri.Tckn;
+            CariKartId = aboneuretici.Abone.Musteri.CariKartId;
+            Vkn = aboneuretici.Abone.Musteri.Vkn;
+            GercekTuzel = aboneuretici.Abone.Musteri.GercekTuzel;
+            OzelkodId1 = aboneuretici.Abone.Musteri.OzelkodId1;
+            OzelkodId2 = aboneuretici.Abone.Musteri.OzelkodId2;
+            OzelkodId3 = aboneuretici.Abone.Musteri.OzelkodId3;
+            Abone = AboneBilgiGetir(aboneuretici.Abone.Musteri.Id).Result;
+            MusteriIletisim = GetMusteriIletisim(aboneuretici.Abone.Musteri.Id);
+            Uretici = GetUretici(aboneuretici);
+        }
+
+
         public MusteriDTO(IMusteriService musteriService, Humanity.Domain.Entities.Musteri musteri)
         {
             _musteriService = musteriService;
             Id = musteri.Id;
             Adi = musteri.Adi;
             Soyadi = musteri.Soyadi;
+            Unvan = musteri.Unvan;
+            Tckn = musteri.Tckn;
+            CariKartId= musteri.CariKartId; 
+            Vkn = musteri.Vkn;
+            GercekTuzel = musteri.GercekTuzel;
+            OzelkodId1= musteri.OzelkodId1;
+            OzelkodId2 = musteri.OzelkodId2;
+            OzelkodId3 = musteri.OzelkodId3;
+            Abone = AboneBilgiGetir(musteri.Id).Result;
             MusteriIletisim = GetMusteriIletisim(musteri.Id);
-            Uretici = GetUretici(musteri.Id);
+          //  Uretici = GetUretici(musteri);
         }
+    
     }
 
     public class CariKartDTO

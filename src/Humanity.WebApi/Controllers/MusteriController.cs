@@ -45,5 +45,20 @@ namespace Humanity.WebApi.Controllers
             var result = await _musteriService.GetAllMusteriUretici();
             return Ok(result);
         }
+
+
+        [HttpGet]
+        public async Task<ActionResult<GetAllActiveMusteriRes>> CariyeBagliUreticiGetir([FromQuery] int cariId)
+        {
+            var result = await _musteriService.CariyeBagliUreticiGetir(cariId);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<GetAllActiveMusteriRes>> CariyeBagliTuketicileriGetir([FromQuery]int cariId)
+        {
+            var result = await _musteriService.CariyeBagliTuketicileriGetir(cariId);
+            return Ok(result);
+        }
     }
 }

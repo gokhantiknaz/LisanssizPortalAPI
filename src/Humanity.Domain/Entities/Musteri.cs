@@ -19,7 +19,6 @@ namespace Humanity.Domain.Entities
         public string Soyadi { get; set; }
         public string? Unvan { get; set; }
 
-
         [ForeignKey("CariKartId")]
         public CariKart CariKart { get; set; }
 

@@ -38,7 +38,7 @@ namespace Humanity.Application.Services
                 Adi = req.Adi,
                 Soyadi = req.Soyadi,
                 CreatedOn = DateTime.UtcNow,
-                Durum =  Status.Aktif,
+                Durum = Status.Aktif,
                 GercekTuzel = (Domain.Enums.Enums.GercekTuzel)req.GercekTuzel,
                 IsDeleted = false,
                 Tckn = req.Tckn,
@@ -47,7 +47,7 @@ namespace Humanity.Application.Services
                 OzelkodId1 = req.OzelkodId1,
                 OzelkodId2 = req.OzelkodId2,
                 OzelkodId3 = req.OzelkodId3,
-                CariKartId= req.CariKartId
+                CariKartId = req.CariKartId
             });
 
             var newiletisimMusteri = new Iletisim { Email = req.MusteriIletisim.Email ?? "", Adres = req.MusteriIletisim.Adres ?? "", CepTel = req.MusteriIletisim.CepTel ?? "", Ilid = req.MusteriIletisim.Ilid, Ilceid = req.MusteriIletisim.Ilceid };
@@ -167,7 +167,9 @@ namespace Humanity.Application.Services
         {
             var activeSpec = new BaseSpecification<Abone>(a => a.MusteriId == musteriId && a.SahisTip == SahisTip.Uretici);
             var aboneler = await _unitOfWork.Repository<Abone>().ListAsync(activeSpec);
-            return new AboneDTO();
+
+            var data = aboneler.Select(x => new AboneDTO(x)).FirstOrDefault();
+            return data;
         }
 
         public async Task<MusteriIletisimDTO> GetMusteriIletisim(int musteriId)
@@ -184,7 +186,8 @@ namespace Humanity.Application.Services
                 CepTel = musterilerIletisimler[0].Iletisim.CepTel,
                 Email = musterilerIletisimler[0].Iletisim.Email,
                 Ilceid = musterilerIletisimler[0].Iletisim.Ilceid,
-                Ilid = musterilerIletisimler[0].Iletisim.Ilid
+                Ilid = musterilerIletisimler[0].Iletisim.Ilid,
+                IletisimId = musterilerIletisimler[0].IletisimId
             };
         }
 
@@ -196,6 +199,40 @@ namespace Humanity.Application.Services
         public Task<GetAllActiveMusteriRes> GetAllMusteriUretici()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<GetAllActiveMusteriRes> CariyeBagliTuketicileriGetir(int cariId)
+        {
+            var ureticiAboneSpec = MusteriSpecifications.GetUreticiByCari(cariId);
+
+            var musteriler = await _unitOfWork.Repository<AboneUretici>().ListAsync(ureticiAboneSpec);
+
+            var data = musteriler.Select(x => new MusteriDTO(this, x.Abone.Musteri)).ToList();
+            return new GetAllActiveMusteriRes()
+            {
+                Data = data
+            };
+        }
+
+        public async Task<GetAllActiveMusteriRes> CariyeBagliUreticiGetir(int cariId)
+        {
+            var ureticiAboneSpec = MusteriSpecifications.GetUreticiByCari(cariId);
+
+            var musteriler = await _unitOfWork.Repository<AboneUretici>().ListAsync(ureticiAboneSpec);
+
+            var data = musteriler.Select(x => new MusteriDTO(this,x)).ToList();
+            return new GetAllActiveMusteriRes()
+            {
+                Data = data
+            };
+        }
+
+        public async Task<AboneDTO> GetAboneById(int id)
+        {
+            var aboneSpec = MusteriSpecifications.GetAboneById(id);
+            var musteriler = await _unitOfWork.Repository<Abone>().ListAsync(aboneSpec);
+            var data = musteriler.Select(x => new AboneDTO(x)).FirstOrDefault();
+            return data;
         }
     }
 }
