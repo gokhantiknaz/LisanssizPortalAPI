@@ -14,7 +14,7 @@ namespace Humanity.Domain.Entities
         [ForeignKey("Abone")]
         public int AboneId { get; set; }
 
-        public Abone Abone { get; set; }
+        public Abone? Abone { get; set; }
 
         public Iletisim Iletisim { get; set; }
 

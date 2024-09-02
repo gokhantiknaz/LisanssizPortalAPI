@@ -7,5 +7,7 @@ namespace Humanity.Domain.Core.Repositories
         Task<int> SaveChangesAsync();
         Task RollBackChangesAsync();
         IBaseRepositoryAsync<T> Repository<T>() where T : BaseEntity;
+    
+      
     }
 }

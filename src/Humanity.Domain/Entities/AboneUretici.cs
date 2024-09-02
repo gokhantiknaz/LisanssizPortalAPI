@@ -21,10 +21,14 @@ namespace Humanity.Domain.Entities
         [ForeignKey("AboneId")]
         public Abone? Abone { get; set; }
 
+
+
         public UretimSekli UretimSekli { get; set; }
         public LisansBilgisi LisansBilgisi { get; set; }
         public DateTime UretimBaslama { get; set; }
         public DateTime CagrimektupTarihi { get; set; }
         public int MahsupTipi { get; set; }
+
+
     }
 }

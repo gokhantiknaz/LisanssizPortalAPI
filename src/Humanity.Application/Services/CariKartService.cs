@@ -64,7 +64,7 @@ namespace Humanity.Application.Services
 
             _loggerService.LogInfo("Yeni Cari Kart Eklendi");
 
-            return new CreateCariKartRes() { Data = new CariKartDTO(cari, this) };
+            return new CreateCariKartRes() { Data = new CariKartDTO(cari) };
         }
 
         public async Task<CreateCariKartRes> Update(UpdateCariKartReq req)
@@ -120,7 +120,7 @@ namespace Humanity.Application.Services
 
             _loggerService.LogInfo("Cari Kart Güncellendi.");
 
-            return new CreateCariKartRes() { Data = new CariKartDTO(cari, this) };
+            return new CreateCariKartRes() { Data = new CariKartDTO(cari) };
         }
 
         public async Task<bool> Delete(int cariId)
@@ -162,7 +162,7 @@ namespace Humanity.Application.Services
 
             return new GetAllActiveCariKartRes()
             {
-                Data = cariList.Select(x => new CariKartDTO(x, this)).ToList()
+                Data = cariList.Select(x => new CariKartDTO(x)).ToList()
             };
         }
     }

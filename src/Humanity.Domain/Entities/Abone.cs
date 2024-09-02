@@ -20,6 +20,7 @@ namespace Humanity.Domain.Entities
 
         [ForeignKey("MusteriId")]
         public Musteri Musteri { get; set; }
+
         public int Tarife { get; set; }
         public string EtsoKodu { get; set; }
         public int DagitimFirmaId { get; set; }

@@ -10,7 +10,7 @@ using static Humanity.Domain.Enums.Enums;
 
 namespace Humanity.Domain.Entities
 {
-    public class Musteri: BaseEntity, ISoftDeleteEntity, IAuditableEntity
+    public class Musteri : BaseEntity, ISoftDeleteEntity, IAuditableEntity
     {
 
         [Key]
@@ -36,6 +36,10 @@ namespace Humanity.Domain.Entities
         public Guid? LastModifiedBy { get; set; }
         public DateTimeOffset? LastModifiedOn { get; set; }
         public bool IsDeleted { get; set; }
+
+        public Abone Abone { get; set; }
+
+        public MusteriIletisim MusteriIletisim { get; set; }
 
     }
 }

@@ -15,18 +15,21 @@ namespace Humanity.Application.Interfaces
     {
         Task<CreateMusteriRes> CreateMusteri(CreateMusteriReq req);
 
+        Task<GetMusteriRes> GetMusteriById(int id);
+
         Task<ValidateMusteriRes> ValidateMusteri(ValidateMusteriReq req);
 
         Task<GetAllActiveMusteriRes> GetAllMusteri();
         Task<MusteriIletisimDTO> GetMusteriIletisim(int musteriId);
 
         Task<AboneDTO> GetMusteriUreticiAbone(int musteriId);
-        Task<GetAllActiveMusteriRes> GetAllMusteriUretici();
 
-        Task<GetAllActiveMusteriRes> CariyeBagliTuketicileriGetir(int cariId);
+        Task<GetAllActiveMusteriRes> MusteriyeBagliTuketicileriGetir(int musteriid);
 
         Task<GetAllActiveMusteriRes> CariyeBagliUreticiGetir(int cariId);
         
         Task<AboneDTO> GetAboneById(int id);
+        Task<GetAllActiveMusteriRes> GetBagimsizTuketiciler(int cariId);
+        Task<GetMusteriRes> Update(UpdateMusteriReq musteri);
     }
 }

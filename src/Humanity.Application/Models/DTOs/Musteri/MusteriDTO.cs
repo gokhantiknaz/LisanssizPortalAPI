@@ -15,8 +15,6 @@ namespace Humanity.Application.Models.DTOs.Musteri
 {
     public class MusteriDTO
     {
-        private readonly IMusteriService _musteriService;
-
         public int Id { get; set; }
         public string Adi { get; set; }
         public string Soyadi { get; set; }
@@ -34,34 +32,34 @@ namespace Humanity.Application.Models.DTOs.Musteri
 
         public AboneDTO Abone { get; set; }
 
-        public async Task<AboneDTO> AboneBilgiGetir(int id)
-        {
-           return await  _musteriService.GetAboneById(id);
-        }
-
-        public async Task<AboneDTO> AboneBilgiGetirMusteriId(int id)
-        {
-            return await _musteriService.GetMusteriUreticiAbone(id);
-        }
+        public List<TuketiciListDTO>? TuketiciList { get; set; }
 
         public UreticiDTO Uretici { get; set; }
 
-        public UreticiDTO GetUretici(Humanity.Domain.Entities.AboneUretici uretici)
-        {
-            return new UreticiDTO(uretici);
-        }
 
         public MusteriIletisimDTO MusteriIletisim { get; set; }
+      
 
-        public MusteriIletisimDTO GetMusteriIletisim(int musteriId)
+        public MusteriDTO(Humanity.Domain.Entities.Musteri musteri)
         {
-            var musteriIletisim = _musteriService.GetMusteriIletisim(musteriId);
-            return musteriIletisim.Result;
+          
+            Id =musteri.Id;
+            Adi =musteri.Adi;
+            Soyadi =musteri.Soyadi;
+            Unvan =musteri.Unvan;
+            Tckn =musteri.Tckn;
+            CariKartId =musteri.CariKartId;
+            Vkn =musteri.Vkn;
+            GercekTuzel =musteri.GercekTuzel;
+            OzelkodId1 =musteri.OzelkodId1;
+            OzelkodId2 =musteri.OzelkodId2;
+            OzelkodId3 =musteri.OzelkodId3;
+            
         }
 
-        public MusteriDTO(IMusteriService musteriService, Humanity.Domain.Entities.AboneUretici aboneuretici)
+        public MusteriDTO(AboneUretici aboneuretici)
         {
-            _musteriService = musteriService;
+            
             Id = aboneuretici.Abone.Musteri.Id;
             Adi = aboneuretici.Abone.Musteri.Adi;
             Soyadi = aboneuretici.Abone.Musteri.Soyadi;
@@ -73,15 +71,13 @@ namespace Humanity.Application.Models.DTOs.Musteri
             OzelkodId1 = aboneuretici.Abone.Musteri.OzelkodId1;
             OzelkodId2 = aboneuretici.Abone.Musteri.OzelkodId2;
             OzelkodId3 = aboneuretici.Abone.Musteri.OzelkodId3;
-            Abone = AboneBilgiGetir(aboneuretici.Abone.Musteri.Id).Result;
-            MusteriIletisim = GetMusteriIletisim(aboneuretici.Abone.Musteri.Id);
-            Uretici = GetUretici(aboneuretici);
+            Abone = new AboneDTO();
+            Uretici = new UreticiDTO(aboneuretici);
         }
 
 
         public MusteriDTO(IMusteriService musteriService, Humanity.Domain.Entities.Musteri musteri)
         {
-            _musteriService = musteriService;
             Id = musteri.Id;
             Adi = musteri.Adi;
             Soyadi = musteri.Soyadi;
@@ -93,9 +89,7 @@ namespace Humanity.Application.Models.DTOs.Musteri
             OzelkodId1= musteri.OzelkodId1;
             OzelkodId2 = musteri.OzelkodId2;
             OzelkodId3 = musteri.OzelkodId3;
-            Abone = AboneBilgiGetir(musteri.Id).Result;
-            MusteriIletisim = GetMusteriIletisim(musteri.Id);
-          //  Uretici = GetUretici(musteri);
+            Abone = new AboneDTO();
         }
     
     }
@@ -118,16 +112,8 @@ namespace Humanity.Application.Models.DTOs.Musteri
         public GercekTuzel GercekTuzel { get; set; }
         public MusteriIletisimDTO CariIletisim { get; set; }
 
-
-        public MusteriIletisimDTO GetIletisim(int cariKartId)
+        public CariKartDTO(Humanity.Domain.Entities.CariKart cari)
         {
-            var musteriIletisim = _cariKartService.GetIletisim(cariKartId);
-            return musteriIletisim.Result;
-        }
-
-        public CariKartDTO(Humanity.Domain.Entities.CariKart cari, ICariKartService cariKartService)
-        {
-            _cariKartService = cariKartService;
             Id = cari.Id;
             Adi = cari.Adi;
             Soyadi = cari.Soyadi;
@@ -136,8 +122,7 @@ namespace Humanity.Application.Models.DTOs.Musteri
             Tckn = cari.Tckn;
             Vkn = cari.Vkn;
             GercekTuzel = cari.GercekTuzel;
-
-            CariIletisim = GetIletisim(cari.Id);
+            CariIletisim = new MusteriIletisimDTO();
     }
 }
 }

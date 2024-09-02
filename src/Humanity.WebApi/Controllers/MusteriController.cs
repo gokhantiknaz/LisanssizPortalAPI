@@ -1,4 +1,5 @@
 ﻿using Humanity.Application.Interfaces;
+using Humanity.Application.Models.DTOs.Musteri;
 using Humanity.Application.Models.Requests;
 using Humanity.Application.Models.Requests.Musteri;
 using Humanity.Application.Models.Responses;
@@ -18,13 +19,28 @@ namespace Humanity.WebApi.Controllers
             _musteriService = musteriService;
         }
 
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<GetMusteriRes>> Get(int id)
+        {
+            var result = await _musteriService.GetMusteriById(id);
+            return Ok(result);
+        }
+
         [HttpPost]
-        public async Task<ActionResult<CreateUserRes>> CreateUser(CreateMusteriReq musteri)
+        public async Task<ActionResult<CreateUserRes>> Create(CreateMusteriReq musteri)
         {
             var result = await _musteriService.CreateMusteri(musteri);
             return Ok(result);
         }
 
+
+        [HttpPut]
+        public async Task<ActionResult<CreateCariKartRes>> Update(UpdateMusteriReq musteri)
+        {
+            var result = await _musteriService.Update(musteri);
+            return Ok(result);
+        }
         [HttpPost]
         public async Task<ActionResult<ValidateUserRes>> ValidateUser(ValidateMusteriReq req)
         {
@@ -39,12 +55,6 @@ namespace Humanity.WebApi.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
-        public async Task<ActionResult<GetAllActiveMusteriRes>> GetAllActiveMusteriUretici()
-        {
-            var result = await _musteriService.GetAllMusteriUretici();
-            return Ok(result);
-        }
 
 
         [HttpGet]
@@ -55,9 +65,17 @@ namespace Humanity.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<GetAllActiveMusteriRes>> CariyeBagliTuketicileriGetir([FromQuery]int cariId)
+        public async Task<ActionResult<GetAllActiveMusteriRes>> MusteriyeBagliTuketicileriGetir([FromQuery]int musteriid)
         {
-            var result = await _musteriService.CariyeBagliTuketicileriGetir(cariId);
+            var result = await _musteriService.MusteriyeBagliTuketicileriGetir(musteriid);
+            return Ok(result);
+        }
+
+
+        [HttpGet]
+        public async Task<ActionResult<GetAllActiveMusteriRes>> GetBagimsizTuketiciler([FromQuery] int cariId)
+        {
+            var result = await _musteriService.GetBagimsizTuketiciler(cariId);
             return Ok(result);
         }
     }

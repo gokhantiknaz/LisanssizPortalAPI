@@ -8,6 +8,8 @@ namespace Humanity.Application.Models.DTOs.Musteri
 {
     public class TuketiciListDTO
     {
+
+        public int Id { get; set; }
         public int AboneId { get; set; }
         public int UreticiAboneId { get; set; }
         public DateTime BaslamaZamani { get; set; }

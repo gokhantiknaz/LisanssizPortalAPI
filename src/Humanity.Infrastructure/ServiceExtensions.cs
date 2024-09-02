@@ -5,6 +5,8 @@ using Humanity.Domain.Core.Repositories;
 using Humanity.Infrastructure.Data;
 using Humanity.Infrastructure.Repositories;
 using Humanity.Infrastructure.Services;
+using Humanity.Application.Repositories;
+using Humanity.Infrastructure.Repositories.MusteriRepos;
 
 namespace Humanity.Infrastructure
 {
@@ -18,6 +20,7 @@ namespace Humanity.Infrastructure
 
             services.AddScoped(typeof(IBaseRepositoryAsync<>), typeof(BaseRepositoryAsync<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IMusteriRepository, MusteriRepository>();
 
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ILoggerService, LoggerService>();

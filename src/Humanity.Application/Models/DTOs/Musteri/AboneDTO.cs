@@ -11,6 +11,7 @@ namespace Humanity.Application.Models.DTOs.Musteri
 {
     public class AboneDTO
     {
+        public int Id { get; set; }
         public int Tarife { get; set; }
         public string EtsoKodu { get; set; }
         public int DagitimFirmaId { get; set; }
@@ -21,9 +22,10 @@ namespace Humanity.Application.Models.DTOs.Musteri
         public SahisTip SahisTip { get; set; }
         public int Terim { get; set; }
         public int Agog { get; set; }
-        public UreticiDTO? LisansBilgileri { get; set; }
+        public UreticiDTO? UreticiBilgileri { get; set; }
         public AboneSayac? AboneSayac { get; set; }
-        public AboneIletisimDTO AboneIletisim { get; set; }
+
+ 
 
         public AboneDTO()
         {
@@ -52,27 +54,29 @@ namespace Humanity.Application.Models.DTOs.Musteri
 
         public UretimSekli UretimSekli { get; set; }
 
-        public string UretimSekliText { get; set; }
+        public string UretimSekliText { get { return UretimSekli.ToString(); } }
         public LisansBilgisi LisansBilgisi { get; set; }
-        public string LisansBilgisiText { get; set; }
+        public string LisansBilgisiText { get { return LisansBilgisi.ToString(); } }
 
         public DateTime UretimBaslama { get; set; }
         public DateTime CagrimektupTarihi { get; set; }
         public int MahsupTipi { get; set; }
-        public string MahsupTipiText { get; set; }
+        public string MahsupTipiText { get { return MahsupTipi == 1 ? "Saatlik" : "Aylık"; } }
+
+        public UreticiDTO()
+        {
+
+        }
 
         public UreticiDTO(AboneUretici a)
         {
             Id = a.Abone.Musteri.Id;
             AboneId = a.AboneId;
             UretimSekli = a.UretimSekli;
-            UretimSekliText = a.UretimSekli.ToString();
             LisansBilgisi = a.LisansBilgisi;
-            LisansBilgisiText = a.LisansBilgisi.ToString();
             UretimBaslama = a.UretimBaslama;
             CagrimektupTarihi = a.CagrimektupTarihi;
             MahsupTipi = a.MahsupTipi;
-            MahsupTipiText = a.MahsupTipi == 1 ? "Saatlik" : "Aylık";
 
         }
 

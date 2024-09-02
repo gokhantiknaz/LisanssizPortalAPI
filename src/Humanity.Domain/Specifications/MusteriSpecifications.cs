@@ -10,9 +10,10 @@ namespace Humanity.Domain.Specifications
 {
     public static class MusteriSpecifications
     {
-        public static BaseSpecification<Musteri> GetUserByEmailAndPasswordSpec(int tckn)
+        public static ISpecification<Musteri> GetMusteriById(int musteriId)
         {
-            return new BaseSpecification<Musteri>(x => x.Tckn == tckn && x.IsDeleted == false);
+            var spec = new BaseSpecification<Musteri>(x => x.IsDeleted == false && x.Id==musteriId);
+            return spec;
         }
 
         public static BaseSpecification<Musteri> GetAllActiveUsersSpec()
@@ -39,6 +40,17 @@ namespace Humanity.Domain.Specifications
 
             return specAbone;
         }
+
+
+        public static BaseSpecification<AboneUretici> GetTuketiciByUretici(int musterid)
+        {
+            var specAbone = new BaseSpecification<AboneUretici>(x => x.Abone.SahisTip == Enums.Enums.SahisTip.Uretici && x.Abone.Musteri.Id == musterid);
+            specAbone.AddInclude(a => a.Abone);
+            specAbone.AddInclude(a => a.Abone.Musteri);
+
+            return specAbone;
+        }
+
         public static BaseSpecification<AboneUretici> GetUreticiByAboneId(int aboneid)
         {
             var specAbone = new BaseSpecification<AboneUretici>(x => x.Abone.SahisTip == Enums.Enums.SahisTip.Uretici && x.Abone.Id == aboneid);
@@ -53,5 +65,7 @@ namespace Humanity.Domain.Specifications
             var specAbone = new BaseSpecification<Abone>(x => x.Id==aboneid);
             return specAbone;
         }
+
+     
     }
 }
