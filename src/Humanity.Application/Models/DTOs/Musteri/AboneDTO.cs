@@ -34,6 +34,7 @@ namespace Humanity.Application.Models.DTOs.Musteri
 
         public AboneDTO(Abone abone)
         {
+            Id = abone.Id;
             Tarife = abone.Tarife;
             EtsoKodu = abone.EtsoKodu;
             DagitimFirmaId = abone.DagitimFirmaId;
@@ -70,7 +71,7 @@ namespace Humanity.Application.Models.DTOs.Musteri
 
         public UreticiDTO(AboneUretici a)
         {
-            Id = a.Abone.Musteri.Id;
+            Id = a.Id;
             AboneId = a.AboneId;
             UretimSekli = a.UretimSekli;
             LisansBilgisi = a.LisansBilgisi;

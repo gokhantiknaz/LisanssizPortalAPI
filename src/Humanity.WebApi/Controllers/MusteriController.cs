@@ -65,9 +65,9 @@ namespace Humanity.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<GetAllActiveMusteriRes>> MusteriyeBagliTuketicileriGetir([FromQuery]int musteriid)
+        public async Task<ActionResult<GetAllActiveMusteriRes>> MusteriyeBagliTuketicileriGetir([FromQuery]int aboneureticiId)
         {
-            var result = await _musteriService.MusteriyeBagliTuketicileriGetir(musteriid);
+            var result = await _musteriService.MusteriyeBagliTuketicileriGetir(aboneureticiId);
             return Ok(result);
         }
 

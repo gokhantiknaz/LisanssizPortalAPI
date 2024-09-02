@@ -40,7 +40,7 @@ namespace Humanity.Application.Services
         {
             var musteriSpec = MusteriSpecifications.GetMusteriById(musteriId);
 
-            var musteri = await _unitOfWork.Repository<Musteri>().ListAsync(musteriSpec);
+            var musteri = await _unitOfWork.Repository<Musteri>().GetByIdAsync(musteriId);
 
             //abonesi
             var aboneSpec = new BaseSpecification<Abone>(a => a.MusteriId == musteriId);
@@ -55,7 +55,7 @@ namespace Humanity.Application.Services
             //iletisim bilgisi
             var musteriIletisimDto = await GetMusteriIletisim(musteriId);
 
-            var data = new MusteriDTO(musteri.FirstOrDefault());
+            var data = new MusteriDTO(musteri);
 
             data.MusteriIletisim = musteriIletisimDto;
             data.Abone = new AboneDTO(abone.First());
@@ -213,18 +213,9 @@ namespace Humanity.Application.Services
             m.OzelkodId2 = req.OzelkodId2;
             m.OzelkodId3 = req.OzelkodId3;
             m.CariKartId = req.CariKartId;
+            m.CariKartId = req.CariKartId;
 
             _unitOfWork.Repository<Musteri>().Update(m);
-
-            //var musteriiletisim = await _unitOfWork.Repository<MusteriIletisim>().FirstOrDefaultAsync(new BaseSpecification<MusteriIletisim>(x => x.IletisimId == req.MusteriIletisim.IletisimId && x.MusteriId == req.MusteriIletisim.MusteriId));
-
-            //var iletisim = await _unitOfWork.Repository<Iletisim>().FirstOrDefaultAsync(new BaseSpecification<Iletisim>(x => x.Id == musteriiletisim.IletisimId));
-
-            //iletisim.Email = req.MusteriIletisim.Email ?? "";
-            //iletisim.Adres = req.MusteriIletisim.Adres ?? "";
-            //iletisim.CepTel = req.MusteriIletisim.CepTel ?? "";
-            //iletisim.Ilid = req.MusteriIletisim.Ilid;
-            //iletisim.Ilceid = req.MusteriIletisim.Ilceid;
 
             Iletisim musteriiletisim;
             if (req.MusteriIletisim.IletisimId > 0)
@@ -254,8 +245,7 @@ namespace Humanity.Application.Services
                 _ = await _unitOfWork.Repository<MusteriIletisim>().AddAsync(iletisimNEw);
             }
 
-
-            var abone = new Abone();
+            var abone = await _unitOfWork.Repository<Abone>().GetByIdAsync(req.Abone.Id);
             abone.SahisTip = req.Abone.SahisTip;
             abone.SeriNo = req.Abone.SeriNo;
             abone.SozlesmeGucu = req.Abone.SozlesmeGucu;
@@ -269,9 +259,6 @@ namespace Humanity.Application.Services
             abone.Terim = req.Abone.Terim;
             abone.LastModifiedBy = Guid.Empty;
             abone.LastModifiedOn = DateTime.UtcNow;
-
-
-
 
             if (req.Abone.SahisTip == SahisTip.Uretici)
             {
@@ -298,26 +285,25 @@ namespace Humanity.Application.Services
                         }
                     }
 
-                    foreach (var item in req.TuketiciList)
+                    foreach (TuketiciListDTO tuketici in req.TuketiciList)
                     {
                         //delete i de yapalım
-                        if (item.Id > 0)
+                        if (kayitlilar.Data.Count(a=>a.Abone.Id== tuketici.AboneId && abone.Id== tuketici.UreticiAboneId)>0)
                         {
 
                         }
                         else
                         {
-                            var tuketici = new AboneTuketici()
+                            var yenituketici = new AboneTuketici()
                             {
                                 IsDeleted = false,
                                 BaslamaZamani = DateTime.UtcNow,
                                 Durum = Status.Aktif,
-                                UreticiAbone = abone,
-                                AboneId = item.AboneId,
+                                AboneId = tuketici.AboneId,
+                                UreticiAboneId=abone.Id
                             };
 
-                            _ = await _unitOfWork.Repository<AboneTuketici>().AddAsync(tuketici);
-
+                            _ = await _unitOfWork.Repository<AboneTuketici>().AddAsync(yenituketici);
                         }
                     }
                 }
@@ -393,13 +379,14 @@ namespace Humanity.Application.Services
             throw new NotImplementedException();
         }
 
-        public async Task<GetAllActiveMusteriRes> MusteriyeBagliTuketicileriGetir(int musteriid)
+        public async Task<GetAllActiveMusteriRes> MusteriyeBagliTuketicileriGetir(int ureticiAboneId)
         {
-            var ureticiAboneSpec = MusteriSpecifications.GetUreticiByMusteri(musteriid);
+            var ureticiAboneSpec = MusteriSpecifications.GetTuketiciByUretici(ureticiAboneId);
+            ureticiAboneSpec.AddInclude("Abone");
+            ureticiAboneSpec.AddInclude(a=>a.Abone.Musteri);
+            var musteriler = await _unitOfWork.Repository<AboneTuketici>().ListAsync(ureticiAboneSpec);
 
-            var musteriler = await _unitOfWork.Repository<AboneUretici>().ListAsync(ureticiAboneSpec);
-
-            var data = musteriler.Select(x => new MusteriDTO(this, x.Abone.Musteri)).ToList();
+            var data = musteriler.Select(x => new MusteriDTO(this, x.Abone.Musteri) { Abone=new AboneDTO(x.Abone)}).ToList();
             return new GetAllActiveMusteriRes()
             {
                 Data = data

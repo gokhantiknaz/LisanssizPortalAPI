@@ -84,10 +84,21 @@ namespace Humanity.Infrastructure.Repositories.MusteriRepos
 
         public List<MusteriDTO> GetBagimsizTuketiciler(int cariId)
         {
-            var secilebilecekMusteriler = _dbContext.Abone.Where(a => a.Musteri.CariKartId==cariId && a.SahisTip != Domain.Enums.Enums.SahisTip.Uretici
-            && _dbContext.AboneTuketici.Any(y => y.Id != a.Id)).Select(x => new MusteriDTO(x.Musteri)).ToList();
+            var result = (from m in _dbContext.Musteri
+                          join a in _dbContext.Abone on m.Id equals a.MusteriId
+                          where m.CariKartId == 1
+                          && a.SahisTip != Domain.Enums.Enums.SahisTip.Uretici
+                          && !_dbContext.AboneTuketici.Any(atu => atu.AboneId == a.Id)
+                          select new
+                          {
+                              Musteri = m,
+                              Abone = a
+                          }).ToList();
 
-            return secilebilecekMusteriler;
+
+            var retVal = result.Select(a => new MusteriDTO(a.Musteri) { Abone = new AboneDTO(a.Abone) }).ToList();
+
+            return retVal;
         }
     }
 }

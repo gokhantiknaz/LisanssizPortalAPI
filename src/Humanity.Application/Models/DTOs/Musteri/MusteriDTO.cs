@@ -89,7 +89,6 @@ namespace Humanity.Application.Models.DTOs.Musteri
             OzelkodId1= musteri.OzelkodId1;
             OzelkodId2 = musteri.OzelkodId2;
             OzelkodId3 = musteri.OzelkodId3;
-            Abone = new AboneDTO();
         }
     
     }

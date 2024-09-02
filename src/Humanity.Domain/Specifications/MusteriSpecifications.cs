@@ -42,11 +42,9 @@ namespace Humanity.Domain.Specifications
         }
 
 
-        public static BaseSpecification<AboneUretici> GetTuketiciByUretici(int musterid)
+        public static BaseSpecification<AboneTuketici> GetTuketiciByUretici(int ureticiAboneId)
         {
-            var specAbone = new BaseSpecification<AboneUretici>(x => x.Abone.SahisTip == Enums.Enums.SahisTip.Uretici && x.Abone.Musteri.Id == musterid);
-            specAbone.AddInclude(a => a.Abone);
-            specAbone.AddInclude(a => a.Abone.Musteri);
+            var specAbone = new BaseSpecification<AboneTuketici>(x =>  x.UreticiAboneId== ureticiAboneId && x.Abone.SahisTip!=Enums.Enums.SahisTip.Uretici);
 
             return specAbone;
         }
