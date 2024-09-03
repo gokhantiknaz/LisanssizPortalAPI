@@ -38,4 +38,5 @@ namespace Humanity.Application.Models.DTOs.Musteri
         public int? Ilceid { get; set; }
         public string? Adres { get; set; }
     }
+
 }

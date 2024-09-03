@@ -1,4 +1,5 @@
-﻿using Humanity.Application.Models.DTOs.Musteri;
+﻿using Humanity.Application.Models.DTOs.ListDTOS;
+using Humanity.Application.Models.DTOs.Musteri;
 using Humanity.Application.Repositories;
 using Humanity.Domain.Core.Models;
 using Humanity.Domain.Core.Repositories;
@@ -6,6 +7,7 @@ using Humanity.Domain.Core.Repositories;
 using Humanity.Domain.Core.Specifications;
 using Humanity.Domain.Entities;
 using Humanity.Infrastructure.Data;
+using Microsoft.AspNetCore.Routing.Matching;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,21 +84,28 @@ namespace Humanity.Infrastructure.Repositories.MusteriRepos
 
         }
 
-        public List<MusteriDTO> GetBagimsizTuketiciler(int cariId)
+        public List<TuketiciTableDTO> GetBagimsizTuketiciler(int cariId)
         {
             var result = (from m in _dbContext.Musteri
                           join a in _dbContext.Abone on m.Id equals a.MusteriId
+                          join ilm in _dbContext.MusteriIletisim on m.Id equals ilm.MusteriId
+                          join il in _dbContext.Iletisim on ilm.IletisimId equals il.Id 
+
                           where m.CariKartId == 1
                           && a.SahisTip != Domain.Enums.Enums.SahisTip.Uretici
-                          && !_dbContext.AboneTuketici.Any(atu => atu.AboneId == a.Id)
+                          && (!_dbContext.AboneTuketici.Any(atu => atu.AboneId == a.Id) || (_dbContext.AboneTuketici.Any(atu => atu.AboneId == a.Id && atu.IsDeleted)))
                           select new
                           {
                               Musteri = m,
-                              Abone = a
+                              Abone = a,
+                              MusteriIletisim = ilm,
+                              Iletisim = il,
+
                           }).ToList();
 
+            
 
-            var retVal = result.Select(a => new MusteriDTO(a.Musteri) { Abone = new AboneDTO(a.Abone) }).ToList();
+            var retVal = result.Select(a => new TuketiciTableDTO(a.Musteri) {AboneId=a.Abone.Id ,Ilceid=a.Iletisim.Ilceid,Ilid=a.Iletisim.Ilid }).ToList();
 
             return retVal;
         }

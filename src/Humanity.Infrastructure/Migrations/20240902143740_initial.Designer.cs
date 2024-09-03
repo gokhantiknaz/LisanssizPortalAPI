@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Humanity.Infrastructure.Migrations
 {
     [DbContext(typeof(LisanssizContext))]
-    [Migration("20240829124727_correction1")]
-    partial class correction1
+    [Migration("20240902143740_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -84,7 +84,8 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MusteriId");
+                    b.HasIndex("MusteriId")
+                        .IsUnique();
 
                     b.ToTable("Abone");
                 });
@@ -422,6 +423,9 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.HasIndex("IletisimId");
 
+                    b.HasIndex("MusteriId")
+                        .IsUnique();
+
                     b.ToTable("MusteriIletisim");
                 });
 
@@ -500,8 +504,8 @@ namespace Humanity.Infrastructure.Migrations
             modelBuilder.Entity("Humanity.Domain.Entities.Abone", b =>
                 {
                     b.HasOne("Humanity.Domain.Entities.Musteri", "Musteri")
-                        .WithMany()
-                        .HasForeignKey("MusteriId")
+                        .WithOne("Abone")
+                        .HasForeignKey("Humanity.Domain.Entities.Abone", "MusteriId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -607,14 +611,23 @@ namespace Humanity.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Humanity.Domain.Entities.Musteri", "Musteri")
-                        .WithMany()
-                        .HasForeignKey("MusteriId")
+                        .WithOne("MusteriIletisim")
+                        .HasForeignKey("Humanity.Domain.Entities.MusteriIletisim", "MusteriId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Iletisim");
 
                     b.Navigation("Musteri");
+                });
+
+            modelBuilder.Entity("Humanity.Domain.Entities.Musteri", b =>
+                {
+                    b.Navigation("Abone")
+                        .IsRequired();
+
+                    b.Navigation("MusteriIletisim")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

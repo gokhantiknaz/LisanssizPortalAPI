@@ -1,12 +1,7 @@
-﻿using Humanity.Application.Models.DTOs;
+﻿using Humanity.Application.Models.DTOs.ListDTOS;
 using Humanity.Application.Models.DTOs.Musteri;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Humanity.Application.Models.Requests.Musteri
+namespace Humanity.Application.Models.Responses
 {
     public class CreateMusteriRes
     {
@@ -16,5 +11,10 @@ namespace Humanity.Application.Models.Requests.Musteri
     public class CreateCariKartRes
     {
         public CariKartDTO Data { get; set; }
+    }
+
+    public class GetTuketiciListRes
+    {
+        public IList<TuketiciTableDTO> Data { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Humanity.Application.Core.Services;
 using Humanity.Application.Interfaces;
 using Humanity.Application.Models.DTOs;
+using Humanity.Application.Models.DTOs.ListDTOS;
 using Humanity.Application.Models.DTOs.Musteri;
 using Humanity.Application.Models.Requests.Musteri;
 using Humanity.Application.Models.Responses;
@@ -17,6 +18,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 using static Humanity.Domain.Enums.Enums;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -49,7 +51,6 @@ namespace Humanity.Application.Services
             //uretici bilgisi varsa
             var ureticiSpec = new BaseSpecification<AboneUretici>(a => a.AboneId == abone.FirstOrDefault().Id);
             var aboneUretici = await _unitOfWork.Repository<AboneUretici>().ListAsync(ureticiSpec);
-
 
 
             //iletisim bilgisi
@@ -279,18 +280,22 @@ namespace Humanity.Application.Services
                     var kayitlilar = await MusteriyeBagliTuketicileriGetir(m.Id);
                     foreach (var item in kayitlilar.Data)
                     {
-                        if(!req.TuketiciList.Any(a => a.AboneId == item.Abone.Id)) // silinmiş
+                        if(!req.TuketiciList.Any(a => a.AboneId == item.AboneId)) // silinmiş
                         {
-                            
+                            var tuketici = await _unitOfWork.Repository<AboneTuketici>().ListAsync(new BaseSpecification<AboneTuketici>(a => a.AboneId == item.AboneId));
+                            tuketici.First().IsDeleted= true;
+                            _unitOfWork.Repository<AboneTuketici>().Update(tuketici.First());
                         }
                     }
 
                     foreach (TuketiciListDTO tuketici in req.TuketiciList)
                     {
                         //delete i de yapalım
-                        if (kayitlilar.Data.Count(a=>a.Abone.Id== tuketici.AboneId && abone.Id== tuketici.UreticiAboneId)>0)
+                        if (kayitlilar.Data.Count(a=>a.AboneId== tuketici.AboneId && abone.Id== tuketici.UreticiAboneId)>0)
                         {
-
+                            var tuketiciTekrar = await _unitOfWork.Repository<AboneTuketici>().ListAsync(new BaseSpecification<AboneTuketici>(a => a.AboneId == tuketici.AboneId));
+                            tuketiciTekrar.First().IsDeleted = false;
+                            _unitOfWork.Repository<AboneTuketici>().Update(tuketiciTekrar.First());
                         }
                         else
                         {
@@ -333,16 +338,16 @@ namespace Humanity.Application.Services
             return new GetMusteriRes() { Data = new MusteriDTO(this, m) };
         }
 
-        public async Task<GetAllActiveMusteriRes> GetAllMusteri()
+        public async Task<GetAllActiveMusteriTableRes> GetAllMusteri()
         {
             var activeUsersSpec = MusteriSpecifications.GetAllActiveUsersSpec();
             activeUsersSpec.ApplyOrderByDescending(x => x.Id);
 
             var musteriler = await _unitOfWork.Repository<Musteri>().ListAsync(activeUsersSpec);
 
-            return new GetAllActiveMusteriRes()
+            return new GetAllActiveMusteriTableRes()
             {
-                Data = musteriler.Select(x => new MusteriDTO(this, x)).ToList()
+                Data = musteriler.Select(x => new MusteriTableDTO(x)).ToList()
             };
         }
 
@@ -379,15 +384,23 @@ namespace Humanity.Application.Services
             throw new NotImplementedException();
         }
 
-        public async Task<GetAllActiveMusteriRes> MusteriyeBagliTuketicileriGetir(int ureticiAboneId)
+        public async Task<GetTuketiciListRes> MusteriyeBagliTuketicileriGetir(int ureticiAboneId)
         {
-            var ureticiAboneSpec = MusteriSpecifications.GetTuketiciByUretici(ureticiAboneId);
-            ureticiAboneSpec.AddInclude("Abone");
-            ureticiAboneSpec.AddInclude(a=>a.Abone.Musteri);
-            var musteriler = await _unitOfWork.Repository<AboneTuketici>().ListAsync(ureticiAboneSpec);
+            var tuketiciAboneSpec = MusteriSpecifications.GetTuketiciByUretici(ureticiAboneId);
+            tuketiciAboneSpec.AddInclude(a => a.Abone);
+            tuketiciAboneSpec.AddInclude(a=>a.Abone.Musteri);
+            tuketiciAboneSpec.AddInclude(a => a.Abone.Musteri.MusteriIletisim);
+            tuketiciAboneSpec.AddInclude(a => a.Abone.Musteri.MusteriIletisim.Iletisim);
 
-            var data = musteriler.Select(x => new MusteriDTO(this, x.Abone.Musteri) { Abone=new AboneDTO(x.Abone)}).ToList();
-            return new GetAllActiveMusteriRes()
+            var ureticiAbone = await _unitOfWork.Repository<Abone>().GetByIdAsync(ureticiAboneId);
+
+            var activeSpec = new BaseSpecification<Abone>(a => a.Id == ureticiAboneId&& a.SahisTip == SahisTip.Uretici);
+          
+
+            var musteriler = await _unitOfWork.Repository<AboneTuketici>().ListAsync(tuketiciAboneSpec);
+
+            var data = musteriler.Select(x => new TuketiciTableDTO(x) { UreticiAboneId=ureticiAboneId,UreticiAbone=new AboneDTO(ureticiAbone) {  } }).ToList();
+            return new GetTuketiciListRes()
             {
                 Data = data
             };
@@ -414,11 +427,11 @@ namespace Humanity.Application.Services
             return data;
         }
 
-        public async Task<GetAllActiveMusteriRes> GetBagimsizTuketiciler(int cariId)
+        public async Task<GetTuketiciListRes> GetBagimsizTuketiciler(int cariId)
         {
             var musteriDtos = _musterirep.GetBagimsizTuketiciler(cariId).ToList();
 
-            return new GetAllActiveMusteriRes()
+            return new GetTuketiciListRes()
             {
                 Data = musteriDtos
             };

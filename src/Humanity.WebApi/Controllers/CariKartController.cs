@@ -18,6 +18,15 @@ namespace Humanity.WebApi.Controllers
             _cariService = cariService;
         }
 
+
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<GetCariRes>> Get(int id)
+        {
+            var result = await _cariService.GetById(id);
+            return Ok(result);
+        }
+
         [HttpPost]
         public async Task<ActionResult<CreateCariKartRes>> Create(CreateCariKartReq cariKart)
         {

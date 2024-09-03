@@ -1,11 +1,14 @@
 ﻿using Humanity.Application.Core.Services;
 using Humanity.Application.Interfaces;
+using Humanity.Application.Models.DTOs.ListDTOS;
 using Humanity.Application.Models.DTOs.Musteri;
 using Humanity.Application.Models.Requests.Musteri;
+using Humanity.Application.Models.Responses;
 using Humanity.Application.Models.Responses.Musteri;
 using Humanity.Domain.Core.Repositories;
 using Humanity.Domain.Core.Specifications;
 using Humanity.Domain.Entities;
+using Humanity.Domain.Specifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +29,23 @@ namespace Humanity.Application.Services
             _unitOfWork = unitOfWork;
             _loggerService = loggerService;
 
+        }
+
+
+        public async Task<GetCariRes> GetById(int id)
+        {
+
+            var cari = await _unitOfWork.Repository<CariKart>().GetByIdAsync(id);
+
+            //iletisim bilgisi
+            var cariIletisimDto = await GetCariIletisim(id);
+
+            var data = new CariKartDTO(cari) { CariIletisim = new CariIletisimDTO(cariIletisimDto) };
+
+            return new GetCariRes()
+            {
+                Data = data
+            };
         }
         public async Task<CreateCariKartRes> Create(CreateCariKartReq req)
         {
@@ -128,7 +148,6 @@ namespace Humanity.Application.Services
             var cari = await _unitOfWork.Repository<CariKart>().GetByIdAsync(cariId);
             cari.IsDeleted = true;
             _unitOfWork.Repository<CariKart>().Update(cari);
-
             return await _unitOfWork.SaveChangesAsync() > 0;
 
         }
@@ -152,18 +171,28 @@ namespace Humanity.Application.Services
             };
         }
 
-
-
         public async Task<GetAllActiveCariKartRes> GetAllCariKart()
         {
             var spec = new BaseSpecification<CariKart>(x => x.IsDeleted == false);
+            
             spec.ApplyOrderByDescending(a => a.Id);
             var cariList = await _unitOfWork.Repository<CariKart>().ListAsync(spec);
 
             return new GetAllActiveCariKartRes()
             {
-                Data = cariList.Select(x => new CariKartDTO(x)).ToList()
+                Data = cariList.Select(x => new CariTableDTO(x)).ToList()
             };
         }
+
+        private async Task<CariIletisim> GetCariIletisim(int cariId)
+        {
+            var spec = new BaseSpecification<CariIletisim>(x => x.CariKartId== cariId);
+            spec.AddInclude(a => a.Iletisim);
+
+            var cariIletisim = await _unitOfWork.Repository<CariIletisim>().ListAsync(spec);
+
+            return cariIletisim.FirstOrDefault();
+        }
+
     }
 }

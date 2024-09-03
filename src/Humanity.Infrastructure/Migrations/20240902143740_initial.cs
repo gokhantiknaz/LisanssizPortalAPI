@@ -40,7 +40,7 @@ namespace Humanity.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "letisim",
+                name: "Iletisim",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -53,7 +53,7 @@ namespace Humanity.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_letisim", x => x.Id);
+                    table.PrimaryKey("PK_Iletisim", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -128,6 +128,35 @@ namespace Humanity.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CariIletisim",
+                columns: table => new
+                {
+                    IletisimId = table.Column<int>(type: "integer", nullable: false),
+                    CariKartId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    LastModifiedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CariIletisim", x => new { x.CariKartId, x.IletisimId });
+                    table.ForeignKey(
+                        name: "FK_CariIletisim_CariKart_CariKartId",
+                        column: x => x.CariKartId,
+                        principalTable: "CariKart",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CariIletisim_Iletisim_IletisimId",
+                        column: x => x.IletisimId,
+                        principalTable: "Iletisim",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Abone",
                 columns: table => new
                 {
@@ -177,15 +206,15 @@ namespace Humanity.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_MusteriIletisim", x => new { x.MusteriId, x.IletisimId });
                     table.ForeignKey(
-                        name: "FK_MusteriIletisim_Musteri_MusteriId",
-                        column: x => x.MusteriId,
-                        principalTable: "Musteri",
+                        name: "FK_MusteriIletisim_Iletisim_IletisimId",
+                        column: x => x.IletisimId,
+                        principalTable: "Iletisim",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_MusteriIletisim_letisim_IletisimId",
-                        column: x => x.IletisimId,
-                        principalTable: "letisim",
+                        name: "FK_MusteriIletisim_Musteri_MusteriId",
+                        column: x => x.MusteriId,
+                        principalTable: "Musteri",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -212,9 +241,9 @@ namespace Humanity.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AboneIletisim_letisim_IletisimId",
+                        name: "FK_AboneIletisim_Iletisim_IletisimId",
                         column: x => x.IletisimId,
-                        principalTable: "letisim",
+                        principalTable: "Iletisim",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -297,7 +326,8 @@ namespace Humanity.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Abone_MusteriId",
                 table: "Abone",
-                column: "MusteriId");
+                column: "MusteriId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AboneIletisim_IletisimId",
@@ -325,6 +355,11 @@ namespace Humanity.Infrastructure.Migrations
                 column: "AboneId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CariIletisim_IletisimId",
+                table: "CariIletisim",
+                column: "IletisimId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Musteri_CariKartId",
                 table: "Musteri",
                 column: "CariKartId");
@@ -333,6 +368,12 @@ namespace Humanity.Infrastructure.Migrations
                 name: "IX_MusteriIletisim_IletisimId",
                 table: "MusteriIletisim",
                 column: "IletisimId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MusteriIletisim_MusteriId",
+                table: "MusteriIletisim",
+                column: "MusteriId",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -351,6 +392,9 @@ namespace Humanity.Infrastructure.Migrations
                 name: "AboneUretici");
 
             migrationBuilder.DropTable(
+                name: "CariIletisim");
+
+            migrationBuilder.DropTable(
                 name: "MusteriIletisim");
 
             migrationBuilder.DropTable(
@@ -363,7 +407,7 @@ namespace Humanity.Infrastructure.Migrations
                 name: "Abone");
 
             migrationBuilder.DropTable(
-                name: "letisim");
+                name: "Iletisim");
 
             migrationBuilder.DropTable(
                 name: "Musteri");

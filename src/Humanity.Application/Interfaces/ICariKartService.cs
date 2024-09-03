@@ -21,5 +21,6 @@ namespace Humanity.Application.Interfaces
 
         Task<MusteriIletisimDTO> GetIletisim(int cariId);
         Task<bool> Delete(int cariId);
+        Task<GetCariRes> GetById(int id);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Humanity.Application.Models.DTOs.Musteri;
+﻿using Humanity.Application.Models.DTOs.ListDTOS;
+using Humanity.Application.Models.DTOs.Musteri;
 using Humanity.Domain.Core.Repositories;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,6 @@ namespace Humanity.Application.Repositories
     public interface IMusteriRepository : IBaseRepositoryAsync<Humanity.Domain.Entities.Musteri>
     {
         MusteriDTO get(int id);
-        List<MusteriDTO> GetBagimsizTuketiciler(int cariId);
+        List<TuketiciTableDTO> GetBagimsizTuketiciler(int cariId);
     }
 }

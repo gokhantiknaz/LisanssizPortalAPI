@@ -92,36 +92,5 @@ namespace Humanity.Application.Models.DTOs.Musteri
         }
     
     }
-
-    public class CariKartDTO
-    {
-        private readonly ICariKartService _cariKartService;
-
-        public int Id { get; set; }
-        public string Adi { get; set; }
-        public string Soyadi { get; set; }
-        public int Durum { get; set; }
-
-        public string Unvan { get; set; }
-
-        public long? Tckn { get; set; }
-        public long? Vkn { get; set; }
-        public long RefNo{ get; set; }
-
-        public GercekTuzel GercekTuzel { get; set; }
-        public MusteriIletisimDTO CariIletisim { get; set; }
-
-        public CariKartDTO(Humanity.Domain.Entities.CariKart cari)
-        {
-            Id = cari.Id;
-            Adi = cari.Adi;
-            Soyadi = cari.Soyadi;
-            Unvan = cari.Unvan;
-            Durum = cari.Durum.GetHashCode();
-            Tckn = cari.Tckn;
-            Vkn = cari.Vkn;
-            GercekTuzel = cari.GercekTuzel;
-            CariIletisim = new MusteriIletisimDTO();
-    }
-}
+ 
 }
