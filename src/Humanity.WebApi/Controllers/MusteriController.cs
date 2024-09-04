@@ -42,7 +42,7 @@ namespace Humanity.WebApi.Controllers
             return Ok(result);
         }
         [HttpPost]
-        public async Task<ActionResult<ValidateUserRes>> ValidateUser(ValidateMusteriReq req)
+        public async Task<ActionResult<ValidateUserRes>> ValidateMuster(ValidateMusteriReq req)
         {
             var result = await _musteriService.ValidateMusteri(req);
             return Ok(result);
@@ -72,7 +72,7 @@ namespace Humanity.WebApi.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<GetAllActiveMusteriRes>> GetBagimsizTuketiciler([FromQuery] int cariId)
+        public async Task<ActionResult<GetTuketiciListRes>> GetBagimsizTuketiciler([FromQuery] int cariId)
         {
             var result = await _musteriService.GetBagimsizTuketiciler(cariId);
             return Ok(result);
