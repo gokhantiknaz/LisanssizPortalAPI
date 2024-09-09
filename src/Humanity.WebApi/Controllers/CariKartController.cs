@@ -1,4 +1,5 @@
-﻿using Humanity.Application.Interfaces;
+﻿using Humanity.Application.Core.Services;
+using Humanity.Application.Interfaces;
 using Humanity.Application.Models.Requests.Musteri;
 using Humanity.Application.Models.Responses;
 using Humanity.Application.Models.Responses.Musteri;
@@ -12,10 +13,12 @@ namespace Humanity.WebApi.Controllers
     public class CariKartController:Controller
     {
         private readonly ICariKartService _cariService;
+        private readonly ILoggerService _logService;
 
-        public CariKartController(ICariKartService cariService)
+        public CariKartController(ICariKartService cariService,ILoggerService loggerService)
         {
             _cariService = cariService;
+            _logService = loggerService;
         }
 
 
@@ -24,6 +27,7 @@ namespace Humanity.WebApi.Controllers
         public async Task<ActionResult<GetCariRes>> Get(int id)
         {
             var result = await _cariService.GetById(id);
+            _logService.LogInfo("test");
             return Ok(result);
         }
 

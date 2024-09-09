@@ -1,4 +1,5 @@
 ﻿using Humanity.Application.Core.Services;
+using NLog;
 using NLog.Web;
 
 namespace Humanity.Infrastructure.Services
@@ -6,7 +7,9 @@ namespace Humanity.Infrastructure.Services
     public class LoggerService : ILoggerService
     {
         // Create nlog.config (lowercase all) file in the root of your project
-        public NLog.Logger logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+        
+        public NLog.Logger  logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+        
 
         public void LogError(string errorMessage)
         {

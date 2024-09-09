@@ -29,6 +29,7 @@ namespace Humanity.Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILoggerService _loggerService;
         private readonly IMusteriRepository _musterirep;
+      
 
         public MusteriService(IUnitOfWork unitOfWork, ILoggerService loggerService, IMusteriRepository musterirep)
         {

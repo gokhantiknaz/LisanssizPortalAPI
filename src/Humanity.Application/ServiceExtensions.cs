@@ -8,7 +8,7 @@ namespace Humanity.Application
     {
         public static void ConfigureApplication(this IServiceCollection services)
         {
-            services.AddScoped<IUserService, UserService>();
+    
             services.AddScoped<IMusteriService, MusteriService>();
             services.AddScoped<ICariKartService, CariKartService>();
         }

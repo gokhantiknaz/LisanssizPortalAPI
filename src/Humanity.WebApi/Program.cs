@@ -1,5 +1,8 @@
 using Humanity.Application;
 using Humanity.Infrastructure;
+using Humanity.Infrastructure.Data;
+using Humanity.WebApi.Extensions;
+using NLog.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,12 +20,21 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+//builder.Logging.ClearProviders();
+builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Debug);
+builder.Host.UseNLog();
+
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    scope.ServiceProvider.MigrateDatabase();
-}
+
+// Run database migrations
+await app.RunDbMigrationsAsync<LisanssizContext>();
+
+//using (var scope = app.Services.CreateScope())
+//{
+//    scope.ServiceProvider.MigrateDatabase();
+//}
 
 app.UseCors(builder => builder
     .AllowAnyOrigin()
@@ -36,10 +48,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.Run();

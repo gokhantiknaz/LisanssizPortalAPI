@@ -3,6 +3,7 @@ using System;
 using Humanity.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Humanity.Infrastructure.Migrations
 {
     [DbContext(typeof(LisanssizContext))]
-    partial class LisanssizContextModelSnapshot : ModelSnapshot
+    [Migration("20240905110725_logs")]
+    partial class logs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -436,10 +439,6 @@ namespace Humanity.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Callsite")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Exception")
                         .IsRequired()
                         .HasColumnType("text");
@@ -449,10 +448,6 @@ namespace Humanity.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Logger")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("text");
 

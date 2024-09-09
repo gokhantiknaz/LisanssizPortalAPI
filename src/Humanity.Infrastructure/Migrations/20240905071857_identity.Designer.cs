@@ -3,6 +3,7 @@ using System;
 using Humanity.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Humanity.Infrastructure.Migrations
 {
     [DbContext(typeof(LisanssizContext))]
-    partial class LisanssizContextModelSnapshot : ModelSnapshot
+    [Migration("20240905071857_identity")]
+    partial class identity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -300,102 +303,6 @@ namespace Humanity.Infrastructure.Migrations
                     b.ToTable("CariKart");
                 });
 
-            modelBuilder.Entity("Humanity.Domain.Entities.Firma", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Durum")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("FirmaEntegrasyon")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("FirmaUnvan")
-                        .HasColumnType("text");
-
-                    b.Property<int>("GercekTuzel")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid?>("LastModifiedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset?>("LastModifiedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int?>("OzelkodId1")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("OzelkodId2")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("OzelkodId3")
-                        .HasColumnType("integer");
-
-                    b.Property<long?>("Tckn")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("VergiDairesi")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<long?>("Vkn")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("firmaAdi")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FirmaEntegrasyon");
-
-                    b.ToTable("Firma");
-                });
-
-            modelBuilder.Entity("Humanity.Domain.Entities.FirmaEntegrasyon", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("FirmaId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ServisAdres")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("ServisId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ServisKullaniciAdi")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ServisSifre")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("FirmaEntegrasyon");
-                });
-
             modelBuilder.Entity("Humanity.Domain.Entities.Iletisim", b =>
                 {
                     b.Property<int>("Id")
@@ -422,46 +329,6 @@ namespace Humanity.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Iletisim");
-                });
-
-            modelBuilder.Entity("Humanity.Domain.Entities.Logs", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Application")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Callsite")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Exception")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Level")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Logger")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Logs");
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.Musteri", b =>
@@ -901,17 +768,6 @@ namespace Humanity.Infrastructure.Migrations
                     b.Navigation("CariKart");
 
                     b.Navigation("Iletisim");
-                });
-
-            modelBuilder.Entity("Humanity.Domain.Entities.Firma", b =>
-                {
-                    b.HasOne("Humanity.Domain.Entities.FirmaEntegrasyon", "Entegrasyon")
-                        .WithMany()
-                        .HasForeignKey("FirmaEntegrasyon")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Entegrasyon");
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.Musteri", b =>

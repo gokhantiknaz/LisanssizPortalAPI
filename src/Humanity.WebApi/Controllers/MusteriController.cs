@@ -28,7 +28,7 @@ namespace Humanity.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CreateUserRes>> Create(CreateMusteriReq musteri)
+        public async Task<ActionResult<CreateMusteriReq>> Create(CreateMusteriReq musteri)
         {
             var result = await _musteriService.CreateMusteri(musteri);
             return Ok(result);
@@ -41,12 +41,7 @@ namespace Humanity.WebApi.Controllers
             var result = await _musteriService.Update(musteri);
             return Ok(result);
         }
-        [HttpPost]
-        public async Task<ActionResult<ValidateUserRes>> ValidateMuster(ValidateMusteriReq req)
-        {
-            var result = await _musteriService.ValidateMusteri(req);
-            return Ok(result);
-        }
+
 
         [HttpGet]
         public async Task<ActionResult<GetAllActiveMusteriRes>> GetAllActiveMusteri()

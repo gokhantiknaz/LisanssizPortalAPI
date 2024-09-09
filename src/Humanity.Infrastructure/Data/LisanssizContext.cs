@@ -1,16 +1,27 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Humanity.Domain.Entities;
 using System.Reflection.Emit;
+using Microsoft.AspNetCore.Identity;
+using System.Data;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Humanity.Infrastructure.Data
 {
-    public class LisanssizContext : DbContext
+    public class LisanssizContext : IdentityDbContext<User, Role, string, IdentityUserClaim<string>, UserRole, IdentityUserLogin<string>, IdentityRoleClaim<string>, IdentityUserToken<string>>
     {
         public LisanssizContext(DbContextOptions<LisanssizContext> options) : base(options)
         { }
 
+        protected LisanssizContext()
+        {
+        }
+
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
+
+            base.OnModelCreating(builder);
+
             builder.Entity<AboneIletisim>().HasKey(table => new
             {
                 table.AboneId,
@@ -28,6 +39,7 @@ namespace Humanity.Infrastructure.Data
                 table.CariKartId,
                 table.IletisimId
             });
+
         }
 
         public DbSet<CariKart> CariKart { get; set; }
@@ -52,6 +64,14 @@ namespace Humanity.Infrastructure.Data
         public DbSet<AboneUretici> AboneUretici { get; set; }
 
         public DbSet<AboneTuketici> AboneTuketici { get; set; }
+
+
+        public DbSet<Firma> Firma{ get; set; }
+
+
+        public DbSet<FirmaEntegrasyon> FirmaEntegrasyon { get; set; }
+
+        public DbSet<Logs> Logs { get; set; }
 
     }
 }

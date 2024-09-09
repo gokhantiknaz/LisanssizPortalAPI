@@ -37,6 +37,10 @@ namespace Humanity.Application.Services
 
             var cari = await _unitOfWork.Repository<CariKart>().GetByIdAsync(id);
 
+            if (cari == null)
+                throw new Exception("Cari Kart Bulunamadı");
+                //throw NotFoundException("Cari");
+
             //iletisim bilgisi
             var cariIletisimDto = await GetCariIletisim(id);
 
