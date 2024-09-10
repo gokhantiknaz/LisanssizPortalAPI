@@ -11,6 +11,7 @@ namespace Humanity.Application
     
             services.AddScoped<IMusteriService, MusteriService>();
             services.AddScoped<ICariKartService, CariKartService>();
+            services.AddScoped<IFirmaService, FirmaService>();
         }
     }
 }

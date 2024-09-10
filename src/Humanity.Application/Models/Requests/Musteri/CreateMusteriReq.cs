@@ -34,8 +34,6 @@ namespace Humanity.Application.Models.Requests.Musteri
 
     }
 
-
-
     public class UpdateMusteriReq
     {
         public int Id { get; set; }

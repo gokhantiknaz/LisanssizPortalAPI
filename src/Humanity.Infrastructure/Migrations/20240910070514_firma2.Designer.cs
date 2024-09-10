@@ -3,6 +3,7 @@ using System;
 using Humanity.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Humanity.Infrastructure.Migrations
 {
     [DbContext(typeof(LisanssizContext))]
-    partial class LisanssizContextModelSnapshot : ModelSnapshot
+    [Migration("20240910070514_firma2")]
+    partial class firma2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -321,6 +324,9 @@ namespace Humanity.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("FirmaEntegrasyon")
+                        .HasColumnType("integer");
+
                     b.Property<string>("FirmaUnvan")
                         .HasColumnType("text");
 
@@ -372,6 +378,9 @@ namespace Humanity.Infrastructure.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FirmaEntegrasyon")
+                        .IsUnique();
 
                     b.ToTable("Firma");
                 });
@@ -944,6 +953,17 @@ namespace Humanity.Infrastructure.Migrations
                     b.Navigation("CariKart");
 
                     b.Navigation("Iletisim");
+                });
+
+            modelBuilder.Entity("Humanity.Domain.Entities.Firma", b =>
+                {
+                    b.HasOne("Humanity.Domain.Entities.FirmaEntegrasyon", "Entegrasyon")
+                        .WithOne()
+                        .HasForeignKey("Humanity.Domain.Entities.Firma", "FirmaEntegrasyon")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Entegrasyon");
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.FirmaEntegrasyon", b =>

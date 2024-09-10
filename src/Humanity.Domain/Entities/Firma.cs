@@ -14,7 +14,7 @@ namespace Humanity.Domain.Entities
     {
         [Key]
         public int Id { get; set; }
-        public string firmaAdi { get; set; }
+        public string FirmaAdi { get; set; }
         
         public string? FirmaUnvan { get; set; }
 
@@ -24,6 +24,12 @@ namespace Humanity.Domain.Entities
         public long? Vkn { get; set; }
         public Status Durum { get; set; }
         public GercekTuzel GercekTuzel { get; set; }
+
+        public string SorumluAd { get; set; }
+        public string SorumluSoyad { get; set; }
+        public string SorumluTelefon { get; set; }
+        public string SorumluEmail { get; set; }
+
         public int? OzelkodId1 { get; set; }
         public int? OzelkodId2 { get; set; }
         public int? OzelkodId3 { get; set; }
@@ -32,8 +38,6 @@ namespace Humanity.Domain.Entities
         public Guid? LastModifiedBy { get; set; }
         public DateTimeOffset? LastModifiedOn { get; set; }
         public bool IsDeleted { get; set; }
-
-        [ForeignKey(nameof(FirmaEntegrasyon))]
-        public FirmaEntegrasyon Entegrasyon { get; set; }
+ 
     }
 }

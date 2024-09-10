@@ -17,4 +17,15 @@ namespace Humanity.Application.Models.Responses
     {
         public IList<TuketiciTableDTO> Data { get; set; }
     }
+
+    public class FirmaRes
+    {
+      
+    }
+
+    public class GetFirmaRes
+    {
+        public FirmaDTO Data { get; set; }
+    }
+
 }
