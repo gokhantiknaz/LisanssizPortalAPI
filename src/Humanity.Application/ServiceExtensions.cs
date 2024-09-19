@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Humanity.Application.Interfaces;
 using Humanity.Application.Services;
+using System.Reflection;
 
 namespace Humanity.Application
 {
@@ -12,6 +13,10 @@ namespace Humanity.Application
             services.AddScoped<IMusteriService, MusteriService>();
             services.AddScoped<ICariKartService, CariKartService>();
             services.AddScoped<IFirmaService, FirmaService>();
+            services.AddScoped<IEndeksService, EndeksService>();
+
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
         }
     }
 }

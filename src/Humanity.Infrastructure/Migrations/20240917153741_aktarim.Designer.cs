@@ -3,6 +3,7 @@ using System;
 using Humanity.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Humanity.Infrastructure.Migrations
 {
     [DbContext(typeof(LisanssizContext))]
-    partial class LisanssizContextModelSnapshot : ModelSnapshot
+    [Migration("20240917153741_aktarim")]
+    partial class aktarim
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -572,64 +575,6 @@ namespace Humanity.Infrastructure.Migrations
                     b.ToTable("Musteri");
                 });
 
-            modelBuilder.Entity("Humanity.Domain.Entities.MusteriAylikEndeks", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Carpan")
-                        .HasColumnType("numeric");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Donem")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid?>("LastModifiedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset?>("LastModifiedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("MusteriId")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("TotalReakIndCekis")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("TotalReakIndVeris")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("TotalReakKapCekis")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("TotalReakKapVeris")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("TotalTuketimCekis")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("TotalUretimVeris")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MusteriId");
-
-                    b.ToTable("MusteriAylikEndeks");
-                });
-
             modelBuilder.Entity("Humanity.Domain.Entities.MusteriIletisim", b =>
                 {
                     b.Property<int>("MusteriId")
@@ -729,7 +674,7 @@ namespace Humanity.Infrastructure.Migrations
                     b.Property<int>("MusteriId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset>("ProfilDate")
+                    b.Property<DateTime>("ProfilDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<decimal>("Uretim")
@@ -1101,17 +1046,6 @@ namespace Humanity.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("CariKart");
-                });
-
-            modelBuilder.Entity("Humanity.Domain.Entities.MusteriAylikEndeks", b =>
-                {
-                    b.HasOne("Humanity.Domain.Entities.Musteri", "Musteri")
-                        .WithMany()
-                        .HasForeignKey("MusteriId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Musteri");
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.MusteriIletisim", b =>

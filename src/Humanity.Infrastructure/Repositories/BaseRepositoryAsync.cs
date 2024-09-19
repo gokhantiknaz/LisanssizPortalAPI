@@ -65,5 +65,11 @@ namespace Humanity.Infrastructure.Repositories
         {
             return SpecificationEvaluator<T>.GetQuery(_dbContext.Set<T>().AsQueryable(), spec);
         }
+
+        public async Task<IEnumerable<T>> AddRandeAsync(IEnumerable<T> entity)
+        {
+            await _dbContext.Set<T>().AddRangeAsync(entity);
+            return entity;
+        }
     }
 }

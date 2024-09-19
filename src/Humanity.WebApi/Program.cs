@@ -12,6 +12,8 @@ var appSettings = new ConfigurationBuilder()
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
     .Build();
 
+
+
 builder.Services.ConfigureApplication();
 
 builder.Services.ConfigureInfrastructure();
@@ -27,9 +29,14 @@ builder.Host.UseNLog();
 
 var app = builder.Build();
 
+app.UseMiddleware<ExceptionMiddleware>();
+
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 // Run database migrations
 await app.RunDbMigrationsAsync<LisanssizContext>();
+
+
 
 //using (var scope = app.Services.CreateScope())
 //{
@@ -48,11 +55,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
-
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseRouting();
 
 app.MapControllers();
 
@@ -61,3 +68,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.Run();
+
+
