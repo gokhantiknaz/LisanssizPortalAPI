@@ -41,15 +41,15 @@ namespace Humanity.Application.Services
         }
 
 
-        public async Task<AylikEndeksRes> GetMusteriDonemEndeks(int musteriid, string donem)
+        public async Task<List<AylikEndeksRes>> GetMusteriDonemEndeks(int musteriid, string donem)
         {
-            var endeksler = await _unitOfWork.Repository<MusteriAylikEndeks>().ListAsync(new BaseSpecification<MusteriAylikEndeks>(a => a.MusteriId == musteriid && a.Donem == donem));
+            var endeksler = await _unitOfWork.Repository<MusteriAylikEndeks>().ListAsync(new BaseSpecification<MusteriAylikEndeks>(a => a.MusteriId == musteriid && (a.Donem == donem || donem=="-1")));
 
             if (endeksler == null)
                 throw new Exception("Endeks Bulunamadı");
             if (endeksler.Count > 0)
             {
-                return mapper.Map<AylikEndeksRes>(endeksler.FirstOrDefault());
+                return mapper.Map<List<AylikEndeksRes>>(endeksler);
             }
             else
                 throw new Exception("Endeks Bulunamadı");

@@ -15,6 +15,6 @@ namespace Humanity.Application.Interfaces
 
         Task<SaatlikEndeksRes> Create(List<SaatlikEndeksRequest> req);
 
-        Task<AylikEndeksRes> GetMusteriDonemEndeks(int musteriid, string donem);
+        Task<List<AylikEndeksRes>> GetMusteriDonemEndeks(int musteriid, string donem);
     }
 }

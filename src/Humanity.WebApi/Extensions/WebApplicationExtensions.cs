@@ -12,7 +12,6 @@ namespace Humanity.WebApi.Extensions
          
             try
             {
-
                 var dbContext = services.GetRequiredService<TContext>();
 
                 var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync();
@@ -31,8 +30,6 @@ namespace Humanity.WebApi.Extensions
             }
             catch (Exception ex)
             {
-
-
                 logger.LogError(ex, "An error occurred while performing database migration.");
             }
         }
