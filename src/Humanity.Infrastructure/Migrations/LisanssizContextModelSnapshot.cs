@@ -84,7 +84,7 @@ namespace Humanity.Infrastructure.Migrations
                     b.HasIndex("MusteriId")
                         .IsUnique();
 
-                    b.ToTable("Abone");
+                    b.ToTable("Abone", (string)null);
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.AboneIletisim", b =>
@@ -114,7 +114,7 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.HasIndex("IletisimId");
 
-                    b.ToTable("AboneIletisim");
+                    b.ToTable("AboneIletisim", (string)null);
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.AboneSayac", b =>
@@ -142,7 +142,7 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.HasIndex("AboneId");
 
-                    b.ToTable("AboneSayac");
+                    b.ToTable("AboneSayac", (string)null);
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.AboneTuketici", b =>
@@ -174,7 +174,7 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.HasIndex("UreticiAboneId");
 
-                    b.ToTable("AboneTuketici");
+                    b.ToTable("AboneTuketici", (string)null);
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.AboneUretici", b =>
@@ -207,7 +207,7 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.HasIndex("AboneId");
 
-                    b.ToTable("AboneUretici");
+                    b.ToTable("AboneUretici", (string)null);
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.CariIletisim", b =>
@@ -237,7 +237,7 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.HasIndex("IletisimId");
 
-                    b.ToTable("CariIletisim");
+                    b.ToTable("CariIletisim", (string)null);
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.CariKart", b =>
@@ -297,7 +297,7 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CariKart");
+                    b.ToTable("CariKart", (string)null);
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.Firma", b =>
@@ -373,7 +373,7 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Firma");
+                    b.ToTable("Firma", (string)null);
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.FirmaEntegrasyon", b =>
@@ -406,7 +406,7 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.HasIndex("FirmaId");
 
-                    b.ToTable("FirmaEntegrasyon");
+                    b.ToTable("FirmaEntegrasyon", (string)null);
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.FirmaIletisim", b =>
@@ -436,7 +436,7 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.HasIndex("IletisimId");
 
-                    b.ToTable("FirmaIletisim");
+                    b.ToTable("FirmaIletisim", (string)null);
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.Iletisim", b =>
@@ -464,7 +464,7 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Iletisim");
+                    b.ToTable("Iletisim", (string)null);
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.Logs", b =>
@@ -504,7 +504,7 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Logs");
+                    b.ToTable("Logs", (string)null);
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.Musteri", b =>
@@ -569,7 +569,7 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.HasIndex("CariKartId");
 
-                    b.ToTable("Musteri");
+                    b.ToTable("Musteri", (string)null);
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.MusteriAylikEndeks", b =>
@@ -627,7 +627,7 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.HasIndex("MusteriId");
 
-                    b.ToTable("MusteriAylikEndeks");
+                    b.ToTable("MusteriAylikEndeks", (string)null);
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.MusteriIletisim", b =>
@@ -660,7 +660,7 @@ namespace Humanity.Infrastructure.Migrations
                     b.HasIndex("MusteriId")
                         .IsUnique();
 
-                    b.ToTable("MusteriIletisim");
+                    b.ToTable("MusteriIletisim", (string)null);
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.MusteriOzelKod", b =>
@@ -687,7 +687,7 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MusteriOzelKod");
+                    b.ToTable("MusteriOzelKod", (string)null);
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.MusteriSaatlikEndeks", b =>
@@ -745,7 +745,7 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.HasIndex("MusteriId");
 
-                    b.ToTable("MusteriSaatlikEndeks");
+                    b.ToTable("MusteriSaatlikEndeks", (string)null);
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.Role", b =>

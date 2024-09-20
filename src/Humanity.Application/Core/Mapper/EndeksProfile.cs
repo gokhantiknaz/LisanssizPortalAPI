@@ -15,6 +15,9 @@ namespace Humanity.Application.Core.Mapper
     {
         public SaatlikEndeksProfile()
         {
+            var gmtPlus3 = TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time");
+            
+
             CreateMap<SaatlikEndeksRequest, MusteriSaatlikEndeks>()
            .ForMember(dest => dest.CekisTuketim, opt => opt.MapFrom(src => src.TuketimCekis))
            .ForMember(dest => dest.CekisReaktifInduktif, opt => opt.MapFrom(src => src.ReakIndCekis))
@@ -23,7 +26,7 @@ namespace Humanity.Application.Core.Mapper
            .ForMember(dest => dest.VerisReaktifKapasitif, opt => opt.MapFrom(src => src.ReakKapVeris))
            .ForMember(dest => dest.Uretim, opt => opt.MapFrom(src => src.UretimVeris))
            .ForMember(dest => dest.Donem, opt => opt.MapFrom(src => src.Donem))
-           .ForMember(dest => dest.ProfilDate, opt => opt.MapFrom(src => Convert.ToDateTime(src.ProfilTarihi)))
+           .ForMember(dest => dest.ProfilDate, opt => opt.MapFrom(src => TimeZoneInfo.ConvertTimeFromUtc(DateTime.Parse(src.ProfilTarihi),gmtPlus3)))
            .ForMember(dest => dest.MusteriId, opt => opt.MapFrom(src => src.MusteriId))
            .ForMember(dest => dest.Carpan, opt => opt.MapFrom(src => src.Carpan));
 
@@ -36,7 +39,7 @@ namespace Humanity.Application.Core.Mapper
        .ForMember(dest => dest.ReakKapVeris, opt => opt.MapFrom(src => src.VerisReaktifKapasitif))
        .ForMember(dest => dest.UretimVeris, opt => opt.MapFrom(src => src.Uretim))
        .ForMember(dest => dest.Donem, opt => opt.MapFrom(src => src.Donem))
-       .ForMember(dest => dest.ProfilTarihi, opt => opt.MapFrom(src => src.ProfilDate.ToString()))
+       .ForMember(dest => dest.ProfilTarihi, opt => opt.MapFrom(src => src.ProfilDate.ToLocalTime().ToString()))
        .ForMember(dest => dest.MusteriId, opt => opt.MapFrom(src => src.MusteriId))
        .ForMember(dest => dest.Carpan, opt => opt.MapFrom(src => src.Carpan));
         }

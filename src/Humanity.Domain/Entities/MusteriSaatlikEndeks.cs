@@ -17,6 +17,7 @@ namespace Humanity.Domain.Entities
 
         [ForeignKey(nameof(MusteriId))]
         public Musteri Musteri { get; set; }
+
         public DateTimeOffset ProfilDate { get; set; }
 
         public decimal CekisTuketim { get; set; }
