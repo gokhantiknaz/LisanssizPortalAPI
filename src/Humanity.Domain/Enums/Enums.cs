@@ -43,8 +43,30 @@ namespace Humanity.Domain.Enums
         public enum Status
         {
             OK = 0,
-            Aktif=1,
-            Pasif=2
+            Aktif = 1,
+            Pasif = 2
+        }
+
+
+        public enum EnumTerim
+        {
+            TekTerim = 1,
+            CiftTerim = 2,
+            TekTerimPuant = 3,
+            CiftTerimPuant = 4
+
+        }
+        public enum EnumAgOg
+        {
+            Ag = 1,
+            Og = 2
+        }
+
+        public enum EnumEnerjiCinsi
+        {
+            Gunduz = 1,
+            Puant,
+            Gece
         }
     }
 }
