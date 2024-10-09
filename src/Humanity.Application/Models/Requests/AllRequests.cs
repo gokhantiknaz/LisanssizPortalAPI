@@ -9,6 +9,54 @@ using System.Threading.Tasks;
 
 namespace Humanity.Application.Models.Requests
 {
+
+    public class GetOwnerConsumptionsRequest
+    {
+        public string? SerNo
+        {
+            get; set;
+        }
+        public string StartDate
+        {
+            get; set;
+        }
+        public string EndDate
+        {
+            get; set;
+        }
+        public int PageSize
+        {
+            get; set;
+        }
+        public int PageNumber
+        {
+            get; set;
+        }
+        public bool IsOnlySuccess
+        {
+            get; set;
+        }
+        public bool IncludeLoadProfiles
+        {
+            get; set;
+        }
+        public bool WithoutMultiplier
+        {
+            get; set;
+        }
+        public bool MergeResult
+        {
+            get; set;
+        }
+
+        public bool KaydedilsinMi
+        {
+            get; set;
+        }
+
+    }
+
+
     public class FirmaReq
     {
         public int Id { get; set; }

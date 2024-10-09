@@ -15,6 +15,8 @@ namespace Humanity.Application
             services.AddScoped<IFirmaService, FirmaService>();
             services.AddScoped<IEndeksService, EndeksService>();
 
+            services.AddScoped<IArilService, ArilService>();
+
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
         }

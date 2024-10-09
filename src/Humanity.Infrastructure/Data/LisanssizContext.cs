@@ -85,7 +85,7 @@ namespace Humanity.Infrastructure.Data
         public DbSet<MusteriSaatlikEndeks> MusteriSaatlikEndeks { get; set; }
 
         public DbSet<MusteriAylikEndeks> MusteriAylikEndeks { get; set; }
-        
 
+        public DbSet<OwnerConsumpiton> OwnerConsumpiton { get; set; }
     }
 }

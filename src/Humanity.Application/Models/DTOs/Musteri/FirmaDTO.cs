@@ -1,4 +1,5 @@
 ﻿using Humanity.Application.Models.DTOs.firma;
+using Humanity.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,12 @@ namespace Humanity.Application.Models.DTOs.Musteri
         public string FirmaUnvan { get; set; }
         public int Durum { get; set; }
 
-  
+        public string VergiDairesi { get; set; }
+
+        public string SorumluAd { get; set; }
+        public string SorumluSoyad { get; set; }
+        public string SorumluTelefon { get; set; }
+        public string SorumluEmail { get; set; }
 
         public long? Tckn { get; set; }
         public long? Vkn { get; set; }
@@ -23,6 +29,8 @@ namespace Humanity.Application.Models.DTOs.Musteri
 
         public GercekTuzel GercekTuzel { get; set; }
         public FirmaIletisimDTO FirmaIletisim { get; set; }
+
+        public FirmaEntegrasyonDTO FirmaEntegrasyon { get; set; }
 
         public FirmaDTO(Humanity.Domain.Entities.Firma firma)
         {
@@ -32,7 +40,14 @@ namespace Humanity.Application.Models.DTOs.Musteri
             Durum = firma.Durum.GetHashCode();
             Tckn = firma.Tckn;
             Vkn = firma.Vkn;
+            VergiDairesi = firma.VergiDairesi;
             GercekTuzel = firma.GercekTuzel;
+            SorumluAd = firma.SorumluAd;
+            SorumluSoyad = firma.SorumluSoyad;
+            SorumluTelefon = firma.SorumluTelefon;
+            SorumluEmail = firma.SorumluEmail;
+
+            FirmaEntegrasyon = new FirmaEntegrasyonDTO();
             FirmaIletisim = new FirmaIletisimDTO();
         }
     }

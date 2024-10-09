@@ -3,6 +3,7 @@ using System;
 using Humanity.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Humanity.Infrastructure.Migrations
 {
     [DbContext(typeof(LisanssizContext))]
-    partial class LisanssizContextModelSnapshot : ModelSnapshot
+    [Migration("20241005093238_arilConsDaa")]
+    partial class arilConsDaa
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -746,34 +749,6 @@ namespace Humanity.Infrastructure.Migrations
                     b.HasIndex("MusteriId");
 
                     b.ToTable("MusteriSaatlikEndeks");
-                });
-
-            modelBuilder.Entity("Humanity.Domain.Entities.OwnerConsumpiton", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Donem")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Firma")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Json")
-                        .IsRequired()
-                        .HasColumnType("jsonb");
-
-                    b.Property<long>("SerNo")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OwnerConsumpiton");
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.Role", b =>
