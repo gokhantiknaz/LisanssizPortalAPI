@@ -1,7 +1,9 @@
 using Humanity.Application;
+using Humanity.Domain.Core.Models;
 using Humanity.Infrastructure;
 using Humanity.Infrastructure.Data;
 using Humanity.WebApi.Extensions;
+using Humanity.WebApi.StartupTasks;
 using NLog.Web;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,10 +15,11 @@ var appSettings = new ConfigurationBuilder()
     .Build();
 
 
-
 builder.Services.ConfigureApplication();
 
-builder.Services.ConfigureInfrastructure();
+builder.Services.ConfigureInfrastructure(appSettings);
+
+builder.Services.AddHostedService<AuthenticationStartupTask>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -68,5 +71,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.Run();
+
+
 
 

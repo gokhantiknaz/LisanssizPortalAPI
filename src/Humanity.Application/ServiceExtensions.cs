@@ -10,14 +10,21 @@ namespace Humanity.Application
         public static void ConfigureApplication(this IServiceCollection services)
         {
     
+
+
+
             services.AddScoped<IMusteriService, MusteriService>();
             services.AddScoped<ICariKartService, CariKartService>();
             services.AddScoped<IFirmaService, FirmaService>();
             services.AddScoped<IEndeksService, EndeksService>();
 
+            services.AddScoped<IUserService, UserService>();
+
             services.AddScoped<IArilService, ArilService>();
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+
 
         }
     }

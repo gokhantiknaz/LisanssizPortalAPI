@@ -4,10 +4,11 @@ using System.Reflection.Emit;
 using Microsoft.AspNetCore.Identity;
 using System.Data;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Humanity.Infrastructure.Data
 {
-    public class LisanssizContext : IdentityDbContext<User, Role, string, IdentityUserClaim<string>, UserRole, IdentityUserLogin<string>, IdentityRoleClaim<string>, IdentityUserToken<string>>
+    public class LisanssizContext : IdentityDbContext<User, Role, Guid, IdentityUserClaim<Guid>, UserRole, IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
     {
         public LisanssizContext(DbContextOptions<LisanssizContext> options) : base(options)
         { }
@@ -47,11 +48,28 @@ namespace Humanity.Infrastructure.Data
                 table.IletisimId
             });
 
+            builder.Entity<User>(user =>
+            {
+                user.Property(u => u.FirstName).HasMaxLength(256).IsRequired();
+                user.Property(u => u.LastName).HasMaxLength(256);
+            });
+
+            builder.Entity<UserRole>(userRole =>
+            {
+                userRole.HasKey(ur => new { ur.UserId, ur.RoleId });
+
+                userRole.HasOne(ur => ur.Role)
+                    .WithMany(r => r.UserRoles).HasForeignKey(ur => ur.RoleId).IsRequired();
+
+                userRole.HasOne(ur => ur.User)
+                    .WithMany(u => u.UserRoles).HasForeignKey(ur => ur.UserId).IsRequired();
+            });
+
+
         }
 
         public DbSet<CariKart> CariKart { get; set; }
         public DbSet<Musteri> Musteri { get; set; }
-        public DbSet<User> Users { get; set; }
 
         public DbSet<Iletisim> Iletisim { get; set; }
 

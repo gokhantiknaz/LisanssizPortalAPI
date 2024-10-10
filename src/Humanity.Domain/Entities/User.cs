@@ -5,53 +5,35 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Humanity.Domain.Entities
 {
-    public class User : IdentityUser<string>
+    public class User : IdentityUser<Guid>
     {
-        public User()
-        {
-            Id = Guid.NewGuid().ToString("N");
-        }
+        public string FirstName { get; set; }
 
-        public User(string userName) : this()
-        {
-            UserName = userName;
-        }
+        public string LastName { get; set; }
 
-        public string FullName => $"{FirstName} {LastName}".Trim();
+        public string RefreshToken { get; set; }
 
-        public string FirstName { get; set; } = null!;
+        public DateTime? RefreshTokenExpirationDate { get; set; }
 
-        public string? LastName { get; set; }
 
-        [NotMapped]
-        public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
-
-        public DateTimeOffset CreatedAt { get; set; }
-
-        public DateTimeOffset LastActiveAt { get; set; }
-
-        public bool PasswordConfigured { get; set; }
+        public virtual ICollection<UserRole> UserRoles { get; set; }
     }
 
-    public class Role : IdentityRole<string>
+    public class Role : IdentityRole<Guid>
     {
         public Role()
         {
-            Id = Guid.NewGuid().ToString("N");
         }
 
-        public Role(string roleName) : this()
+        public Role(string roleName) : base(roleName)
         {
-            Name = roleName;
         }
 
-
-        [NotMapped]
-        public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+        public virtual ICollection<UserRole> UserRoles { get; set; }
     }
 
     
-    public class UserRole : IdentityUserRole<string>
+    public class UserRole : IdentityUserRole<Guid>
     {
         public virtual User User { get; set; } = null!;
 
@@ -63,6 +45,8 @@ namespace Humanity.Domain.Entities
         public static string Administrator { get; set; } = nameof(Administrator);
 
         public static string Member { get; set; } = nameof(Member);
+
+        public static  string User = nameof(User);
 
         public static string[] All => new[] { Administrator, Member };
     }

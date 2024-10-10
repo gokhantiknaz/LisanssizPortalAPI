@@ -4,12 +4,14 @@ using Humanity.Application.Models.Requests;
 using Humanity.Application.Models.Requests.Musteri;
 using Humanity.Application.Models.Responses;
 using Humanity.Application.Models.Responses.Musteri;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Humanity.WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
+    [Authorize(Roles = "Admin")]
     public class MusteriController : Controller
     {
         private readonly IMusteriService _musteriService;
