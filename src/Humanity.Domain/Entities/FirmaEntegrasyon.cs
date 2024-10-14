@@ -21,6 +21,8 @@ namespace Humanity.Domain.Entities
         [ForeignKey("FirmaId")]
         public Firma Firma { get; set; }
 
+        public int DagitimFirmaId { get; set; }
+
         public int ServisId { get; set; }
 
         public string ServisKullaniciAdi { get; set; }

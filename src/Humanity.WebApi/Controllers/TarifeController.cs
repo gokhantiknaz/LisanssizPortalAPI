@@ -6,6 +6,7 @@ using Humanity.Application.Interfaces;
 using Humanity.Application.Models.Responses;
 using Humanity.Application.Services;
 using Humanity.Domain.Entities;
+using Humanity.WebApi.Filters;
 using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -39,6 +40,7 @@ namespace Humanity.WebApi.Controllers
 
 
         [HttpGet]
+
         public async Task<ActionResult<TarifeTanim>> Get()
         {
             FirebaseResponse response = await client.GetAsync("TarifeTanim");
