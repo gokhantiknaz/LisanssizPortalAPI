@@ -26,13 +26,5 @@ namespace Humanity.Application.Models.Responses.Musteri
         public MusteriDTO Data { get; set; }
     }
 
-    public class GetAllActiveCariKartRes
-    {
-        public IList<CariTableDTO> Data { get; set; }
-    }
-
-    public class GetCariRes
-    {
-        public CariKartDTO Data { get; set; }
-    }
+  
 }

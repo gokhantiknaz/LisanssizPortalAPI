@@ -12,18 +12,11 @@ namespace Humanity.Domain.Entities
 {
     public class Musteri : BaseEntity, ISoftDeleteEntity, IAuditableEntity
     {
-
         [Key]
         public int Id { get; set; }
-        public string Adi { get; set; }
-        public string Soyadi { get; set; }
+        public string? Adi { get; set; }
+        public string? Soyadi { get; set; }
         public string? Unvan { get; set; }
-
-        [ForeignKey("CariKartId")]
-        public CariKart CariKart { get; set; }
-
-        [ForeignKey("CariKart")]
-        public int CariKartId { get; set; }
         public long? Tckn { get; set; }
         public long? Vkn { get; set; }
         public Status Durum { get; set; }
@@ -36,10 +29,6 @@ namespace Humanity.Domain.Entities
         public Guid? LastModifiedBy { get; set; }
         public DateTimeOffset? LastModifiedOn { get; set; }
         public bool IsDeleted { get; set; }
-
-        public Abone Abone { get; set; }
-
         public MusteriIletisim MusteriIletisim { get; set; }
-
     }
 }

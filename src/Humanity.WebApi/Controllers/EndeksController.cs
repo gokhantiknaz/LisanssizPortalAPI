@@ -26,7 +26,7 @@ namespace Humanity.WebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<AylikEndeksRes>> Get([FromQuery] int musteriId, [FromQuery] string donem)
         {
-            var result = await _endeksService.GetMusteriDonemEndeks(musteriId, donem);
+            var result = await _endeksService.GetAboneDonemEndeks(musteriId, donem);
             return Ok(result);
         }
 
@@ -34,7 +34,7 @@ namespace Humanity.WebApi.Controllers
 
         public async Task<ActionResult<List<SaatlikEndeksRes>>> GetSaatlikEndeks([FromQuery] int musteriId, [FromQuery] string donem)
         {
-            var result = await _endeksService.GetMusteriSaatlikEndeks(musteriId, donem);
+            var result = await _endeksService.GetAboneSaatlikEndeks(musteriId, donem);
             return Ok(result);
         }
 

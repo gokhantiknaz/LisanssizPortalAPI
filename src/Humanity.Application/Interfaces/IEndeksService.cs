@@ -11,10 +11,10 @@ namespace Humanity.Application.Interfaces
 {
     public interface IEndeksService
     {
-        Task<List<SaatlikEndeksRes>> GetMusteriSaatlikEndeks(int musteriid, string donem);
+        Task<List<SaatlikEndeksRes>> GetAboneSaatlikEndeks(int aboneId, string donem);
 
         Task<SaatlikEndeksRes> Create(List<SaatlikEndeksRequest> req);
 
-        Task<List<AylikEndeksRes>> GetMusteriDonemEndeks(int musteriid, string donem);
+        Task<List<AylikEndeksRes>> GetAboneDonemEndeks(int aboneId, string donem);
     }
 }

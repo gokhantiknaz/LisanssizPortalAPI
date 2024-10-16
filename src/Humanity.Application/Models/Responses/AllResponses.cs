@@ -8,11 +8,7 @@ namespace Humanity.Application.Models.Responses
         public MusteriDTO Data { get; set; }
     }
 
-    public class CreateCariKartRes
-    {
-        public CariKartDTO Data { get; set; }
-    }
-
+    
     public class GetTuketiciListRes
     {
         public IList<TuketiciTableDTO> Data { get; set; }

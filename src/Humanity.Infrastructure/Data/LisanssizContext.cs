@@ -35,13 +35,6 @@ namespace Humanity.Infrastructure.Data
                 table.IletisimId
             });
 
-            builder.Entity<CariIletisim>().HasKey(table => new
-            {
-                table.CariKartId,
-                table.IletisimId
-            });
-
-
             builder.Entity<FirmaIletisim>().HasKey(table => new
             {
                 table.FirmaId,
@@ -68,7 +61,7 @@ namespace Humanity.Infrastructure.Data
 
         }
 
-        public DbSet<CariKart> CariKart { get; set; }
+  
         public DbSet<Musteri> Musteri { get; set; }
 
         public DbSet<Iletisim> Iletisim { get; set; }
@@ -77,13 +70,12 @@ namespace Humanity.Infrastructure.Data
 
         public DbSet<AboneIletisim> AboneIletisim { get; set; }
 
-        public DbSet<CariIletisim> CariIletisim { get; set; }
-
+    
         public DbSet<AboneSayac> AboneSayac { get; set; }
 
         public DbSet<MusteriIletisim> MusteriIletisim { get; set; }
 
-        public DbSet<MusteriOzelKod> MusteriOzelKod { get; set; }
+        public DbSet<AboneOzelKod> MusteriOzelKod { get; set; }
 
 
         public DbSet<AboneUretici> AboneUretici { get; set; }
@@ -100,9 +92,9 @@ namespace Humanity.Infrastructure.Data
 
         public DbSet<Logs> Logs { get; set; }
 
-        public DbSet<MusteriSaatlikEndeks> MusteriSaatlikEndeks { get; set; }
+        public DbSet<AboneSaatlikEndeks> MusteriSaatlikEndeks { get; set; }
 
-        public DbSet<MusteriAylikEndeks> MusteriAylikEndeks { get; set; }
+        public DbSet<AboneAylikEndeks> MusteriAylikEndeks { get; set; }
 
         public DbSet<OwnerConsumpiton> OwnerConsumpiton { get; set; }
     }

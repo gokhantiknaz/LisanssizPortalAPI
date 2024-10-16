@@ -46,7 +46,7 @@ namespace Humanity.Application.Services
             var musteri = await _unitOfWork.Repository<Musteri>().GetByIdAsync(musteriId);
 
             //abonesi
-            var aboneSpec = new BaseSpecification<Abone>(a => a.MusteriId == musteriId);
+            var aboneSpec = new BaseSpecification<Abone>(a => a.Musteri.Id == musteriId);
             var abone = await _unitOfWork.Repository<Abone>().ListAsync(aboneSpec);
 
             //uretici bilgisi varsa
@@ -116,22 +116,21 @@ namespace Humanity.Application.Services
                 OzelkodId1 = req.OzelkodId1,
                 OzelkodId2 = req.OzelkodId2,
                 OzelkodId3 = req.OzelkodId3,
-                CariKartId = req.CariKartId,
+              
                 MusteriIletisim = new MusteriIletisim
                 {
                     Iletisim = newiletisimMusteri,
                     IsDeleted = false,
                     CreatedBy = Guid.Empty,
                     CreatedOn = DateTime.UtcNow,
-                },
-                Abone = abone
+                }
+               
             });
 
             if (req.Abone.SahisTip == SahisTip.Uretici)
             {
                 var aboneUretici = new AboneUretici()
                 {
-                    Abone = musteri.Abone,
                     CagrimektupTarihi = req.Abone.UreticiBilgileri.CagrimektupTarihi,
                     LisansBilgisi = req.Abone.UreticiBilgileri.LisansBilgisi,
                     MahsupTipi = req.Abone.UreticiBilgileri.MahsupTipi,
@@ -214,8 +213,6 @@ namespace Humanity.Application.Services
             m.OzelkodId1 = req.OzelkodId1;
             m.OzelkodId2 = req.OzelkodId2;
             m.OzelkodId3 = req.OzelkodId3;
-            m.CariKartId = req.CariKartId;
-            m.CariKartId = req.CariKartId;
 
             _unitOfWork.Repository<Musteri>().Update(m);
 
@@ -352,9 +349,9 @@ namespace Humanity.Application.Services
             };
         }
 
-        public async Task<AboneDTO> GetMusteriUreticiAbone(int musteriId)
+        public async Task<AboneDTO> GetMusteriUreticiAbone(int aboneid)
         {
-            var activeSpec = new BaseSpecification<Abone>(a => a.MusteriId == musteriId && a.SahisTip == SahisTip.Uretici);
+            var activeSpec = new BaseSpecification<Abone>(a => a.Id == aboneid && a.SahisTip == SahisTip.Uretici);
             var aboneler = await _unitOfWork.Repository<Abone>().ListAsync(activeSpec);
 
             var data = aboneler.Select(x => new AboneDTO(x)).FirstOrDefault();
@@ -407,9 +404,9 @@ namespace Humanity.Application.Services
             };
         }
 
-        public async Task<GetAllActiveMusteriRes> CariyeBagliUreticiGetir(int cariId)
+        public async Task<GetAllActiveMusteriRes> CariyeBagliUreticiGetir(int aboneid)
         {
-            var ureticiAboneSpec = MusteriSpecifications.GetUreticiByCari(cariId);
+            var ureticiAboneSpec = MusteriSpecifications.GetUreticiByAboneId(aboneid);
 
             var musteriler = await _unitOfWork.Repository<AboneUretici>().ListAsync(ureticiAboneSpec);
 

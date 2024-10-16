@@ -14,20 +14,14 @@ namespace Humanity.Domain.Entities
     {
         [Key]
         public int Id { get; set; }
-
-
         public int AboneId { get; set; }
         [ForeignKey("AboneId")]
         public Abone Abone { get; set; }
-
         public int UreticiAboneId { get; set; }
         [ForeignKey("UreticiAboneId")]
         public Abone UreticiAbone { get; set; }
-
         public DateTime BaslamaZamani { get; set; }
-
         public Status Durum { get; set; }
-
         public bool IsDeleted { get ; set ; }
     }
 }

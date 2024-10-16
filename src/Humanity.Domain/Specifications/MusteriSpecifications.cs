@@ -23,24 +23,14 @@ namespace Humanity.Domain.Specifications
             return spec;
         }
 
-        public static BaseSpecification<AboneUretici> GetUreticiByCari(int cariId)
+        public static BaseSpecification<AboneUretici> GetUreticiByMusteri(int musteriId)
         {
-            var specAbone = new BaseSpecification<AboneUretici>(x => x.Abone.SahisTip == Enums.Enums.SahisTip.Uretici && x.Abone.Musteri.CariKartId==cariId);
+            var specAbone = new BaseSpecification<AboneUretici>(x => x.Abone.SahisTip == Enums.Enums.SahisTip.Uretici && x.Abone.Musteri.Id==musteriId);
             specAbone.AddInclude(a => a.Abone);
             specAbone.AddInclude(a => a.Abone.Musteri);
 
             return specAbone;
         }
-
-        public static BaseSpecification<AboneUretici> GetUreticiByMusteri(int musterid)
-        {
-            var specAbone = new BaseSpecification<AboneUretici>(x => x.Abone.SahisTip == Enums.Enums.SahisTip.Uretici && x.Abone.Musteri.Id == musterid);
-            specAbone.AddInclude(a => a.Abone);
-            specAbone.AddInclude(a => a.Abone.Musteri);
-
-            return specAbone;
-        }
-
 
         public static BaseSpecification<AboneTuketici> GetTuketiciByUretici(int ureticiAboneId)
         {

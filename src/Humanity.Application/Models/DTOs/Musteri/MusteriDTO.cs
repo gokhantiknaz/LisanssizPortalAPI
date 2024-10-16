@@ -48,7 +48,6 @@ namespace Humanity.Application.Models.DTOs.Musteri
             Soyadi =musteri.Soyadi;
             Unvan =musteri.Unvan;
             Tckn =musteri.Tckn;
-            CariKartId =musteri.CariKartId;
             Vkn =musteri.Vkn;
             GercekTuzel =musteri.GercekTuzel;
             OzelkodId1 =musteri.OzelkodId1;
@@ -59,22 +58,18 @@ namespace Humanity.Application.Models.DTOs.Musteri
 
         public MusteriDTO(AboneUretici aboneuretici)
         {
-            
             Id = aboneuretici.Abone.Musteri.Id;
             Adi = aboneuretici.Abone.Musteri.Adi;
             Soyadi = aboneuretici.Abone.Musteri.Soyadi;
             Unvan = aboneuretici.Abone.Musteri.Unvan;
             Tckn = aboneuretici.Abone.Musteri.Tckn;
-            CariKartId = aboneuretici.Abone.Musteri.CariKartId;
             Vkn = aboneuretici.Abone.Musteri.Vkn;
             GercekTuzel = aboneuretici.Abone.Musteri.GercekTuzel;
             OzelkodId1 = aboneuretici.Abone.Musteri.OzelkodId1;
             OzelkodId2 = aboneuretici.Abone.Musteri.OzelkodId2;
             OzelkodId3 = aboneuretici.Abone.Musteri.OzelkodId3;
-            Abone = new AboneDTO();
             Uretici = new UreticiDTO(aboneuretici);
         }
-
 
         public MusteriDTO(IMusteriService musteriService, Humanity.Domain.Entities.Musteri musteri)
         {
@@ -83,7 +78,6 @@ namespace Humanity.Application.Models.DTOs.Musteri
             Soyadi = musteri.Soyadi;
             Unvan = musteri.Unvan;
             Tckn = musteri.Tckn;
-            CariKartId= musteri.CariKartId; 
             Vkn = musteri.Vkn;
             GercekTuzel = musteri.GercekTuzel;
             OzelkodId1= musteri.OzelkodId1;

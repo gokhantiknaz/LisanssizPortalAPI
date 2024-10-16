@@ -30,9 +30,9 @@ namespace Humanity.Application.Services
             this.mapper = mapper;
         }
 
-        public async Task<List<SaatlikEndeksRes>> GetMusteriSaatlikEndeks(int musteriid, string donem)
+        public async Task<List<SaatlikEndeksRes>> GetAboneSaatlikEndeks(int aboneId, string donem)
         {
-            var endeksler = await _unitOfWork.Repository<MusteriSaatlikEndeks>().ListAsync(new BaseSpecification<MusteriSaatlikEndeks>(a => a.MusteriId == musteriid && a.Donem == donem));
+            var endeksler = await _unitOfWork.Repository<AboneSaatlikEndeks>().ListAsync(new BaseSpecification<AboneSaatlikEndeks>(a => a.AboneId == aboneId && a.Donem == donem));
 
             if (endeksler == null)
                 throw new Exception("Endeks Bulunamadı");
@@ -41,9 +41,9 @@ namespace Humanity.Application.Services
         }
 
 
-        public async Task<List<AylikEndeksRes>> GetMusteriDonemEndeks(int musteriid, string donem)
+        public async Task<List<AylikEndeksRes>> GetAboneDonemEndeks(int aboneId, string donem)
         {
-            var endeksler = await _unitOfWork.Repository<MusteriAylikEndeks>().ListAsync(new BaseSpecification<MusteriAylikEndeks>(a => a.MusteriId == musteriid && (a.Donem == donem || donem=="-1")));
+            var endeksler = await _unitOfWork.Repository<AboneAylikEndeks>().ListAsync(new BaseSpecification<AboneAylikEndeks>(a => a.AboneId == aboneId&& (a.Donem == donem || donem=="-1")));
 
             if (endeksler == null)
                 throw new Exception("Endeks Bulunamadı");
@@ -57,14 +57,14 @@ namespace Humanity.Application.Services
 
         public async Task<SaatlikEndeksRes> Create(List<SaatlikEndeksRequest> req)
         {
-            var saatlikEndkeksler = mapper.Map<List<MusteriSaatlikEndeks>>(req);
-            var saatlikEndeks = await _unitOfWork.Repository<MusteriSaatlikEndeks>().AddRandeAsync(saatlikEndkeksler);
+            var saatlikEndkeksler = mapper.Map<List<AboneSaatlikEndeks>>(req);
+            var saatlikEndeks = await _unitOfWork.Repository<AboneSaatlikEndeks>().AddRandeAsync(saatlikEndkeksler);
 
             var aylikVeriler = saatlikEndeks
-      .GroupBy(v => new { v.MusteriId, v.Donem, v.Carpan })
-      .Select(g => new MusteriAylikEndeks
+      .GroupBy(v => new { v.AboneId, v.Donem, v.Carpan })
+      .Select(g => new AboneAylikEndeks
       {
-          MusteriId = g.Key.MusteriId,
+          AboneId = g.Key.AboneId,
           Donem = g.Key.Donem,
           Carpan = g.Key.Carpan,
           TotalTuketimCekis = g.Sum(x => x.CekisTuketim),
@@ -77,7 +77,7 @@ namespace Humanity.Application.Services
       })
       .First();
 
-            var aylikEndeksSonuc = await _unitOfWork.Repository<MusteriAylikEndeks>().AddAsync(aylikVeriler);
+            var aylikEndeksSonuc = await _unitOfWork.Repository<AboneAylikEndeks>().AddAsync(aylikVeriler);
 
             try
             {

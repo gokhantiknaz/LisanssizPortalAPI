@@ -37,14 +37,6 @@ namespace Humanity.WebApi.Controllers
         }
 
 
-        [HttpPut]
-        public async Task<ActionResult<CreateCariKartRes>> Update(UpdateMusteriReq musteri)
-        {
-            var result = await _musteriService.Update(musteri);
-            return Ok(result);
-        }
-
-
         [HttpGet]
         public async Task<ActionResult<GetAllActiveMusteriRes>> GetAllActiveMusteri()
         {

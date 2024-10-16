@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace Humanity.Domain.Entities
 {
-    public class MusteriAylikEndeks : BaseEntity, ISoftDeleteEntity
+    public class AboneAylikEndeks : BaseEntity, ISoftDeleteEntity
     {
         public int Id { get; set; }
 
-        public int MusteriId { get; set; }
+        public int AboneId { get; set; }
 
-        [ForeignKey(nameof(MusteriId))]
-        public Musteri Musteri { get; set; }
+        [ForeignKey(nameof(AboneId))]
+        public Abone Abone { get; set; }
 
         public string Donem { get; set; }
 

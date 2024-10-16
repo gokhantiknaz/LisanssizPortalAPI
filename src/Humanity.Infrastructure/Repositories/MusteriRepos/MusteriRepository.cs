@@ -52,7 +52,6 @@ namespace Humanity.Infrastructure.Repositories.MusteriRepos
                     Adi = temp.musteri.Adi,
                     Soyadi = temp.musteri.Soyadi,
                     Unvan = temp.musteri.Unvan,
-                    CariKartId = temp.musteri.CariKartId,
                     Tckn = temp.musteri.Tckn,
                     Vkn = temp.musteri.Vkn,
                     Durum = temp.musteri.Durum,
@@ -84,14 +83,14 @@ namespace Humanity.Infrastructure.Repositories.MusteriRepos
 
         }
 
-        public List<TuketiciTableDTO> GetBagimsizTuketiciler(int cariId)
+        public List<TuketiciTableDTO> GetBagimsizTuketiciler(int musteriId)
         {
             var result = (from m in _dbContext.Musteri
                           join a in _dbContext.Abone on m.Id equals a.MusteriId
                           join ilm in _dbContext.MusteriIletisim on m.Id equals ilm.MusteriId
                           join il in _dbContext.Iletisim on ilm.IletisimId equals il.Id 
 
-                          where m.CariKartId == 1
+                          where m.Id == musteriId
                           && a.SahisTip != Domain.Enums.Enums.SahisTip.Uretici
                           && (!_dbContext.AboneTuketici.Any(atu => atu.AboneId == a.Id) || (_dbContext.AboneTuketici.Any(atu => atu.AboneId == a.Id && atu.IsDeleted)))
                           select new

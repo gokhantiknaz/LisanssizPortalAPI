@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Humanity.Domain.Entities
 {
-    public class MusteriOzelKod
+    public class AboneOzelKod
     {
         public int Id { get; set; }
         public int RootId { get; set; }
