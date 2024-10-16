@@ -8,6 +8,9 @@ namespace Humanity.Application.Models.DTOs.Musteri
 {
     public class AboneIletisimDTO
     {
+        public int IletisimId { get; set; }
+
+        public int AboneId { get; set; }
         public string? CepTel { get; set; }
         public string? Email { get; set; }
         public int? Ilid { get; set; }

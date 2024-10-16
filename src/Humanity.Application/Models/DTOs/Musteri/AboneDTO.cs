@@ -25,7 +25,23 @@ namespace Humanity.Application.Models.DTOs.Musteri
         public UreticiDTO? UreticiBilgileri { get; set; }
         public AboneSayac? AboneSayac { get; set; }
 
- 
+        public int? OzelkodId1 { get; set; }
+        public int? OzelkodId2 { get; set; }
+        public int? OzelkodId3 { get; set; }
+
+        public string? Adi { get; set; }
+        public string? Soyadi { get; set; }
+        public string? Unvan { get; set; }
+
+        public long? Tckn { get; set; }
+        public long? Vkn { get; set; }
+
+        public List<TuketiciListDTO>? TuketiciList { get; set; }
+
+        public List<SayacListDTO>? SayacList { get; set; }
+
+        public AboneIletisimDTO AboneIletisim { get; set; }
+
 
         public AboneDTO()
         {

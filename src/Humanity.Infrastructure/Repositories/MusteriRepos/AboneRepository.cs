@@ -16,11 +16,11 @@ using System.Threading.Tasks;
 
 namespace Humanity.Infrastructure.Repositories.MusteriRepos
 {
-    public  class MusteriRepository: BaseRepositoryAsync<Musteri>, IMusteriRepository
+    public  class AboneRepository: BaseRepositoryAsync<Musteri>, IAboneRepository
     {
         protected readonly LisanssizContext _dbContext;
 
-        public MusteriRepository(LisanssizContext dbContext) : base(dbContext)
+        public AboneRepository(LisanssizContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
         }

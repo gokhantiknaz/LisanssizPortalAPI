@@ -6,11 +6,13 @@ using Humanity.Application.Models.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Humanity.Application.Models.Requests;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Humanity.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class EndeksController : Controller
     {
         private readonly IEndeksService _endeksService;

@@ -8,26 +8,25 @@ using System.Threading.Tasks;
 
 namespace Humanity.Domain.Specifications
 {
-    public static class MusteriSpecifications
+    public static class AboneSpecifications
     {
-        public static ISpecification<Musteri> GetMusteriById(int musteriId)
+        public static ISpecification<Abone> GetaboneById(int aboneId)
         {
-            var spec = new BaseSpecification<Musteri>(x => x.IsDeleted == false && x.Id==musteriId);
+            var spec = new BaseSpecification<Abone>(x => x.IsDeleted == false && x.Id==aboneId);
             return spec;
         }
 
-        public static BaseSpecification<Musteri> GetAllActiveUsersSpec()
+        public static BaseSpecification<Abone> GetAllActiveUsersSpec()
         {
-            var spec =  new BaseSpecification<Musteri>(x => x.IsDeleted == false);
+            var spec =  new BaseSpecification<Abone>(x => x.IsDeleted == false);
          
             return spec;
         }
 
-        public static BaseSpecification<AboneUretici> GetUreticiByMusteri(int musteriId)
+        public static BaseSpecification<AboneUretici> GetUreticiByabone(int aboneId)
         {
-            var specAbone = new BaseSpecification<AboneUretici>(x => x.Abone.SahisTip == Enums.Enums.SahisTip.Uretici && x.Abone.Musteri.Id==musteriId);
+            var specAbone = new BaseSpecification<AboneUretici>(x => x.Abone.SahisTip == Enums.Enums.SahisTip.Uretici && x.Abone.Id==aboneId);
             specAbone.AddInclude(a => a.Abone);
-            specAbone.AddInclude(a => a.Abone.Musteri);
 
             return specAbone;
         }
@@ -43,8 +42,6 @@ namespace Humanity.Domain.Specifications
         {
             var specAbone = new BaseSpecification<AboneUretici>(x => x.Abone.SahisTip == Enums.Enums.SahisTip.Uretici && x.Abone.Id == aboneid);
             specAbone.AddInclude(a => a.Abone);
-            specAbone.AddInclude(a => a.Abone.Musteri);
-
             return specAbone;
         }
 

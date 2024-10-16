@@ -7,6 +7,7 @@ namespace Humanity.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class UserController(IUserService identityService) : Controller
     {
         //private readonly IUserService _userService;

@@ -64,7 +64,7 @@ namespace Humanity.Infrastructure
 });
             services.AddScoped(typeof(IBaseRepositoryAsync<>), typeof(BaseRepositoryAsync<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IMusteriRepository, MusteriRepository>();
+            services.AddScoped<IAboneRepository, AboneRepository>();
 
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ILoggerService, LoggerService>();

@@ -11,7 +11,8 @@ namespace Humanity.WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
+    [AllowAnonymous]
     public class MusteriController : Controller
     {
         private readonly IMusteriService _musteriService;
@@ -20,7 +21,6 @@ namespace Humanity.WebApi.Controllers
         {
             _musteriService = musteriService;
         }
-
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<GetMusteriRes>> Get(int id)
@@ -46,9 +46,9 @@ namespace Humanity.WebApi.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<GetAllActiveMusteriRes>> CariyeBagliUreticiGetir([FromQuery] int cariId)
+        public async Task<ActionResult<GetAllActiveMusteriRes>> MusteriyeBagliUreticiGetir([FromQuery] int cariId)
         {
-            var result = await _musteriService.CariyeBagliUreticiGetir(cariId);
+            var result = await _musteriService.MusteriyeBagliUreticiGetir(cariId);
             return Ok(result);
         }
 

@@ -24,4 +24,15 @@ namespace Humanity.Application.Models.Responses
         public FirmaDTO Data { get; set; }
     }
 
+    public class CreateAboneRes
+    {
+        public AboneDTO Data { get; set; }
+    }
+
+    public class GetAboneRes
+    {
+        public AboneDTO Data { get; set; }
+    }
+    
+
 }

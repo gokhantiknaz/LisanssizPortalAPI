@@ -9,12 +9,14 @@ using Humanity.Application.Models.Responses;
 using Humanity.Application.Models.Responses.Musteri;
 using Humanity.Application.Services;
 using Humanity.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Humanity.WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
+    [AllowAnonymous]
     public class FirmaController : Controller
     {
         private readonly IFirmaService _firmaService;

@@ -9,7 +9,7 @@ namespace Humanity.Application
     {
         public static void ConfigureApplication(this IServiceCollection services)
         {
-            services.AddScoped<IMusteriService, MusteriService>();
+            services.AddScoped<IAboneService, AboneService>();
             services.AddScoped<IFirmaService, FirmaService>();
             services.AddScoped<IEndeksService, EndeksService>();
             services.AddScoped<IUserService, UserService>();

@@ -19,12 +19,9 @@ namespace Humanity.Application.Models.Responses.Musteri
         public IList<MusteriDTO> Data { get; set; }
     }
 
-
-
     public class GetMusteriRes
     {
         public MusteriDTO Data { get; set; }
     }
-
   
 }

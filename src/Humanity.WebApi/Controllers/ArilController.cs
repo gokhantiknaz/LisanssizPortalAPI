@@ -3,6 +3,7 @@ using Humanity.Application.Models.DTOs;
 using Humanity.Application.Models.Requests;
 using Humanity.Application.Models.Responses;
 using Humanity.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Humanity.WebApi.Controllers
@@ -10,6 +11,7 @@ namespace Humanity.WebApi.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class ArilController : Controller
     {
         private readonly IArilService _arilService;

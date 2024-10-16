@@ -56,33 +56,6 @@ namespace Humanity.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CariKart",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Adi = table.Column<string>(type: "text", nullable: false),
-                    Soyadi = table.Column<string>(type: "text", nullable: false),
-                    Unvan = table.Column<string>(type: "text", nullable: true),
-                    Tckn = table.Column<long>(type: "bigint", nullable: true),
-                    Vkn = table.Column<long>(type: "bigint", nullable: true),
-                    Durum = table.Column<int>(type: "integer", nullable: false),
-                    GercekTuzel = table.Column<int>(type: "integer", nullable: false),
-                    OzelkodId1 = table.Column<int>(type: "integer", nullable: true),
-                    OzelkodId2 = table.Column<int>(type: "integer", nullable: true),
-                    OzelkodId3 = table.Column<int>(type: "integer", nullable: true),
-                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: true),
-                    LastModifiedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CariKart", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Firma",
                 columns: table => new
                 {
@@ -147,6 +120,33 @@ namespace Humanity.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Logs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Musteri",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Adi = table.Column<string>(type: "text", nullable: true),
+                    Soyadi = table.Column<string>(type: "text", nullable: true),
+                    Unvan = table.Column<string>(type: "text", nullable: true),
+                    Tckn = table.Column<long>(type: "bigint", nullable: true),
+                    Vkn = table.Column<long>(type: "bigint", nullable: true),
+                    Durum = table.Column<int>(type: "integer", nullable: false),
+                    GercekTuzel = table.Column<int>(type: "integer", nullable: false),
+                    OzelkodId1 = table.Column<int>(type: "integer", nullable: true),
+                    OzelkodId2 = table.Column<int>(type: "integer", nullable: true),
+                    OzelkodId3 = table.Column<int>(type: "integer", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    LastModifiedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Musteri", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -288,46 +288,13 @@ namespace Humanity.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Musteri",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Adi = table.Column<string>(type: "text", nullable: false),
-                    Soyadi = table.Column<string>(type: "text", nullable: false),
-                    Unvan = table.Column<string>(type: "text", nullable: true),
-                    CariKartId = table.Column<int>(type: "integer", nullable: false),
-                    Tckn = table.Column<long>(type: "bigint", nullable: true),
-                    Vkn = table.Column<long>(type: "bigint", nullable: true),
-                    Durum = table.Column<int>(type: "integer", nullable: false),
-                    GercekTuzel = table.Column<int>(type: "integer", nullable: false),
-                    OzelkodId1 = table.Column<int>(type: "integer", nullable: true),
-                    OzelkodId2 = table.Column<int>(type: "integer", nullable: true),
-                    OzelkodId3 = table.Column<int>(type: "integer", nullable: true),
-                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: true),
-                    LastModifiedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Musteri", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Musteri_CariKart_CariKartId",
-                        column: x => x.CariKartId,
-                        principalTable: "CariKart",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "FirmaEntegrasyon",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     FirmaId = table.Column<int>(type: "integer", nullable: false),
+                    DagitimFirmaId = table.Column<int>(type: "integer", nullable: false),
                     ServisId = table.Column<int>(type: "integer", nullable: false),
                     ServisKullaniciAdi = table.Column<string>(type: "text", nullable: false),
                     ServisSifre = table.Column<string>(type: "text", nullable: false),
@@ -340,35 +307,6 @@ namespace Humanity.Infrastructure.Migrations
                         name: "FK_FirmaEntegrasyon_Firma_FirmaId",
                         column: x => x.FirmaId,
                         principalTable: "Firma",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CariIletisim",
-                columns: table => new
-                {
-                    IletisimId = table.Column<int>(type: "integer", nullable: false),
-                    CariKartId = table.Column<int>(type: "integer", nullable: false),
-                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: true),
-                    LastModifiedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CariIletisim", x => new { x.CariKartId, x.IletisimId });
-                    table.ForeignKey(
-                        name: "FK_CariIletisim_CariKart_CariKartId",
-                        column: x => x.CariKartId,
-                        principalTable: "CariKart",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CariIletisim_Iletisim_IletisimId",
-                        column: x => x.IletisimId,
-                        principalTable: "Iletisim",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -409,6 +347,11 @@ namespace Humanity.Infrastructure.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     MusteriId = table.Column<int>(type: "integer", nullable: false),
+                    Adi = table.Column<string>(type: "text", nullable: true),
+                    Soyadi = table.Column<string>(type: "text", nullable: true),
+                    Unvan = table.Column<string>(type: "text", nullable: true),
+                    Tckn = table.Column<long>(type: "bigint", nullable: true),
+                    Vkn = table.Column<long>(type: "bigint", nullable: true),
                     Tarife = table.Column<int>(type: "integer", nullable: false),
                     EtsoKodu = table.Column<string>(type: "text", nullable: false),
                     DagitimFirmaId = table.Column<int>(type: "integer", nullable: false),
@@ -419,10 +362,14 @@ namespace Humanity.Infrastructure.Migrations
                     SahisTip = table.Column<int>(type: "integer", nullable: false),
                     Terim = table.Column<int>(type: "integer", nullable: false),
                     Agog = table.Column<int>(type: "integer", nullable: false),
+                    OzelkodId1 = table.Column<int>(type: "integer", nullable: true),
+                    OzelkodId2 = table.Column<int>(type: "integer", nullable: true),
+                    OzelkodId3 = table.Column<int>(type: "integer", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: true),
                     LastModifiedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    Durum = table.Column<int>(type: "integer", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
@@ -430,38 +377,6 @@ namespace Humanity.Infrastructure.Migrations
                     table.PrimaryKey("PK_Abone", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Abone_Musteri_MusteriId",
-                        column: x => x.MusteriId,
-                        principalTable: "Musteri",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MusteriAylikEndeks",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    MusteriId = table.Column<int>(type: "integer", nullable: false),
-                    Donem = table.Column<string>(type: "text", nullable: false),
-                    TotalTuketimCekis = table.Column<decimal>(type: "numeric", nullable: false),
-                    TotalUretimVeris = table.Column<decimal>(type: "numeric", nullable: false),
-                    TotalReakIndVeris = table.Column<decimal>(type: "numeric", nullable: false),
-                    TotalReakKapVeris = table.Column<decimal>(type: "numeric", nullable: false),
-                    TotalReakIndCekis = table.Column<decimal>(type: "numeric", nullable: false),
-                    TotalReakKapCekis = table.Column<decimal>(type: "numeric", nullable: false),
-                    Carpan = table.Column<decimal>(type: "numeric", nullable: false),
-                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: true),
-                    LastModifiedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MusteriAylikEndeks", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MusteriAylikEndeks_Musteri_MusteriId",
                         column: x => x.MusteriId,
                         principalTable: "Musteri",
                         principalColumn: "Id",
@@ -491,38 +406,6 @@ namespace Humanity.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_MusteriIletisim_Musteri_MusteriId",
-                        column: x => x.MusteriId,
-                        principalTable: "Musteri",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MusteriSaatlikEndeks",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    MusteriId = table.Column<int>(type: "integer", nullable: false),
-                    ProfilDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    CekisTuketim = table.Column<decimal>(type: "numeric", nullable: false),
-                    CekisReaktifInduktif = table.Column<decimal>(type: "numeric", nullable: false),
-                    CekisReaktifKapasitif = table.Column<decimal>(type: "numeric", nullable: false),
-                    Uretim = table.Column<decimal>(type: "numeric", nullable: false),
-                    VerisReaktifInduktif = table.Column<decimal>(type: "numeric", nullable: false),
-                    VerisReaktifKapasitif = table.Column<decimal>(type: "numeric", nullable: false),
-                    Carpan = table.Column<decimal>(type: "numeric", nullable: false),
-                    Donem = table.Column<string>(type: "text", nullable: false),
-                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: true),
-                    LastModifiedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MusteriSaatlikEndeks", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MusteriSaatlikEndeks_Musteri_MusteriId",
                         column: x => x.MusteriId,
                         principalTable: "Musteri",
                         principalColumn: "Id",
@@ -633,10 +516,79 @@ namespace Humanity.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "MusteriAylikEndeks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AboneId = table.Column<int>(type: "integer", nullable: false),
+                    Donem = table.Column<string>(type: "text", nullable: false),
+                    TotalTuketimCekis = table.Column<decimal>(type: "numeric", nullable: false),
+                    TotalUretimVeris = table.Column<decimal>(type: "numeric", nullable: false),
+                    TotalReakIndVeris = table.Column<decimal>(type: "numeric", nullable: false),
+                    TotalReakKapVeris = table.Column<decimal>(type: "numeric", nullable: false),
+                    TotalReakIndCekis = table.Column<decimal>(type: "numeric", nullable: false),
+                    TotalReakKapCekis = table.Column<decimal>(type: "numeric", nullable: false),
+                    Carpan = table.Column<decimal>(type: "numeric", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    LastModifiedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MusteriAylikEndeks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MusteriAylikEndeks_Abone_AboneId",
+                        column: x => x.AboneId,
+                        principalTable: "Abone",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MusteriSaatlikEndeks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AboneId = table.Column<int>(type: "integer", nullable: false),
+                    ProfilDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    CekisTuketim = table.Column<decimal>(type: "numeric", nullable: false),
+                    CekisReaktifInduktif = table.Column<decimal>(type: "numeric", nullable: false),
+                    CekisReaktifKapasitif = table.Column<decimal>(type: "numeric", nullable: false),
+                    Uretim = table.Column<decimal>(type: "numeric", nullable: false),
+                    VerisReaktifInduktif = table.Column<decimal>(type: "numeric", nullable: false),
+                    VerisReaktifKapasitif = table.Column<decimal>(type: "numeric", nullable: false),
+                    Carpan = table.Column<decimal>(type: "numeric", nullable: false),
+                    Donem = table.Column<string>(type: "text", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    LastModifiedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MusteriSaatlikEndeks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MusteriSaatlikEndeks_Abone_AboneId",
+                        column: x => x.AboneId,
+                        principalTable: "Abone",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Abone_MusteriId",
                 table: "Abone",
-                column: "MusteriId",
+                column: "MusteriId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AboneIletisim_AboneId",
+                table: "AboneIletisim",
+                column: "AboneId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -702,11 +654,6 @@ namespace Humanity.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CariIletisim_IletisimId",
-                table: "CariIletisim",
-                column: "IletisimId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_FirmaEntegrasyon_FirmaId",
                 table: "FirmaEntegrasyon",
                 column: "FirmaId");
@@ -717,14 +664,9 @@ namespace Humanity.Infrastructure.Migrations
                 column: "IletisimId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Musteri_CariKartId",
-                table: "Musteri",
-                column: "CariKartId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MusteriAylikEndeks_MusteriId",
+                name: "IX_MusteriAylikEndeks_AboneId",
                 table: "MusteriAylikEndeks",
-                column: "MusteriId");
+                column: "AboneId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MusteriIletisim_IletisimId",
@@ -738,9 +680,9 @@ namespace Humanity.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_MusteriSaatlikEndeks_MusteriId",
+                name: "IX_MusteriSaatlikEndeks_AboneId",
                 table: "MusteriSaatlikEndeks",
-                column: "MusteriId");
+                column: "AboneId");
         }
 
         /// <inheritdoc />
@@ -774,9 +716,6 @@ namespace Humanity.Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "CariIletisim");
-
-            migrationBuilder.DropTable(
                 name: "FirmaEntegrasyon");
 
             migrationBuilder.DropTable(
@@ -801,9 +740,6 @@ namespace Humanity.Infrastructure.Migrations
                 name: "OwnerConsumpiton");
 
             migrationBuilder.DropTable(
-                name: "Abone");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -816,10 +752,10 @@ namespace Humanity.Infrastructure.Migrations
                 name: "Iletisim");
 
             migrationBuilder.DropTable(
-                name: "Musteri");
+                name: "Abone");
 
             migrationBuilder.DropTable(
-                name: "CariKart");
+                name: "Musteri");
         }
     }
 }

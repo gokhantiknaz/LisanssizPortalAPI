@@ -71,7 +71,7 @@ namespace Humanity.Application.Models.DTOs.Musteri
             Uretici = new UreticiDTO(aboneuretici);
         }
 
-        public MusteriDTO(IMusteriService musteriService, Humanity.Domain.Entities.Musteri musteri)
+        public MusteriDTO(IAboneService musteriService, Humanity.Domain.Entities.Musteri musteri)
         {
             Id = musteri.Id;
             Adi = musteri.Adi;

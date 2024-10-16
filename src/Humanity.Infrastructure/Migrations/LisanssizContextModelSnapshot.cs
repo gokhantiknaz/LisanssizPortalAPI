@@ -30,6 +30,9 @@ namespace Humanity.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Adi")
+                        .HasColumnType("text");
+
                     b.Property<int>("Agog")
                         .HasColumnType("integer");
 
@@ -43,6 +46,9 @@ namespace Humanity.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("DagitimFirmaId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Durum")
                         .HasColumnType("integer");
 
                     b.Property<string>("EtsoKodu")
@@ -64,11 +70,23 @@ namespace Humanity.Infrastructure.Migrations
                     b.Property<int>("MusteriId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("OzelkodId1")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("OzelkodId2")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("OzelkodId3")
+                        .HasColumnType("integer");
+
                     b.Property<int>("SahisTip")
                         .HasColumnType("integer");
 
                     b.Property<long>("SeriNo")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("Soyadi")
+                        .HasColumnType("text");
 
                     b.Property<double>("SozlesmeGucu")
                         .HasColumnType("double precision");
@@ -76,15 +94,81 @@ namespace Humanity.Infrastructure.Migrations
                     b.Property<int>("Tarife")
                         .HasColumnType("integer");
 
+                    b.Property<long?>("Tckn")
+                        .HasColumnType("bigint");
+
                     b.Property<int>("Terim")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Unvan")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("Vkn")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("MusteriId")
-                        .IsUnique();
+                    b.HasIndex("MusteriId");
 
                     b.ToTable("Abone");
+                });
+
+            modelBuilder.Entity("Humanity.Domain.Entities.AboneAylikEndeks", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AboneId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Carpan")
+                        .HasColumnType("numeric");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Donem")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("TotalReakIndCekis")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("TotalReakIndVeris")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("TotalReakKapCekis")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("TotalReakKapVeris")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("TotalTuketimCekis")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("TotalUretimVeris")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AboneId");
+
+                    b.ToTable("MusteriAylikEndeks");
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.AboneIletisim", b =>
@@ -112,9 +196,97 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.HasKey("AboneId", "IletisimId");
 
+                    b.HasIndex("AboneId")
+                        .IsUnique();
+
                     b.HasIndex("IletisimId");
 
                     b.ToTable("AboneIletisim");
+                });
+
+            modelBuilder.Entity("Humanity.Domain.Entities.AboneOzelKod", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Ad")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Kod")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("KodNo")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RootId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MusteriOzelKod");
+                });
+
+            modelBuilder.Entity("Humanity.Domain.Entities.AboneSaatlikEndeks", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AboneId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Carpan")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("CekisReaktifInduktif")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("CekisReaktifKapasitif")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("CekisTuketim")
+                        .HasColumnType("numeric");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Donem")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset>("ProfilDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("Uretim")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("VerisReaktifInduktif")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("VerisReaktifKapasitif")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AboneId");
+
+                    b.ToTable("MusteriSaatlikEndeks");
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.AboneSayac", b =>
@@ -210,96 +382,6 @@ namespace Humanity.Infrastructure.Migrations
                     b.ToTable("AboneUretici");
                 });
 
-            modelBuilder.Entity("Humanity.Domain.Entities.CariIletisim", b =>
-                {
-                    b.Property<int>("CariKartId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("IletisimId")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid?>("LastModifiedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset?>("LastModifiedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("CariKartId", "IletisimId");
-
-                    b.HasIndex("IletisimId");
-
-                    b.ToTable("CariIletisim");
-                });
-
-            modelBuilder.Entity("Humanity.Domain.Entities.CariKart", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Adi")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Durum")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("GercekTuzel")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid?>("LastModifiedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset?>("LastModifiedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int?>("OzelkodId1")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("OzelkodId2")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("OzelkodId3")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Soyadi")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<long?>("Tckn")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Unvan")
-                        .HasColumnType("text");
-
-                    b.Property<long?>("Vkn")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CariKart");
-                });
-
             modelBuilder.Entity("Humanity.Domain.Entities.Firma", b =>
                 {
                     b.Property<int>("Id")
@@ -383,6 +465,9 @@ namespace Humanity.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DagitimFirmaId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("FirmaId")
                         .HasColumnType("integer");
@@ -516,11 +601,7 @@ namespace Humanity.Infrastructure.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Adi")
-                        .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int>("CariKartId")
-                        .HasColumnType("integer");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
@@ -553,7 +634,6 @@ namespace Humanity.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Soyadi")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<long?>("Tckn")
@@ -567,67 +647,7 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CariKartId");
-
                     b.ToTable("Musteri");
-                });
-
-            modelBuilder.Entity("Humanity.Domain.Entities.MusteriAylikEndeks", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Carpan")
-                        .HasColumnType("numeric");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Donem")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid?>("LastModifiedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset?>("LastModifiedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("MusteriId")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("TotalReakIndCekis")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("TotalReakIndVeris")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("TotalReakKapCekis")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("TotalReakKapVeris")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("TotalTuketimCekis")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("TotalUretimVeris")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MusteriId");
-
-                    b.ToTable("MusteriAylikEndeks");
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.MusteriIletisim", b =>
@@ -661,91 +681,6 @@ namespace Humanity.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("MusteriIletisim");
-                });
-
-            modelBuilder.Entity("Humanity.Domain.Entities.MusteriOzelKod", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Ad")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Kod")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("KodNo")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RootId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MusteriOzelKod");
-                });
-
-            modelBuilder.Entity("Humanity.Domain.Entities.MusteriSaatlikEndeks", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Carpan")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("CekisReaktifInduktif")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("CekisReaktifKapasitif")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("CekisTuketim")
-                        .HasColumnType("numeric");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Donem")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid?>("LastModifiedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset?>("LastModifiedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("MusteriId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTimeOffset>("ProfilDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<decimal>("Uretim")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("VerisReaktifInduktif")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("VerisReaktifKapasitif")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MusteriId");
-
-                    b.ToTable("MusteriSaatlikEndeks");
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.OwnerConsumpiton", b =>
@@ -991,19 +926,30 @@ namespace Humanity.Infrastructure.Migrations
             modelBuilder.Entity("Humanity.Domain.Entities.Abone", b =>
                 {
                     b.HasOne("Humanity.Domain.Entities.Musteri", "Musteri")
-                        .WithOne("Abone")
-                        .HasForeignKey("Humanity.Domain.Entities.Abone", "MusteriId")
+                        .WithMany()
+                        .HasForeignKey("MusteriId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Musteri");
                 });
 
-            modelBuilder.Entity("Humanity.Domain.Entities.AboneIletisim", b =>
+            modelBuilder.Entity("Humanity.Domain.Entities.AboneAylikEndeks", b =>
                 {
                     b.HasOne("Humanity.Domain.Entities.Abone", "Abone")
                         .WithMany()
                         .HasForeignKey("AboneId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Abone");
+                });
+
+            modelBuilder.Entity("Humanity.Domain.Entities.AboneIletisim", b =>
+                {
+                    b.HasOne("Humanity.Domain.Entities.Abone", "Abone")
+                        .WithOne("AboneIletisim")
+                        .HasForeignKey("Humanity.Domain.Entities.AboneIletisim", "AboneId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1016,6 +962,17 @@ namespace Humanity.Infrastructure.Migrations
                     b.Navigation("Abone");
 
                     b.Navigation("Iletisim");
+                });
+
+            modelBuilder.Entity("Humanity.Domain.Entities.AboneSaatlikEndeks", b =>
+                {
+                    b.HasOne("Humanity.Domain.Entities.Abone", "Abone")
+                        .WithMany()
+                        .HasForeignKey("AboneId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Abone");
                 });
 
             modelBuilder.Entity("Humanity.Domain.Entities.AboneSayac", b =>
@@ -1059,25 +1016,6 @@ namespace Humanity.Infrastructure.Migrations
                     b.Navigation("Abone");
                 });
 
-            modelBuilder.Entity("Humanity.Domain.Entities.CariIletisim", b =>
-                {
-                    b.HasOne("Humanity.Domain.Entities.CariKart", "CariKart")
-                        .WithMany()
-                        .HasForeignKey("CariKartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Humanity.Domain.Entities.Iletisim", "Iletisim")
-                        .WithMany()
-                        .HasForeignKey("IletisimId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CariKart");
-
-                    b.Navigation("Iletisim");
-                });
-
             modelBuilder.Entity("Humanity.Domain.Entities.FirmaEntegrasyon", b =>
                 {
                     b.HasOne("Humanity.Domain.Entities.Firma", "Firma")
@@ -1108,28 +1046,6 @@ namespace Humanity.Infrastructure.Migrations
                     b.Navigation("Iletisim");
                 });
 
-            modelBuilder.Entity("Humanity.Domain.Entities.Musteri", b =>
-                {
-                    b.HasOne("Humanity.Domain.Entities.CariKart", "CariKart")
-                        .WithMany()
-                        .HasForeignKey("CariKartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CariKart");
-                });
-
-            modelBuilder.Entity("Humanity.Domain.Entities.MusteriAylikEndeks", b =>
-                {
-                    b.HasOne("Humanity.Domain.Entities.Musteri", "Musteri")
-                        .WithMany()
-                        .HasForeignKey("MusteriId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Musteri");
-                });
-
             modelBuilder.Entity("Humanity.Domain.Entities.MusteriIletisim", b =>
                 {
                     b.HasOne("Humanity.Domain.Entities.Iletisim", "Iletisim")
@@ -1145,17 +1061,6 @@ namespace Humanity.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Iletisim");
-
-                    b.Navigation("Musteri");
-                });
-
-            modelBuilder.Entity("Humanity.Domain.Entities.MusteriSaatlikEndeks", b =>
-                {
-                    b.HasOne("Humanity.Domain.Entities.Musteri", "Musteri")
-                        .WithMany()
-                        .HasForeignKey("MusteriId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("Musteri");
                 });
@@ -1215,11 +1120,14 @@ namespace Humanity.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Humanity.Domain.Entities.Abone", b =>
+                {
+                    b.Navigation("AboneIletisim")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Humanity.Domain.Entities.Musteri", b =>
                 {
-                    b.Navigation("Abone")
-                        .IsRequired();
-
                     b.Navigation("MusteriIletisim")
                         .IsRequired();
                 });
