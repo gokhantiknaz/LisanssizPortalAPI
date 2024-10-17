@@ -13,7 +13,7 @@ namespace Humanity.Application.Interfaces
     public interface IMusteriService
     {
         Task<GetMusteriRes> GetMusteriById(int id);
-        Task<CreateMusteriReq> CreateMusteri(CreateMusteriReq musteri);
+        Task<CreateMusteriRes> CreateMusteri(CreateMusteriReq musteri);
         Task<GetAllActiveMusteriRes> GetAllMusteri();
         Task<GetAllActiveMusteriRes> MusteriyeBagliUreticiGetir(int musteriId);
         Task<GetTuketiciListRes> MusteriyeBagliTuketicileriGetir(int aboneureticiId);
