@@ -1,9 +1,11 @@
-﻿using Humanity.Application.Interfaces;
+﻿using Humanity.Application.Core.Services;
+using Humanity.Application.Interfaces;
 using Humanity.Application.Models.DTOs.Musteri;
 using Humanity.Application.Models.Requests;
 using Humanity.Application.Models.Requests.Musteri;
 using Humanity.Application.Models.Responses;
 using Humanity.Application.Models.Responses.Musteri;
+using Humanity.Domain.Core.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,10 +18,13 @@ namespace Humanity.WebApi.Controllers
     public class MusteriController : Controller
     {
         private readonly IMusteriService _musteriService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ILoggerService _loggerService;
 
-        public MusteriController(IMusteriService musteriService)
+        public MusteriController(IMusteriService musteriService, IUnitOfWork unitOfWork)
         {
             _musteriService = musteriService;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet("{id:int}")]

@@ -21,16 +21,7 @@ namespace Humanity.Application.Models.Requests.Musteri
         public int? OzelkodId1 { get; set; }
         public int? OzelkodId2 { get; set; }
         public int? OzelkodId3 { get; set; }
-
-        public int CariKartId {  get; set; }
-
         public MusteriIletisimDTO MusteriIletisim { get; set; }
-
-        public List<TuketiciListDTO>? TuketiciList { get; set; }
-
-        public List<SayacListDTO>? SayacList { get; set; }
-
-
     }
 
     public class UpdateMusteriReq
@@ -42,17 +33,12 @@ namespace Humanity.Application.Models.Requests.Musteri
         public long? Tckn { get; set; }
         public long? Vkn { get; set; }
         public int? Durum { get; set; }
-        public int GercekTuzel { get; set; }
+        public int? GercekTuzel { get; set; }
         public int? OzelkodId1 { get; set; }
         public int? OzelkodId2 { get; set; }
         public int? OzelkodId3 { get; set; }
 
-
         public MusteriIletisimDTO MusteriIletisim { get; set; }
-
-        public List<TuketiciListDTO>? TuketiciList { get; set; }
-
-        public List<SayacListDTO>? SayacList { get; set; }
     }
 
     public class CreateCariKartReq
@@ -86,7 +72,7 @@ namespace Humanity.Application.Models.Requests.Musteri
         public int? OzelkodId2 { get; set; }
         public int? OzelkodId3 { get; set; }
 
-        public MusteriIletisimDTO CariIletisim { get; set; }
+        public MusteriIletisimDTO MusteriIletisim { get; set; }
 
     }
 }
