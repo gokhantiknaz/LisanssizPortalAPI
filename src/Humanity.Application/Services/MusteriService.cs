@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Humanity.Application.Core.Services;
 using Humanity.Application.Interfaces;
+using Humanity.Application.Models.DTOs.firma;
 using Humanity.Application.Models.DTOs.Musteri;
 using Humanity.Application.Models.Requests;
 using Humanity.Application.Models.Requests.Musteri;
@@ -86,7 +87,27 @@ namespace Humanity.Application.Services
 
         public async Task<GetMusteriRes> GetMusteriById(int id)
         {
-            throw new NotImplementedException();
+            var musteri = await _unitOfWork.Repository<Musteri>().GetByIdAsync(id);
+
+            if (musteri == null)
+                throw new Exception("Müşteri Bulunamadı");
+            //throw NotFoundException("Cari");
+
+            //iletisim bilgisi
+            var iletisimDto = await GetMusteriIletisim(id);
+        
+
+            var data = mapper.Map<MusteriDTO>(musteri);
+            var entegrasyon= await GetMusteriEntegrasyon(id);
+            data.MusteriIletisim = new MusteriIletisimDTO(iletisimDto);
+
+            data.MusteriEntegrasyon = entegrasyon;
+
+
+            return new GetMusteriRes()
+            {
+                Data = data
+            };
         }
 
         public async Task<GetAllActiveMusteriRes> GetAllMusteri()
@@ -119,6 +140,16 @@ namespace Humanity.Application.Services
             var entegre = await _unitOfWork.Repository<MusteriEntegrasyon>().ListAsync(spec);
 
             return mapper.Map<MusteriEntegrasyonDTO>(entegre.FirstOrDefault());
+        }
+
+        private async Task<MusteriIletisim> GetMusteriIletisim(int musteriId)
+        {
+            var spec = new BaseSpecification<MusteriIletisim>(x => x.MusteriId == musteriId);
+            spec.AddInclude(a => a.Iletisim);
+
+            var iletisim = await _unitOfWork.Repository<MusteriIletisim>().ListAsync(spec);
+
+            return iletisim.FirstOrDefault();
         }
     }
 }

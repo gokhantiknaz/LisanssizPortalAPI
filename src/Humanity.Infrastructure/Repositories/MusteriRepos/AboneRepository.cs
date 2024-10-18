@@ -59,21 +59,6 @@ namespace Humanity.Infrastructure.Repositories.MusteriRepos
                     OzelkodId1 = temp.musteri.OzelkodId1,
                     OzelkodId2 = temp.musteri.OzelkodId2,
                     OzelkodId3 = temp.musteri.OzelkodId3,
-                    Abone = new AboneDTO(temp.abone),
-                    //{
-                    //    Tarife = temp.abone.Tarife,
-                    //    EtsoKodu = temp.abone.EtsoKodu,
-                    //    DagitimFirmaId = temp.abone.DagitimFirmaId,
-                    //    SeriNo = temp.abone.SeriNo,
-                    //    SozlesmeGucu = temp.abone.SozlesmeGucu,
-                    //    BaglantiGucu = temp.abone.BaglantiGucu,
-                    //    KuruluGuc = temp.abone.KuruluGuc,
-                    //    SahisTip = temp.abone.SahisTip,
-                    //    Terim = temp.abone.Terim,
-                    //    Agog = temp.abone.Agog,
-                    
-                    //},
-                    Uretici = aboneUretici != null ? new UreticiDTO(aboneUretici) : null,
                     MusteriIletisim = new MusteriIletisimDTO(temp.musteriIletisim)
                   
                 })

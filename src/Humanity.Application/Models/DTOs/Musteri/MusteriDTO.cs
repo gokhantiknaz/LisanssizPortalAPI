@@ -30,15 +30,14 @@ namespace Humanity.Application.Models.DTOs.Musteri
         public int? OzelkodId2 { get; set; }
         public int? OzelkodId3 { get; set; }
 
-        public AboneDTO Abone { get; set; }
-
-        public List<TuketiciListDTO>? TuketiciList { get; set; }
-
-        public UreticiDTO Uretici { get; set; }
-
-
         public MusteriIletisimDTO MusteriIletisim { get; set; }
-      
+
+        public MusteriEntegrasyonDTO MusteriEntegrasyon { get; set; }
+
+        public MusteriDTO()
+        {
+            
+        }
 
         public MusteriDTO(Humanity.Domain.Entities.Musteri musteri)
         {
@@ -54,35 +53,6 @@ namespace Humanity.Application.Models.DTOs.Musteri
             OzelkodId2 =musteri.OzelkodId2;
             OzelkodId3 =musteri.OzelkodId3;
             
-        }
-
-        public MusteriDTO(AboneUretici aboneuretici)
-        {
-            Id = aboneuretici.Abone.Musteri.Id;
-            Adi = aboneuretici.Abone.Musteri.Adi;
-            Soyadi = aboneuretici.Abone.Musteri.Soyadi;
-            Unvan = aboneuretici.Abone.Musteri.Unvan;
-            Tckn = aboneuretici.Abone.Musteri.Tckn;
-            Vkn = aboneuretici.Abone.Musteri.Vkn;
-            GercekTuzel = aboneuretici.Abone.Musteri.GercekTuzel;
-            OzelkodId1 = aboneuretici.Abone.Musteri.OzelkodId1;
-            OzelkodId2 = aboneuretici.Abone.Musteri.OzelkodId2;
-            OzelkodId3 = aboneuretici.Abone.Musteri.OzelkodId3;
-            Uretici = new UreticiDTO(aboneuretici);
-        }
-
-        public MusteriDTO(IAboneService musteriService, Humanity.Domain.Entities.Musteri musteri)
-        {
-            Id = musteri.Id;
-            Adi = musteri.Adi;
-            Soyadi = musteri.Soyadi;
-            Unvan = musteri.Unvan;
-            Tckn = musteri.Tckn;
-            Vkn = musteri.Vkn;
-            GercekTuzel = musteri.GercekTuzel;
-            OzelkodId1= musteri.OzelkodId1;
-            OzelkodId2 = musteri.OzelkodId2;
-            OzelkodId3 = musteri.OzelkodId3;
         }
     
     }
