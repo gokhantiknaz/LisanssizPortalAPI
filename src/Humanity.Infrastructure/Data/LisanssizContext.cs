@@ -88,7 +88,7 @@ namespace Humanity.Infrastructure.Data
         public DbSet<FirmaIletisim> FirmaIletisim { get; set; }
 
 
-        public DbSet<FirmaEntegrasyon> FirmaEntegrasyon { get; set; }
+        public DbSet<MusteriEntegrasyon> FirmaEntegrasyon { get; set; }
 
         public DbSet<Logs> Logs { get; set; }
 

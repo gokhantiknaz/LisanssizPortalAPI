@@ -86,5 +86,22 @@ namespace Humanity.Application.Models.DTOs.Musteri
         }
     
     }
- 
+
+    public class MusteriEntegrasyonDTO
+    {
+        public int Id { get; set; }
+
+        public int FirmaId { get; set; }
+
+
+        public int ServisId { get; set; }
+
+        public string KullaniciAdi { get; set; }
+
+        public string Sifre { get; set; }
+
+        public string ServisAdres { get; set; }
+
+    }
+
 }

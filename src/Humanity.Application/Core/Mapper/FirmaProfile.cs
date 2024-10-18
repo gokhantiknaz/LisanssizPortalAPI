@@ -16,7 +16,7 @@ namespace Humanity.Application.Core.Mapper
         public FirmaProfile()
         {
             CreateMap<Firma, FirmaDTO>().ReverseMap();
-            CreateMap<FirmaEntegrasyon, FirmaEntegrasyonDTO>().ReverseMap();
+            CreateMap<MusteriEntegrasyon, MusteriEntegrasyonDTO>().ReverseMap();
         }
     }
 

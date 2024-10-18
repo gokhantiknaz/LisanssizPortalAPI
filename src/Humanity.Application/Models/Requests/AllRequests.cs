@@ -80,7 +80,7 @@ namespace Humanity.Application.Models.Requests
 
         public FirmaIletisimDTO FirmaIletisim { get; set; }
 
-        public FirmaEntegrasyonDTO FirmaEntegrasyon { get; set; }
+        public MusteriEntegrasyonDTO FirmaEntegrasyon { get; set; }
         
 
     }

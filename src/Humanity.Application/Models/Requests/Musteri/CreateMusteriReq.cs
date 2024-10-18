@@ -22,6 +22,8 @@ namespace Humanity.Application.Models.Requests.Musteri
         public int? OzelkodId2 { get; set; }
         public int? OzelkodId3 { get; set; }
         public MusteriIletisimDTO MusteriIletisim { get; set; }
+
+        public MusteriEntegrasyonDTO MusteriEntegrasyon { get; set; }
     }
 
     public class UpdateMusteriReq

@@ -68,10 +68,6 @@ namespace Humanity.Application.Services
             };
             _ = await _unitOfWork.Repository<FirmaIletisim>().AddAsync(iletisim);
 
-            var firmaEntegrasyon = new FirmaEntegrasyon { ServisAdres = req.FirmaEntegrasyon.ServisAdres ?? "", ServisKullaniciAdi = req.FirmaEntegrasyon.ServisKullaniciAdi ?? "", ServisSifre = req.FirmaEntegrasyon.ServisSifre ?? "", ServisId = req.FirmaEntegrasyon.ServisId };
-            firmaEntegrasyon.Firma = firma;
-
-            _ = await _unitOfWork.Repository<FirmaEntegrasyon>().AddAsync(firmaEntegrasyon);
 
 
             try
@@ -158,8 +154,8 @@ namespace Humanity.Application.Services
 
             //iletisim bilgisi
             var firmaIletisimDto = await GetFirmaIletisim(id);
-            var firmaEntegrasyon = await GetFirmaEntegrasyon(firma.Id);
-            var data = new FirmaDTO(firma) { FirmaIletisim = new FirmaIletisimDTO(firmaIletisimDto),FirmaEntegrasyon=firmaEntegrasyon };
+
+            var data = new FirmaDTO(firma) { FirmaIletisim = new FirmaIletisimDTO(firmaIletisimDto) };
 
             return new GetFirmaRes()
             {
@@ -171,17 +167,17 @@ namespace Humanity.Application.Services
         {
             var firmaList = await _unitOfWork.Repository<Firma>().ListAllAsync();
 
-            if (firmaList == null || firmaList.Count==0)
+            if (firmaList == null || firmaList.Count == 0)
                 throw new Exception("Firma bulunamadı");
             //throw NotFoundException("Cari");
 
             //iletisim bilgisi
             var firma = firmaList.FirstOrDefault();
-            
-            var firmaIletisimDto = await GetFirmaIletisim(firma.Id);
-            var firmaEntegrasyon = await GetFirmaEntegrasyon(firma.Id);
 
-            var data = new FirmaDTO(firma) { FirmaIletisim = new FirmaIletisimDTO(firmaIletisimDto), FirmaEntegrasyon = firmaEntegrasyon };
+            var firmaIletisimDto = await GetFirmaIletisim(firma.Id);
+
+
+            var data = new FirmaDTO(firma) { FirmaIletisim = new FirmaIletisimDTO(firmaIletisimDto) };
 
             return new GetFirmaRes()
             {
@@ -205,15 +201,7 @@ namespace Humanity.Application.Services
             return iletisim.FirstOrDefault();
         }
 
-        private async Task<FirmaEntegrasyonDTO> GetFirmaEntegrasyon(int firmaId)
-        {
-            var spec = new BaseSpecification<FirmaEntegrasyon>(x => x.FirmaId == firmaId);
-            
 
-            var entegre = await _unitOfWork.Repository<FirmaEntegrasyon>().ListAsync(spec);
-
-            return mapper.Map<FirmaEntegrasyonDTO>(entegre.FirstOrDefault());
-        }
 
     }
 }

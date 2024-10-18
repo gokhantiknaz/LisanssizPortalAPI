@@ -42,21 +42,4 @@ namespace Humanity.Application.Models.DTOs.firma
         public string? Adres { get; set; }
     }
 
-    public class FirmaEntegrasyonDTO
-    {
-        public int Id { get; set; }
-
-        public int FirmaId { get; set; }
-
-
-        public int ServisId { get; set; }
-
-        public string ServisKullaniciAdi { get; set; }
-
-        public string ServisSifre { get; set; }
-
-        public string ServisAdres { get; set; }
-
-    }
-
 }

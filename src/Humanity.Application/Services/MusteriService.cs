@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Runtime.Intrinsics.X86;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Security.Policy;
@@ -63,6 +64,11 @@ namespace Humanity.Application.Services
             };
             _ = await _unitOfWork.Repository<MusteriIletisim>().AddAsync(iletisim);
 
+            var musterEntegrasyon = new MusteriEntegrasyon { ServisAdres = req.MusteriEntegrasyon.ServisAdres ?? "", KullaniciAdi = req.MusteriEntegrasyon.KullaniciAdi ?? "", Sifre= req.MusteriEntegrasyon.Sifre?? "", ServisId = req.MusteriEntegrasyon.ServisId };
+            musterEntegrasyon.Musteri= m;
+
+            _ = await _unitOfWork.Repository<MusteriEntegrasyon>().AddAsync(musterEntegrasyon);
+
             try
             {
                 await _unitOfWork.SaveChangesAsync();
@@ -72,7 +78,7 @@ namespace Humanity.Application.Services
                 throw ex;
             }
 
-            _loggerService.LogInfo("Firma Kaydedildi");
+            _loggerService.LogInfo("Müşteri Kaydedildi");
 
             return new CreateMusteriRes() { Data = new MusteriDTO(m) };
 
@@ -104,6 +110,15 @@ namespace Humanity.Application.Services
         public Task<GetTuketiciListRes> MusteriyeBagliTuketicileriGetir(int aboneureticiId)
         {
             throw new NotImplementedException();
+        }
+
+        private async Task<MusteriEntegrasyonDTO> GetMusteriEntegrasyon(int musteriId)
+        {
+            var spec = new BaseSpecification<MusteriEntegrasyon>(x => x.MusteriId == musteriId);
+
+            var entegre = await _unitOfWork.Repository<MusteriEntegrasyon>().ListAsync(spec);
+
+            return mapper.Map<MusteriEntegrasyonDTO>(entegre.FirstOrDefault());
         }
     }
 }

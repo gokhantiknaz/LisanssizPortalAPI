@@ -30,8 +30,6 @@ namespace Humanity.Application.Models.DTOs.Musteri
         public GercekTuzel GercekTuzel { get; set; }
         public FirmaIletisimDTO FirmaIletisim { get; set; }
 
-        public FirmaEntegrasyonDTO FirmaEntegrasyon { get; set; }
-
         public FirmaDTO(Humanity.Domain.Entities.Firma firma)
         {
             Id = firma.Id;
@@ -46,8 +44,6 @@ namespace Humanity.Application.Models.DTOs.Musteri
             SorumluSoyad = firma.SorumluSoyad;
             SorumluTelefon = firma.SorumluTelefon;
             SorumluEmail = firma.SorumluEmail;
-
-            FirmaEntegrasyon = new FirmaEntegrasyonDTO();
             FirmaIletisim = new FirmaIletisimDTO();
         }
     }

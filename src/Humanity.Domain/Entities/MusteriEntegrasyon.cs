@@ -10,24 +10,24 @@ using System.Threading.Tasks;
 
 namespace Humanity.Domain.Entities
 {
-    public class FirmaEntegrasyon : BaseEntity
+    public class MusteriEntegrasyon : BaseEntity
     {
         [Key]
         public int Id { get; set; }
 
-        [ForeignKey("Firma")]
-        public int FirmaId { get; set; }
+        [ForeignKey("Musteri")]
+        public int MusteriId { get; set; }
         
-        [ForeignKey("FirmaId")]
-        public Firma Firma { get; set; }
+        [ForeignKey("MusteriId")]
+        public Musteri Musteri { get; set; }
 
         public int DagitimFirmaId { get; set; }
 
         public int ServisId { get; set; }
 
-        public string ServisKullaniciAdi { get; set; }
+        public string KullaniciAdi { get; set; }
 
-        public string ServisSifre { get; set; }
+        public string Sifre { get; set; }
 
         public string ServisAdres { get; set; }
 
