@@ -46,11 +46,33 @@ namespace Humanity.Application.Services
 
         public async Task<CreateMusteriRes> CreateMusteri(CreateMusteriReq req)
         {
+            req.Durum = Status.Aktif.GetHashCode();
             Musteri m = mapper.Map<Musteri>(req);
-            _ = await _unitOfWork.Repository<Musteri>().AddAsync(m);
-            _unitOfWork.SaveChangesAsync();
 
-            _loggerService.LogInfo("Yeni Müşteri Eklendi");
+            _ = await _unitOfWork.Repository<Musteri>().AddAsync(m);
+
+            var miletisim = new Iletisim { Email = req.MusteriIletisim.Email ?? "", Adres = req.MusteriIletisim.Adres ?? "", CepTel = req.MusteriIletisim.CepTel ?? "", Ilid = req.MusteriIletisim.Ilid, Ilceid = req.MusteriIletisim.Ilceid };
+
+            MusteriIletisim iletisim = new MusteriIletisim
+            {
+                Musteri=m,
+                Iletisim = miletisim,
+                IsDeleted = false,
+                CreatedBy = Guid.Empty,
+                CreatedOn = DateTime.UtcNow,
+            };
+            _ = await _unitOfWork.Repository<MusteriIletisim>().AddAsync(iletisim);
+
+            try
+            {
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            _loggerService.LogInfo("Firma Kaydedildi");
 
             return new CreateMusteriRes() { Data = new MusteriDTO(m) };
 

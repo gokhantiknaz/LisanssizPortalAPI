@@ -30,5 +30,6 @@ namespace Humanity.Domain.Entities
         public DateTimeOffset? LastModifiedOn { get; set; }
         public bool IsDeleted { get; set; }
         public MusteriIletisim MusteriIletisim { get; set; }
+       
     }
 }
