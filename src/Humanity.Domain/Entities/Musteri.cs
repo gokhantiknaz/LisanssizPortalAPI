@@ -29,6 +29,8 @@ namespace Humanity.Domain.Entities
         public Guid? LastModifiedBy { get; set; }
         public DateTimeOffset? LastModifiedOn { get; set; }
         public bool IsDeleted { get; set; }
+
+        public int DagitimFirmaId { get; set; }
         public MusteriIletisim MusteriIletisim { get; set; }
 
         public MusteriEntegrasyon MusteriEntegrasyon { get; set; }
