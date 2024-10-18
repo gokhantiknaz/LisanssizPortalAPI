@@ -29,7 +29,7 @@ namespace Humanity.Domain.Entities
 
         public string Sifre { get; set; }
 
-        public string ServisAdres { get; set; }
+        public string? ServisAdres { get; set; }
 
     }
 }

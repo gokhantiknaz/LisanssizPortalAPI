@@ -64,7 +64,7 @@ namespace Humanity.Application.Services
             };
             _ = await _unitOfWork.Repository<MusteriIletisim>().AddAsync(iletisim);
 
-            var musterEntegrasyon = new MusteriEntegrasyon { ServisAdres = req.MusteriEntegrasyon.ServisAdres ?? "", KullaniciAdi = req.MusteriEntegrasyon.KullaniciAdi ?? "", Sifre= req.MusteriEntegrasyon.Sifre?? "", ServisId = req.MusteriEntegrasyon.ServisId };
+            var musterEntegrasyon = new MusteriEntegrasyon { ServisAdres = req.MusteriEntegrasyon.ServisAdres ?? "", KullaniciAdi = req.MusteriEntegrasyon.KullaniciAdi ?? "", Sifre= req.MusteriEntegrasyon.Sifre?? "", ServisId = 1 };
             musterEntegrasyon.Musteri= m;
 
             _ = await _unitOfWork.Repository<MusteriEntegrasyon>().AddAsync(musterEntegrasyon);
