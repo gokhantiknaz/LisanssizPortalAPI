@@ -20,11 +20,13 @@ namespace Humanity.WebApi.Controllers
         private readonly IMusteriService _musteriService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILoggerService _loggerService;
+        private readonly IArilService _arilService;
 
-        public MusteriController(IMusteriService musteriService, IUnitOfWork unitOfWork)
+        public MusteriController(IMusteriService musteriService, IUnitOfWork unitOfWork, IArilService arilService)
         {
             _musteriService = musteriService;
             _unitOfWork = unitOfWork;
+            _arilService = arilService; 
         }
 
         [HttpGet("{id:int}")]

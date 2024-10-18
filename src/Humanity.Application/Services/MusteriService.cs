@@ -33,13 +33,15 @@ namespace Humanity.Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILoggerService _loggerService;
+        private readonly IArilService _arilService;
         private readonly IMapper mapper;
 
-        public MusteriService(IUnitOfWork unitOfWork, ILoggerService loggerService, IMapper mapper)
+        public MusteriService(IUnitOfWork unitOfWork, ILoggerService loggerService, IMapper mapper, IArilService arilService)
         {
             _unitOfWork = unitOfWork;
             _loggerService = loggerService;
             this.mapper = mapper;
+            _arilService = arilService;
         }
         public Task<GetAllActiveMusteriRes> MusteriyeBagliUreticiGetir(int musteriId)
         {
@@ -69,6 +71,21 @@ namespace Humanity.Application.Services
             musterEntegrasyon.Musteri= m;
 
             _ = await _unitOfWork.Repository<MusteriEntegrasyon>().AddAsync(musterEntegrasyon);
+
+            var listSubs= await _arilService.GetCustomerPortalSubscriptions();
+
+
+            foreach (var sub in listSubs.ResultList)
+            {
+                //herbiri yeni abonedir.tüketici
+                Abone a = new Abone()
+                {
+
+                };
+
+                _ = await _unitOfWork.Repository<Abone>().AddAsync(a);
+            }
+
 
             try
             {

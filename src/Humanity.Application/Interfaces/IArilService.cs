@@ -10,5 +10,8 @@ namespace Humanity.Application.Interfaces
     public interface IArilService
     {
         Task<GetOwnerConsumptionsResponse> GetOwnerConsumptions(DateTime startDate,DateTime endDate);
+
+
+        Task<CustomerSubscriptionResponse> GetCustomerPortalSubscriptions();
     }
 }
