@@ -27,7 +27,7 @@ namespace Humanity.WebApi.Controllers
             DateTime pilktarih = DateTime.ParseExact(request.StartDate, "yyyyMMddHHmmss", null);
             DateTime pSonTarih = DateTime.ParseExact(request.EndDate, "yyyyMMddHHmmss", null);
 
-            var result = await _arilService.GetOwnerConsumptions(pilktarih, pSonTarih);
+            var result = await _arilService.GetOwnerConsumptions(-1,pilktarih, pSonTarih);
             return Ok(result);
         }
 

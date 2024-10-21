@@ -1,6 +1,8 @@
-﻿using Humanity.Application.Core.Services;
+﻿using AutoMapper;
+using Humanity.Application.Core.Services;
 using Humanity.Application.Interfaces;
 using Humanity.Application.Models.DTOs;
+using Humanity.Application.Models.DTOs.Musteri;
 using Humanity.Application.Models.Responses;
 using Humanity.Domain.Core.Repositories;
 using Humanity.Domain.Core.Specifications;
@@ -29,13 +31,14 @@ namespace Humanity.Application.Services
         }
 
 
-        public async Task GetToken()
+        public async Task GetToken(MusteriEntegrasyon musteriEntegrasyon)
         {
+            //dağıtım firmaya göre dinamik gelecek.
             string tokenUrl = "https://osos.dedas.com.tr/aril-portalserver/customer-rest-api/generate-token";
             var credentials = new
             {
-                UserCode = "bahadırgrup",
-                Password = "49APXfg2"
+                UserCode = musteriEntegrasyon.KullaniciAdi,
+                Password = musteriEntegrasyon.Sifre
             };
 
             var content = new StringContent(JsonSerializer.Serialize(credentials), Encoding.UTF8, "application/json");
@@ -54,14 +57,29 @@ namespace Humanity.Application.Services
             }
         }
 
-        public async Task<CustomerSubscriptionResponse> GetCustomerPortalSubscriptions()
+        public async Task<CustomerSubscriptionResponse> GetCustomerPortalSubscriptions(int musteriid)
         {
-            await GetToken();
+
+            // müşteriye ait token al.
+            var spec = new BaseSpecification<MusteriEntegrasyon>(x => x.MusteriId == musteriid);
+
+            var entegre = await _unitOfWork.Repository<MusteriEntegrasyon>().ListAsync(spec);
+       
+
+            if (entegre != null && entegre.Count>0)
+            {
+                await GetToken(entegre.First());
+            }
+
+            
             var postData = new
             {
                 PageNumber = 1,
                 PageSize = 100
             };
+
+
+
             var content = new StringContent(JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
 
 
@@ -77,7 +95,7 @@ namespace Humanity.Application.Services
             }
             return null;
         }
-        public async Task<GetOwnerConsumptionsResponse> GetOwnerConsumptions(DateTime startDate, DateTime endDate)
+        public async Task<GetOwnerConsumptionsResponse> GetOwnerConsumptions(int musteriId,DateTime startDate, DateTime endDate)
         {
             var currentDate = startDate;
 
@@ -90,7 +108,7 @@ namespace Humanity.Application.Services
                 var endOfMonth = startOfMonth.AddMonths(1).AddMinutes(-1); // Ayın son günü
 
                 string donem = currentDate.Year.ToString() + "/" + currentDate.Month.ToString().PadLeft(2, '0');
-                var customers = await GetCustomerPortalSubscriptions();
+                var customers = await GetCustomerPortalSubscriptions(musteriId);
 
                 if (customers != null)
                 {

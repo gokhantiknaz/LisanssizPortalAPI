@@ -72,19 +72,19 @@ namespace Humanity.Application.Services
 
             _ = await _unitOfWork.Repository<MusteriEntegrasyon>().AddAsync(musterEntegrasyon);
 
-            var listSubs= await _arilService.GetCustomerPortalSubscriptions();
+            //var listSubs= await _arilService.GetCustomerPortalSubscriptions();
 
 
-            foreach (var sub in listSubs.ResultList)
-            {
-                //herbiri yeni abonedir.tüketici
-                Abone a = new Abone()
-                {
+            //foreach (var sub in listSubs.ResultList)
+            //{
+            //    //herbiri yeni abonedir.tüketici
+            //    Abone a = new Abone()
+            //    {
 
-                };
+            //    };
 
-                _ = await _unitOfWork.Repository<Abone>().AddAsync(a);
-            }
+            //    _ = await _unitOfWork.Repository<Abone>().AddAsync(a);
+            //}
 
 
             try
@@ -171,7 +171,7 @@ namespace Humanity.Application.Services
             throw new NotImplementedException();
         }
 
-        private async Task<MusteriEntegrasyonDTO> GetMusteriEntegrasyon(int musteriId)
+        public async Task<MusteriEntegrasyonDTO> GetMusteriEntegrasyon(int musteriId)
         {
             var spec = new BaseSpecification<MusteriEntegrasyon>(x => x.MusteriId == musteriId);
 

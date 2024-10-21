@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Humanity.Application.Models.DTOs.Musteri;
 
 namespace Humanity.Application.Interfaces
 {
@@ -19,5 +20,6 @@ namespace Humanity.Application.Interfaces
         Task<GetTuketiciListRes> MusteriyeBagliTuketicileriGetir(int aboneureticiId);
         Task<GetTuketiciListRes> GetBagimsizTuketiciler(int cariId);
         Task<CreateMusteriRes> Update(UpdateMusteriReq musteri);
+        Task<MusteriEntegrasyonDTO> GetMusteriEntegrasyon(int musteriId);
     }
 }
