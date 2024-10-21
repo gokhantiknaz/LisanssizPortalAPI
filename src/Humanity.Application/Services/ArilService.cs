@@ -83,17 +83,13 @@ namespace Humanity.Application.Services
                 throw new Exception("Entegrasyon Bilgileri Bulunamadı");
             }
 
-
             var postData = new
             {
                 PageNumber = 1,
                 PageSize = 100
             };
 
-
-
             var content = new StringContent(JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
-
 
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Add("aril-service-token", token);

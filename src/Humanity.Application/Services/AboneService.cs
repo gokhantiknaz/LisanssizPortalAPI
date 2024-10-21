@@ -384,19 +384,6 @@ namespace Humanity.Application.Services
             };
         }
 
-        //public async Task<GetAllActiveAboneRes> CariyeBagliUreticiGetir(int aboneid)
-        //{
-        //    var ureticiAboneSpec = AboneSpecifications.GetUreticiByAboneId(aboneid);
-
-        //    var Aboneler = await _unitOfWork.Repository<AboneUretici>().ListAsync(ureticiAboneSpec);
-
-        //    var data = Aboneler.Select(x => new AboneDTO(x)).ToList();
-        //    return new GetAllActiveAboneRes()
-        //    {
-        //        Data = data
-        //    };
-        //}
-
         public async Task<GetTuketiciListRes> GetBagimsizTuketiciler(int musteriId)
         {
             var AboneDtos = _Abonerep.GetBagimsizTuketiciler(musteriId).ToList();
@@ -405,6 +392,16 @@ namespace Humanity.Application.Services
             {
                 Data = AboneDtos
             };
+        }
+
+        public Task<List<GetAboneRes>> GetMusteriAboneler(int musteriid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<GetAboneRes>> GetFirmaAboneler()
+        {
+            throw new NotImplementedException();
         }
     }
 }
