@@ -51,17 +51,9 @@ namespace Humanity.Application.Models.DTOs.Musteri
         public AboneDTO(Abone abone)
         {
             Id = abone.Id;
-            Tarife = abone.Tarife;
-            EtsoKodu = abone.EtsoKodu;
-            DagitimFirmaId = abone.DagitimFirmaId;
-            SeriNo = abone.SeriNo;
-            SozlesmeGucu = abone.SozlesmeGucu;
-            KuruluGuc = abone.KuruluGuc;
-            BaglantiGucu = abone.BaglantiGucu;
             SahisTip = abone.SahisTip; Terim = abone.Terim; Agog = abone.Agog;
         }
     }
-
 
     public class UreticiDTO
     {
@@ -94,8 +86,6 @@ namespace Humanity.Application.Models.DTOs.Musteri
             UretimBaslama = a.UretimBaslama;
             CagrimektupTarihi = a.CagrimektupTarihi;
             MahsupTipi = a.MahsupTipi;
-
         }
-
     }
 }
