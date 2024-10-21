@@ -59,7 +59,7 @@ namespace Humanity.Application.Services
 
             MusteriIletisim iletisim = new MusteriIletisim
             {
-                Musteri=m,
+                Musteri = m,
                 Iletisim = miletisim,
                 IsDeleted = false,
                 CreatedBy = Guid.Empty,
@@ -67,8 +67,8 @@ namespace Humanity.Application.Services
             };
             _ = await _unitOfWork.Repository<MusteriIletisim>().AddAsync(iletisim);
 
-            var musterEntegrasyon = new MusteriEntegrasyon { ServisAdres = req.MusteriEntegrasyon.ServisAdres ?? "", KullaniciAdi = req.MusteriEntegrasyon.KullaniciAdi ?? "", Sifre= req.MusteriEntegrasyon.Sifre?? "", ServisId = 1 };
-            musterEntegrasyon.Musteri= m;
+            var musterEntegrasyon = new MusteriEntegrasyon { ServisAdres = req.MusteriEntegrasyon.ServisAdres ?? "", KullaniciAdi = req.MusteriEntegrasyon.KullaniciAdi ?? "", Sifre = req.MusteriEntegrasyon.Sifre ?? "", ServisId = 1 };
+            musterEntegrasyon.Musteri = m;
 
             _ = await _unitOfWork.Repository<MusteriEntegrasyon>().AddAsync(musterEntegrasyon);
 
@@ -133,10 +133,10 @@ namespace Humanity.Application.Services
 
             //iletisim bilgisi
             var iletisimDto = await GetMusteriIletisim(id);
-        
+
 
             var data = mapper.Map<MusteriDTO>(musteri);
-            var entegrasyon= await GetMusteriEntegrasyon(id);
+            var entegrasyon = await GetMusteriEntegrasyon(id);
             data.MusteriIletisim = new MusteriIletisimDTO(iletisimDto);
 
             data.MusteriEntegrasyon = entegrasyon;
@@ -188,6 +188,19 @@ namespace Humanity.Application.Services
             var iletisim = await _unitOfWork.Repository<MusteriIletisim>().ListAsync(spec);
 
             return iletisim.FirstOrDefault();
+        }
+
+
+        public async Task<bool> ArilBagliTuketiciKaydet(int musteriid)
+        {
+
+            var musteriler = await _arilService.GetCustomerPortalSubscriptions(musteriid);
+            foreach (var item in musteriler.ResultList)
+            {
+                
+            }
+
+            return true;
         }
     }
 }

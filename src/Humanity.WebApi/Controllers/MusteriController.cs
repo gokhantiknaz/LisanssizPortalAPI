@@ -89,6 +89,13 @@ namespace Humanity.WebApi.Controllers
             return Ok(result);
         }
 
-        
+        [HttpGet]
+        public async Task<ActionResult<GetTuketiciListRes>> ArilBagliTuketiciKaydet([FromQuery] int musteriid)
+        {
+            var result = await _musteriService.ArilBagliTuketiciKaydet(musteriid);
+            return Ok(result);
+        }
+
+
     }
 }

@@ -21,5 +21,6 @@ namespace Humanity.Application.Interfaces
         Task<GetTuketiciListRes> GetBagimsizTuketiciler(int cariId);
         Task<CreateMusteriRes> Update(UpdateMusteriReq musteri);
         Task<MusteriEntegrasyonDTO> GetMusteriEntegrasyon(int musteriId);
+        Task<bool> ArilBagliTuketiciKaydet(int musteriid);
     }
 }

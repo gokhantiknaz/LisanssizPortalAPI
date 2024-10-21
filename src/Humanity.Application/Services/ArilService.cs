@@ -53,7 +53,8 @@ namespace Humanity.Application.Services
             }
             else
             {
-                Console.WriteLine("Token alma işlemi başarısız.");
+                token = "";
+                throw new Exception("Entegrasyon Bilgileri Hatalı");
             }
         }
 
@@ -69,6 +70,10 @@ namespace Humanity.Application.Services
             if (entegre != null && entegre.Count>0)
             {
                 await GetToken(entegre.First());
+            }
+            else
+            {
+                throw new Exception("Entegrasyon Bilgileri Bulunamadı");
             }
 
             
