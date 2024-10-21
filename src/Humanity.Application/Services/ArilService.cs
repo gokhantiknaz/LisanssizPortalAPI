@@ -25,7 +25,7 @@ namespace Humanity.Application.Services
         public ArilService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _ = GetToken();
+           // _ = GetToken();
         }
 
 
@@ -56,6 +56,7 @@ namespace Humanity.Application.Services
 
         public async Task<CustomerSubscriptionResponse> GetCustomerPortalSubscriptions()
         {
+            await GetToken();
             var postData = new
             {
                 PageNumber = 1,

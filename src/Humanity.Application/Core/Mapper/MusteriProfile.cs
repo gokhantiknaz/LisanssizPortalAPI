@@ -18,6 +18,7 @@ namespace Humanity.Application.Core.Mapper
         {
             CreateMap<Musteri, MusteriDTO>().ReverseMap();
             CreateMap<Musteri, CreateMusteriReq>().ReverseMap();
+            CreateMap<Musteri, UpdateMusteriReq>().ReverseMap();
             CreateMap<Musteri, CreateMusteriRes>().ReverseMap();
             CreateMap<MusteriIletisim, MusteriIletisimDTO>().ReverseMap();
         }

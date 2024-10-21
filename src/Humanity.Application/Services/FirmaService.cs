@@ -134,7 +134,7 @@ namespace Humanity.Application.Services
 
             await _unitOfWork.SaveChangesAsync();
 
-            _loggerService.LogInfo("Cari Kart Güncellendi.");
+            _loggerService.LogInfo("Firma Kartı Güncellendi.");
 
             return new GetFirmaRes() { Data = new FirmaDTO(firma) };
         }

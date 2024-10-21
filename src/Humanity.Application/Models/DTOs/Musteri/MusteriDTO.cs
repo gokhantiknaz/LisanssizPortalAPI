@@ -29,7 +29,7 @@ namespace Humanity.Application.Models.DTOs.Musteri
         public int? OzelkodId1 { get; set; }
         public int? OzelkodId2 { get; set; }
         public int? OzelkodId3 { get; set; }
-
+        public int DagitimFirmaId { get; set; }
         public MusteriIletisimDTO MusteriIletisim { get; set; }
 
         public MusteriEntegrasyonDTO MusteriEntegrasyon { get; set; }

@@ -102,6 +102,27 @@ namespace Humanity.Application.Services
 
         }
 
+
+        public async Task<CreateMusteriRes> Update(UpdateMusteriReq req)
+        {
+            Musteri m = mapper.Map<Musteri>(req);
+
+            _unitOfWork.Repository<Musteri>().Update(m);
+
+            try
+            {
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            _loggerService.LogInfo("Müşteri Kaydedildi");
+
+            return new CreateMusteriRes() { Data = new MusteriDTO(m) };
+        }
+
         public async Task<GetMusteriRes> GetMusteriById(int id)
         {
             var musteri = await _unitOfWork.Repository<Musteri>().GetByIdAsync(id);
