@@ -157,6 +157,7 @@ namespace Humanity.Application.Services
 
             var data = new FirmaDTO(firma) { FirmaIletisim = new FirmaIletisimDTO(firmaIletisimDto) };
 
+            
             return new GetFirmaRes()
             {
                 Data = data

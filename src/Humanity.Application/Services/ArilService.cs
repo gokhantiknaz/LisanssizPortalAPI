@@ -22,19 +22,25 @@ namespace Humanity.Application.Services
         private static readonly HttpClient client = new HttpClient();
         private static string token = string.Empty;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IFirmaService _firmaService;
 
 
-        public ArilService(IUnitOfWork unitOfWork)
+        public ArilService(IUnitOfWork unitOfWork, IFirmaService firmaService)
         {
             _unitOfWork = unitOfWork;
-           // _ = GetToken();
+            _firmaService = firmaService;
+            // _ = GetToken();
         }
 
-
-        public async Task GetToken(MusteriEntegrasyon musteriEntegrasyon)
+        public async Task GetToken(int firmaId, MusteriEntegrasyon musteriEntegrasyon)
         {
             //dağıtım firmaya göre dinamik gelecek.
-            string tokenUrl = "https://osos.dedas.com.tr/aril-portalserver/customer-rest-api/generate-token";
+            string tokenUrl = "aril-portalserver/customer-rest-api/generate-token";
+
+            string firmaArilAdres = "https://osos.dedas.com.tr";
+            firmaArilAdres = "https://ososout.oedas.com.tr/";
+
+            tokenUrl = firmaArilAdres + "aril-portalserver/customer-rest-api/generate-token";
             var credentials = new
             {
                 UserCode = musteriEntegrasyon.KullaniciAdi,
@@ -62,21 +68,22 @@ namespace Humanity.Application.Services
         {
 
             // müşteriye ait token al.
+
             var spec = new BaseSpecification<MusteriEntegrasyon>(x => x.MusteriId == musteriid);
-
+            spec.AddInclude(a => a.Musteri);
             var entegre = await _unitOfWork.Repository<MusteriEntegrasyon>().ListAsync(spec);
-       
 
-            if (entegre != null && entegre.Count>0)
+
+            if (entegre != null && entegre.Count > 0)
             {
-                await GetToken(entegre.First());
+                await GetToken(entegre.First().Musteri.DagitimFirmaId, entegre.First());
             }
             else
             {
                 throw new Exception("Entegrasyon Bilgileri Bulunamadı");
             }
 
-            
+
             var postData = new
             {
                 PageNumber = 1,
@@ -91,8 +98,14 @@ namespace Humanity.Application.Services
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Add("aril-service-token", token);
 
-            string url = "https://osos.dedas.com.tr/aril-portalserver/customer-rest-api/proxy-aril/GetCustomerPortalSubscriptions";
-            var response = await client.PostAsync(url, content);
+
+            string firmaArilAdres = "https://osos.dedas.com.tr/";
+            firmaArilAdres = "https://ososout.oedas.com.tr/";
+
+            string url = "aril-portalserver/customer-rest-api/proxy-aril/GetCustomerPortalSubscriptions";
+            url = firmaArilAdres + url;
+            
+                var response = await client.PostAsync(url, content);
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
@@ -100,11 +113,9 @@ namespace Humanity.Application.Services
             }
             return null;
         }
-        public async Task<GetOwnerConsumptionsResponse> GetOwnerConsumptions(int musteriId,DateTime startDate, DateTime endDate)
+        public async Task<GetOwnerConsumptionsResponse> GetOwnerConsumptions(int musteriId, DateTime startDate, DateTime endDate)
         {
             var currentDate = startDate;
-
-
 
             while (currentDate <= endDate)
             {
