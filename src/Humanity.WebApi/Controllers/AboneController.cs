@@ -47,12 +47,12 @@ namespace Humanity.WebApi.Controllers
         }
 
 
-        [HttpGet("{musteriid:int}")]
-        public async Task<ActionResult<GetAboneRes>> GetMusteriAboneler(int musteriid)
-        {
-            var result = await _aboneService.GetMusteriAboneler(musteriid);
-            return Ok(result);
-        }
+        //[HttpGet("{musteriid:int}")]
+        //public async Task<ActionResult<GetAboneRes>> GetMusteriAboneler(int musteriid)
+        //{
+        //    var result = await _aboneService.GetMusteriAboneler(musteriid);
+        //    return Ok(result);
+        //}
 
 
         [HttpGet("GetFirmaAboneler")]

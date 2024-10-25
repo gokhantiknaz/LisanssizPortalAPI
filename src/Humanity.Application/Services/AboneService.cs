@@ -41,31 +41,25 @@ namespace Humanity.Application.Services
 
         public async Task<GetAboneRes> GetAboneById(int AboneId)
         {
-            var AboneSpec = AboneSpecifications.GetAboneById(AboneId);
-
-            var Abone = await _unitOfWork.Repository<Abone>().GetByIdAsync(AboneId);
-
-            //abonesi
-            var aboneSpec = new BaseSpecification<Abone>(a => a.Id == AboneId);
-            var abone = await _unitOfWork.Repository<Abone>().ListAsync(aboneSpec);
+            var abone = await _unitOfWork.Repository<Abone>().GetByIdAsync(AboneId);
 
             //uretici bilgisi varsa
-            var ureticiSpec = new BaseSpecification<AboneUretici>(a => a.AboneId == abone.FirstOrDefault().Id);
+            var ureticiSpec = new BaseSpecification<AboneUretici>(a => a.AboneId == AboneId);
             var aboneUretici = await _unitOfWork.Repository<AboneUretici>().ListAsync(ureticiSpec);
 
 
             //iletisim bilgisi
             var AboneIletisimDto = await GetAboneIletisim(AboneId);
 
-            var data = new AboneDTO(Abone);
+            var data = _mapper.Map<AboneDTO>(abone);
 
             data.AboneIletisim = AboneIletisimDto;
-            data= new AboneDTO(abone.First());
+       
             if (aboneUretici.Count > 0)
                 data.UreticiBilgileri = new UreticiDTO(aboneUretici.FirstOrDefault(new AboneUretici()));
 
             //tujeticileri varsa
-            if (aboneUretici.Count > 0 && abone.FirstOrDefault().SahisTip == SahisTip.Uretici)
+            if (aboneUretici.Count > 0 && abone.SahisTip == SahisTip.Uretici)
             {
                 var tuketicilerSpec = new BaseSpecification<AboneTuketici>(a => a.UreticiAboneId == aboneUretici.FirstOrDefault().Id);
                 var tuketiciler = await _unitOfWork.Repository<AboneTuketici>().ListAsync(tuketicilerSpec);
