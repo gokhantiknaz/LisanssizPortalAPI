@@ -1,5 +1,7 @@
 ﻿using Humanity.Application.Core.Services;
 using Humanity.Application.Interfaces;
+using Humanity.Application.Models.DTOs.Musteri;
+using Humanity.Application.Models.Requests.Musteri;
 using Humanity.Application.Models.Responses;
 using Humanity.Application.Models.Responses.Musteri;
 using Humanity.Application.Services;
@@ -30,16 +32,31 @@ namespace Humanity.WebApi.Controllers
             return Ok(result);
         }
 
+        [HttpPost]
+        public async Task<ActionResult<CreateAboneRes>> Create(AboneDTO abone)
+        {
+            var result = await _aboneService.CreateAbone(abone);
+            return Ok(result);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<CreateMusteriReq>> Update(AboneDTO abone)
+        {
+            var result = await _aboneService.Update(abone);
+            return Ok(result);
+        }
+
+
         [HttpGet("{musteriid:int}")]
-        public async Task<ActionResult<List<GetAboneRes>>> GetMusteriAboneler(int musteriid)
+        public async Task<ActionResult<GetAboneRes>> GetMusteriAboneler(int musteriid)
         {
             var result = await _aboneService.GetMusteriAboneler(musteriid);
             return Ok(result);
         }
 
 
-        [HttpGet("{firmaid:int}")]
-        public async Task<ActionResult<List<GetAboneRes>>> GetFirmaAboneler()
+        [HttpGet("GetFirmaAboneler")]
+        public async Task<ActionResult<GetAboneResList>> GetFirmaAboneler()
         {
             var result = await _aboneService.GetFirmaAboneler();
             return Ok(result);

@@ -19,6 +19,8 @@ using System.Xml.Schema;
 using static Humanity.Domain.Enums.Enums;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Humanity.Application.Models.DTOs.Musteri;
+using Humanity.Application.Models.Responses.Musteri;
+using AutoMapper;
 
 namespace Humanity.Application.Services
 {
@@ -27,11 +29,14 @@ namespace Humanity.Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILoggerService _loggerService;
         private readonly IAboneRepository _Abonerep;
-        public AboneService(IUnitOfWork unitOfWork, ILoggerService loggerService, IAboneRepository Abonerep)
+        private readonly IMapper _mapper;
+
+        public AboneService(IUnitOfWork unitOfWork, ILoggerService loggerService, IAboneRepository Abonerep, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _loggerService = loggerService;
             _Abonerep = Abonerep;
+            _mapper = mapper;
         }
 
         public async Task<GetAboneRes> GetAboneById(int AboneId)
@@ -86,13 +91,12 @@ namespace Humanity.Application.Services
                 Durum = Status.Aktif,
                 SahisTip = req.SahisTip,
                 SeriNo = req.SeriNo,
-                SozlesmeGucu = req.SozlesmeGucu,
+                SozlesmeGucu = req.SozlesmeGucu.GetValueOrDefault(0),
                 IsDeleted = false,
-                KuruluGuc = req.KuruluGuc,
+                KuruluGuc = req.KuruluGuc.GetValueOrDefault(0),
                 EtsoKodu = req.EtsoKodu,
-                DagitimFirmaId = req.DagitimFirmaId,
                 Agog = req.Agog,
-                BaglantiGucu = req.BaglantiGucu,
+                BaglantiGucu = req.BaglantiGucu.GetValueOrDefault(0),
                 Tarife = req.Tarife,
                 Terim = req.Terim,
                 CreatedBy = Guid.Empty,
@@ -102,6 +106,7 @@ namespace Humanity.Application.Services
                 OzelkodId1 = req.OzelkodId1,
                 OzelkodId2 = req.OzelkodId2,
                 OzelkodId3 = req.OzelkodId3,
+                MusteriId=req.MusteriId,
               
                 AboneIletisim = new AboneIletisim
                 {
@@ -175,9 +180,17 @@ namespace Humanity.Application.Services
 
             //_ = _unitOfWork.Repository<AboneIletisim>().AddAsync(iletisimabone);
 
-            await _unitOfWork.SaveChangesAsync();
+          
 
-            _loggerService.LogInfo("Yeni Müşteri Eklendi");
+            try
+            {
+                await _unitOfWork.SaveChangesAsync();
+                _loggerService.LogInfo("Yeni Abone Eklendi");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
 
             return new CreateAboneRes() { Data = new AboneDTO(abone) };
         }
@@ -236,9 +249,8 @@ namespace Humanity.Application.Services
             abone.IsDeleted = false;
             abone.KuruluGuc = req.KuruluGuc;
             abone.EtsoKodu = req.EtsoKodu;
-            abone.DagitimFirmaId = req.DagitimFirmaId;
             abone.Agog = req.Agog;
-            abone.BaglantiGucu = req.BaglantiGucu;
+            abone.BaglantiGucu = req.BaglantiGucu.GetValueOrDefault(0);
             abone.Tarife = req.Tarife;
             abone.Terim = req.Terim;
             abone.LastModifiedBy = Guid.Empty;
@@ -394,14 +406,24 @@ namespace Humanity.Application.Services
             };
         }
 
-        public Task<List<GetAboneRes>> GetMusteriAboneler(int musteriid)
+        public Task<GetAboneRes> GetMusteriAboneler(int musteriid)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<GetAboneRes>> GetFirmaAboneler()
+        public async Task<GetAboneResList> GetFirmaAboneler()
         {
-            throw new NotImplementedException();
+            var activeSpec = new BaseSpecification<Abone>(a => a.Durum == Domain.Enums.Enums.Status.Aktif);
+            activeSpec.ApplyOrderByDescending(x => x.Id);
+
+            var aboneler = await _unitOfWork.Repository<Abone>().ListAsync(activeSpec);
+
+            var aboneDTOs = _mapper.Map<List<AboneDTO>>(aboneler);
+
+            return new GetAboneResList()
+            {
+                Data = aboneDTOs
+            };
         }
     }
 }

@@ -33,6 +33,13 @@ namespace Humanity.Application.Models.Responses
     {
         public AboneDTO Data { get; set; }
     }
+
+    public class GetAboneResList
+    {
+        public List<AboneDTO> Data { get; set; }
+    }
+
     
+
 
 }

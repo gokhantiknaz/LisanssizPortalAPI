@@ -29,9 +29,9 @@ namespace Humanity.Application.Interfaces
         //Task<GetAllActiveAboneRes> CariyeBagliUreticiGetir(int cariId);
 
         Task<GetTuketiciListRes> GetBagimsizTuketiciler(int cariId);
-        Task<List<GetAboneRes>> GetMusteriAboneler(int musteriid);
+        Task<GetAboneRes> GetMusteriAboneler(int musteriid);
 
-        Task<List<GetAboneRes>> GetFirmaAboneler();
+        Task<GetAboneResList> GetFirmaAboneler();
 
         //Task<GetAboneRes> Update(UpdateAboneReq Abone);
     }
