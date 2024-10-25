@@ -24,7 +24,7 @@ namespace Humanity.Infrastructure
         public static void ConfigureInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<LisanssizContext>(options =>
-                options.UseNpgsql("Server=localhost;Port=5432;Database=HumanityTest;;Username=postgres;Password=1234qqqQ",
+                options.UseNpgsql("Server=ep-twilight-snow-a871iu69.eastus2.azure.neon.tech;Port=5432;Database=lisanssiz;;Username=lisanssiz_owner;Password=ohjSvY1mtDV6",
                 x => x.MigrationsAssembly("Humanity.Infrastructure")));
 
             var jwtSettings = Configure<JwtSettings>(nameof(JwtSettings));

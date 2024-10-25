@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Humanity.Infrastructure.Migrations
 {
     [DbContext(typeof(LisanssizContext))]
-    [Migration("20241018122413_firma2musteri")]
-    partial class firma2musteri
+    [Migration("20241025112759_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,20 +48,19 @@ namespace Humanity.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("DagitimFirmaId")
+                    b.Property<int?>("DagitimFirmaId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Durum")
                         .HasColumnType("integer");
 
                     b.Property<string>("EtsoKodu")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<double>("KuruluGuc")
+                    b.Property<double?>("KuruluGuc")
                         .HasColumnType("double precision");
 
                     b.Property<Guid?>("LastModifiedBy")
@@ -85,16 +84,16 @@ namespace Humanity.Infrastructure.Migrations
                     b.Property<int>("SahisTip")
                         .HasColumnType("integer");
 
-                    b.Property<long>("SeriNo")
+                    b.Property<long?>("SeriNo")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Soyadi")
                         .HasColumnType("text");
 
-                    b.Property<double>("SozlesmeGucu")
+                    b.Property<double?>("SozlesmeGucu")
                         .HasColumnType("double precision");
 
-                    b.Property<int>("Tarife")
+                    b.Property<int?>("Tarife")
                         .HasColumnType("integer");
 
                     b.Property<long?>("Tckn")

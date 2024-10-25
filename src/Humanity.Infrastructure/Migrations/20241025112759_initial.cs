@@ -142,7 +142,8 @@ namespace Humanity.Infrastructure.Migrations
                     CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: true),
                     LastModifiedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DagitimFirmaId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -288,30 +289,6 @@ namespace Humanity.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FirmaEntegrasyon",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FirmaId = table.Column<int>(type: "integer", nullable: false),
-                    DagitimFirmaId = table.Column<int>(type: "integer", nullable: false),
-                    ServisId = table.Column<int>(type: "integer", nullable: false),
-                    ServisKullaniciAdi = table.Column<string>(type: "text", nullable: false),
-                    ServisSifre = table.Column<string>(type: "text", nullable: false),
-                    ServisAdres = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FirmaEntegrasyon", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_FirmaEntegrasyon_Firma_FirmaId",
-                        column: x => x.FirmaId,
-                        principalTable: "Firma",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "FirmaIletisim",
                 columns: table => new
                 {
@@ -352,13 +329,13 @@ namespace Humanity.Infrastructure.Migrations
                     Unvan = table.Column<string>(type: "text", nullable: true),
                     Tckn = table.Column<long>(type: "bigint", nullable: true),
                     Vkn = table.Column<long>(type: "bigint", nullable: true),
-                    Tarife = table.Column<int>(type: "integer", nullable: false),
-                    EtsoKodu = table.Column<string>(type: "text", nullable: false),
-                    DagitimFirmaId = table.Column<int>(type: "integer", nullable: false),
-                    SeriNo = table.Column<long>(type: "bigint", nullable: false),
-                    SozlesmeGucu = table.Column<double>(type: "double precision", nullable: false),
+                    Tarife = table.Column<int>(type: "integer", nullable: true),
+                    EtsoKodu = table.Column<string>(type: "text", nullable: true),
+                    DagitimFirmaId = table.Column<int>(type: "integer", nullable: true),
+                    SeriNo = table.Column<long>(type: "bigint", nullable: true),
+                    SozlesmeGucu = table.Column<double>(type: "double precision", nullable: true),
                     BaglantiGucu = table.Column<double>(type: "double precision", nullable: false),
-                    KuruluGuc = table.Column<double>(type: "double precision", nullable: false),
+                    KuruluGuc = table.Column<double>(type: "double precision", nullable: true),
                     SahisTip = table.Column<int>(type: "integer", nullable: false),
                     Terim = table.Column<int>(type: "integer", nullable: false),
                     Agog = table.Column<int>(type: "integer", nullable: false),
@@ -377,6 +354,30 @@ namespace Humanity.Infrastructure.Migrations
                     table.PrimaryKey("PK_Abone", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Abone_Musteri_MusteriId",
+                        column: x => x.MusteriId,
+                        principalTable: "Musteri",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MusteriEntegrasyon",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    MusteriId = table.Column<int>(type: "integer", nullable: false),
+                    DagitimFirmaId = table.Column<int>(type: "integer", nullable: false),
+                    ServisId = table.Column<int>(type: "integer", nullable: false),
+                    KullaniciAdi = table.Column<string>(type: "text", nullable: false),
+                    Sifre = table.Column<string>(type: "text", nullable: false),
+                    ServisAdres = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MusteriEntegrasyon", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MusteriEntegrasyon_Musteri_MusteriId",
                         column: x => x.MusteriId,
                         principalTable: "Musteri",
                         principalColumn: "Id",
@@ -654,11 +655,6 @@ namespace Humanity.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_FirmaEntegrasyon_FirmaId",
-                table: "FirmaEntegrasyon",
-                column: "FirmaId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_FirmaIletisim_IletisimId",
                 table: "FirmaIletisim",
                 column: "IletisimId");
@@ -667,6 +663,12 @@ namespace Humanity.Infrastructure.Migrations
                 name: "IX_MusteriAylikEndeks_AboneId",
                 table: "MusteriAylikEndeks",
                 column: "AboneId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MusteriEntegrasyon_MusteriId",
+                table: "MusteriEntegrasyon",
+                column: "MusteriId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_MusteriIletisim_IletisimId",
@@ -716,9 +718,6 @@ namespace Humanity.Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "FirmaEntegrasyon");
-
-            migrationBuilder.DropTable(
                 name: "FirmaIletisim");
 
             migrationBuilder.DropTable(
@@ -726,6 +725,9 @@ namespace Humanity.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "MusteriAylikEndeks");
+
+            migrationBuilder.DropTable(
+                name: "MusteriEntegrasyon");
 
             migrationBuilder.DropTable(
                 name: "MusteriIletisim");
