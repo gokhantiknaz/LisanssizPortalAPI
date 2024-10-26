@@ -9,7 +9,7 @@ namespace Humanity.Application.Models.Responses
 {
     public class SaatlikEndeksRes
     {
-        public int? MusteriId { get; set; }
+        public int? AboneId { get; set; }
         public string? ProfilTarihi { get; set; }
         public decimal? TuketimCekis { get; set; }
         public decimal? ReakIndCekis { get; set; }
@@ -31,7 +31,7 @@ namespace Humanity.Application.Models.Responses
     {
         public int Id { get; set; }
 
-        public int MusteriId { get; set; }
+        public int AboneId { get; set; }
 
         public string Donem { get; set; }
 

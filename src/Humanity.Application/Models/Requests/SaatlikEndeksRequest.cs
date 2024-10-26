@@ -9,7 +9,7 @@ namespace Humanity.Application.Models.Requests
     public class SaatlikEndeksRequest
     {
 
-        public int? MusteriId { get; set; }
+        public int? AboneId { get; set; }
         public string? ProfilTarihi { get; set; }
         public decimal? TuketimCekis { get; set; }
         public decimal? ReakIndCekis { get; set; }
