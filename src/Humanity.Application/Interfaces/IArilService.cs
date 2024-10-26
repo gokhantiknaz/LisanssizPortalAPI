@@ -1,4 +1,5 @@
 ﻿using Humanity.Application.Models.DTOs;
+using Humanity.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,8 @@ namespace Humanity.Application.Interfaces
 
 
         Task<CustomerSubscriptionResponse> GetCustomerPortalSubscriptions(int musteriid);
+
+
+        Task<GetEndOfMonthEndexesResponse> GetEndOfMonthEndexes(int aboneid, string donem);
     }
 }

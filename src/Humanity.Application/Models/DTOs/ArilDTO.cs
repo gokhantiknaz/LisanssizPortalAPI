@@ -58,4 +58,36 @@ namespace Humanity.Application.Models.DTOs
     }
 
 
+
+    public class GetEndOfMonthEndexesResponse
+    {
+        public int PageSize { get; set; }
+        public int PageNumber { get; set; }
+        public int TotalItemCount { get; set; }
+        public int TotalPageCount { get; set; }
+        public List<EndexData> ResultList { get; set; }
+    }
+
+
+    public class EndexData
+    {
+        public int EndexYear { get; set; }
+        public int EndexMonth { get; set; }
+        public long EndexDate { get; set; }
+        public int EndexType { get; set; }
+        public double T1Endex { get; set; }
+        public double T2Endex { get; set; }
+        public double T3Endex { get; set; }
+        public double T4Endex { get; set; }
+        public double ReactiveCapasitive { get; set; }
+        public double MaxDemand { get; set; }
+        public long DemandDate { get; set; }
+        public double TSum { get; set; }
+        public double ReactiveInductive { get; set; }
+        public string UpdateMongoID { get; set; }
+        public int SensorSerno { get; set; }
+        public string SensorIdentifier { get; set; }
+    }
+
+
 }

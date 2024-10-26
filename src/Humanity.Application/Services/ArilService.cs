@@ -158,7 +158,8 @@ namespace Humanity.Application.Services
             return new GetOwnerConsumptionsResponse() { };
         }
 
-        static async Task<object> GetOwnerConsumption(int serno, DateTime startDate, DateTime endDate, MusteriEntegrasyon entegre)
+        //müşteri saatlik data
+        public async Task<object> GetOwnerConsumption(int serno, DateTime startDate, DateTime endDate, MusteriEntegrasyon entegre)
         {
             // Post isteği için body verisi
             var postData = new
@@ -205,6 +206,63 @@ namespace Humanity.Application.Services
         }
 
 
+        //müşteri aylık data
+        public async Task<GetEndOfMonthEndexesResponse> GetEndOfMonthEndexes(int aboneid, string donem)
+        {
+            // Post isteği için body verisi
 
+            var startDate =Convert.ToDateTime(donem + "/01");
+            var endDate = Convert.ToDateTime(startDate).AddMonths(1);
+            var abone = await _unitOfWork.Repository<Abone>().GetByIdAsync(aboneid);
+            
+            var postData = new
+            {
+                OwnerSerno = abone.SeriNo,  // Dinamik olarak serno geliyor
+                StartDate = startDate.ToString("yyyyMMddHHmmss"), // Başlangıç tarihi (sabit)
+                EndDate = endDate.ToString("yyyyMMddHHmmss"),   // Bitiş tarihi (sabit)
+                PageSize = 1000,            // Sayfa boyutu (sabit)
+                PageNumber = 1,             // Sayfa numarası (sabit)
+                IsOnlySuccess = true,       // Sadece başarılı kayıtlar (sabit)
+                IncludeLoadProfiles = false, // Yük profilleri dahil değil
+                WithoutMultiplier = false,  // Çarpansız veri
+                MergeResult = false         // Sonuçları birleştirme
+            };
+
+            var entegreList = await _unitOfWork.Repository<MusteriEntegrasyon>().ListAsync(new BaseSpecification<MusteriEntegrasyon>(a => a.MusteriId == abone.MusteriId));
+            var entegre = entegreList.FirstOrDefault();
+
+            await GetToken(-1, entegre);
+
+            // Post verisini JSON formatına çevirip istek gönderiyoruz
+            var content = new StringContent(JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
+
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Add("aril-service-token", token);
+
+            // aril-service-token header'ı eklenmiş durumda
+
+            if (!entegre.ServisAdres.EndsWith(".com.tr/"))
+            {
+                throw new Exception("Entegrasyon Bilgileri Hatalı");
+            }
+            string firmaArilAdres = entegre.ServisAdres;
+
+            string url = "aril-portalserver/customer-rest-api/proxy-aril/GetEndOfMonthEndexes";
+            url = firmaArilAdres + url;
+
+            //string url = "https://osos.dedas.com.tr/aril-portalserver/customer-rest-api/proxy-aril/GetEndOfMonthEndexes";
+            var response = await client.PostAsync(url, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<GetEndOfMonthEndexesResponse>(json);  // Gelen cevabı deserialize et ve döndür
+            }
+            else
+            {
+                Console.WriteLine($"Owner Consumptions API çağrısı başarısız. Status Code: {response.StatusCode}");
+                return null;
+            }
+        }
     }
 }

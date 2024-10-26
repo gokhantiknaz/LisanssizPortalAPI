@@ -93,5 +93,8 @@ namespace Humanity.Application.Services
 
             return new SaatlikEndeksRes() { };
         }
+
+
+       
     }
 }
