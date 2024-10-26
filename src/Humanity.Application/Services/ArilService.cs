@@ -37,8 +37,12 @@ namespace Humanity.Application.Services
             //dağıtım firmaya göre dinamik gelecek.
             string tokenUrl = "aril-portalserver/customer-rest-api/generate-token";
 
-            string firmaArilAdres = "https://osos.dedas.com.tr";
-            firmaArilAdres = "https://ososout.oedas.com.tr/";
+            if (!musteriEntegrasyon.ServisAdres.EndsWith(".com.tr/"))
+            {
+                throw new Exception("Entegrasyon Bilgileri Hatalı");
+            }
+            string firmaArilAdres = musteriEntegrasyon.ServisAdres;
+
 
             tokenUrl = firmaArilAdres + "aril-portalserver/customer-rest-api/generate-token";
             var credentials = new
@@ -95,13 +99,16 @@ namespace Humanity.Application.Services
             client.DefaultRequestHeaders.Add("aril-service-token", token);
 
 
-            string firmaArilAdres = "https://osos.dedas.com.tr/";
-            firmaArilAdres = "https://ososout.oedas.com.tr/";
+            if (!entegre.First().ServisAdres.EndsWith(".com.tr/"))
+            {
+                throw new Exception("Entegrasyon Bilgileri Hatalı");
+            }
+            string firmaArilAdres = entegre.First().ServisAdres;
 
             string url = "aril-portalserver/customer-rest-api/proxy-aril/GetCustomerPortalSubscriptions";
             url = firmaArilAdres + url;
-            
-                var response = await client.PostAsync(url, content);
+
+            var response = await client.PostAsync(url, content);
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
@@ -109,9 +116,15 @@ namespace Humanity.Application.Services
             }
             return null;
         }
+
+        // müşteriye bağlı tüm abonelerin datasını alan servis.
         public async Task<GetOwnerConsumptionsResponse> GetOwnerConsumptions(int musteriId, DateTime startDate, DateTime endDate)
         {
             var currentDate = startDate;
+
+            var spec = new BaseSpecification<MusteriEntegrasyon>(x => x.MusteriId == musteriId);
+            spec.AddInclude(a => a.Musteri);
+            var entegre = await _unitOfWork.Repository<MusteriEntegrasyon>().ListAsync(spec);
 
             while (currentDate <= endDate)
             {
@@ -131,7 +144,7 @@ namespace Humanity.Application.Services
                         if (tumData.Count(a => a.Donem == donem) > 0)
                             continue;
 
-                        var consumpiton = await GetOwnerConsumption(result.SubscriptionSerno, startOfMonth, endOfMonth);
+                        var consumpiton = await GetOwnerConsumption(result.SubscriptionSerno, startOfMonth, endOfMonth, entegre.FirstOrDefault());
 
                         var jsonStr = JsonSerializer.Serialize(consumpiton, new JsonSerializerOptions { WriteIndented = true });
                         await _unitOfWork.Repository<OwnerConsumpiton>().AddAsync(new OwnerConsumpiton() { Donem = donem, Firma = "dedas", Json = jsonStr, SerNo = result.SubscriptionSerno });
@@ -145,7 +158,7 @@ namespace Humanity.Application.Services
             return new GetOwnerConsumptionsResponse() { };
         }
 
-        static async Task<object> GetOwnerConsumption(int serno, DateTime startDate, DateTime endDate)
+        static async Task<object> GetOwnerConsumption(int serno, DateTime startDate, DateTime endDate, MusteriEntegrasyon entegre)
         {
             // Post isteği için body verisi
             var postData = new
@@ -165,7 +178,18 @@ namespace Humanity.Application.Services
             var content = new StringContent(JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
 
             // aril-service-token header'ı eklenmiş durumda
-            string url = "https://osos.dedas.com.tr/aril-portalserver/customer-rest-api/proxy-aril/GetOwnerConsumptions";
+
+
+            if (!entegre.ServisAdres.EndsWith(".com.tr/"))
+            {
+                throw new Exception("Entegrasyon Bilgileri Hatalı");
+            }
+            string firmaArilAdres = entegre.ServisAdres;
+
+            string url = "aril-portalserver/customer-rest-api/proxy-aril/GetOwnerConsumptions";
+            url = firmaArilAdres + url;
+
+            //string url = "https://osos.dedas.com.tr/aril-portalserver/customer-rest-api/proxy-aril/GetOwnerConsumptions";
             var response = await client.PostAsync(url, content);
 
             if (response.IsSuccessStatusCode)

@@ -92,9 +92,9 @@ namespace Humanity.Infrastructure.Data
 
         public DbSet<Logs> Logs { get; set; }
 
-        public DbSet<AboneSaatlikEndeks> MusteriSaatlikEndeks { get; set; }
+        public DbSet<AboneSaatlikEndeks> AboneSaatlikEndeks { get; set; }
 
-        public DbSet<AboneAylikEndeks> MusteriAylikEndeks { get; set; }
+        public DbSet<AboneAylikEndeks> AboneAylikEndeks { get; set; }
 
         public DbSet<OwnerConsumpiton> OwnerConsumpiton { get; set; }
     }
