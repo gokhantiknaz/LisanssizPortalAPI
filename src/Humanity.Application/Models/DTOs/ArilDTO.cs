@@ -42,6 +42,19 @@ namespace Humanity.Application.Models.DTOs
         public long MeterPointOwnerAssignDate { get; set; }
         public long SubscriberMultiplierChangeDate { get; set; }
         public object CustomerFields { get; set; }
+
+        public string DefinitionTypeStr
+        {
+            get
+            {
+                return DefinitionType switch
+                {
+                    2 => "Tüketim Noktası",
+                    15 => "Üretim Noktası",
+                    _ => "Bilinmeyen Nokta" // varsayılan değer
+                };
+            }
+        }
     }
 
 

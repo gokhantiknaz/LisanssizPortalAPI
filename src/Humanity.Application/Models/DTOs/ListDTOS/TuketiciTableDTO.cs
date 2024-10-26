@@ -30,6 +30,24 @@ namespace Humanity.Application.Models.DTOs.ListDTOS
 
         public bool IsDeleted { get; set; }
 
+        public string SerNo { get; set; }
+
+        public int DefinitionType { get; set; }
+
+
+        public string DefinitionTypeStr
+        {
+            get
+            {
+                return DefinitionType switch
+                {
+                    2 => "Tüketim Noktası",
+                    15 => "Üretim Noktası",
+                    _ => "Bilinmeyen Nokta" // varsayılan değer
+                };
+            }
+        }
+
         public TuketiciTableDTO()
         {
             
