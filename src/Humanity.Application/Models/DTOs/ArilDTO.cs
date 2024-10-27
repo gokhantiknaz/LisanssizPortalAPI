@@ -89,5 +89,7 @@ namespace Humanity.Application.Models.DTOs
         public string SensorIdentifier { get; set; }
     }
 
+   
+
 
 }

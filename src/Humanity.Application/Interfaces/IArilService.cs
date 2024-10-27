@@ -16,6 +16,10 @@ namespace Humanity.Application.Interfaces
         Task<CustomerSubscriptionResponse> GetCustomerPortalSubscriptions(int musteriid);
 
 
-        Task<GetEndOfMonthEndexesResponse> GetEndOfMonthEndexes(int aboneid, string donem);
+        Task<GetEndOfMonthEndexesResponse> GetEndOfMonthEndexes(int aboneid, string donem, string donemSon,bool kaydet=false);
+
+        Task<GetEndOfMonthEndexesResponse> GetCurrentEndexes(int aboneid,bool kaydet=false);
+
+        Task<object> GetCurrentEndexesAll(int musteriId);
     }
 }

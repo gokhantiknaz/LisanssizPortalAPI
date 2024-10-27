@@ -34,12 +34,25 @@ namespace Humanity.WebApi.Controllers
         }
 
         [HttpGet("GetEndOfMonthEndexes")]
-        public async Task<ActionResult<GetEndOfMonthEndexesResponse>> GetEndOfMonthEndexes([FromQuery] int aboneId, [FromQuery] string donem)
+        public async Task<ActionResult<GetEndOfMonthEndexesResponse>> GetEndOfMonthEndexes([FromQuery] int aboneId, [FromQuery] string donem, [FromQuery] string donemSon)
         {
           
-            var result = await _arilService.GetEndOfMonthEndexes(aboneId,donem);
+            var result = await _arilService.GetEndOfMonthEndexes(aboneId,donem, donemSon,true);
             return Ok(result);
         }
 
+        [HttpGet("GetCurrentEndexes")]
+        public async Task<ActionResult<GetEndOfMonthEndexesResponse>> GetCurrentEndexes([FromQuery] int aboneId)
+        {
+            var result = await _arilService.GetCurrentEndexes(aboneId,true);
+            return Ok(result);
+        }
+
+        [HttpGet("GetCurrentEndexesAll")]
+        public async Task<ActionResult<GetEndOfMonthEndexesResponse>> GetCurrentEndexesAll([FromQuery] int musteriId)
+        {
+            var result = await _arilService.GetCurrentEndexesAll(musteriId);
+            return Ok(result);
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Humanity.Application.Core.Services;
 using Humanity.Application.Interfaces;
+using Humanity.Application.Models.DTOs;
 using Humanity.Application.Models.DTOs.Musteri;
 using Humanity.Application.Models.Requests;
 using Humanity.Application.Models.Responses;
@@ -43,11 +44,11 @@ namespace Humanity.Application.Services
 
         public async Task<List<AylikEndeksRes>> GetAboneDonemEndeks(int aboneId, string donem)
         {
-            var endeksler = await _unitOfWork.Repository<AboneAylikEndeks>().ListAsync(new BaseSpecification<AboneAylikEndeks>(a => a.AboneId == aboneId&& (a.Donem == donem || donem=="-1")));
+            var endeksler = await _unitOfWork.Repository<AboneEndeks>().ListAsync(new BaseSpecification<AboneEndeks>(a => a.AboneId == aboneId && (a.EndexYear.ToString() == donem.Substring(4) && a.EndexMonth.ToString() == donem.Substring(4, 2)) || donem == "-1"));
 
             if (endeksler == null)
                 throw new Exception("Endeks Bulunamadı");
-            if (endeksler.Count > 0)
+            if (endeksler.Count() > 0)
             {
                 return mapper.Map<List<AylikEndeksRes>>(endeksler);
             }
@@ -62,22 +63,19 @@ namespace Humanity.Application.Services
 
             var aylikVeriler = saatlikEndeks
       .GroupBy(v => new { v.AboneId, v.Donem, v.Carpan })
-      .Select(g => new AboneAylikEndeks
+      .Select(g => new AboneEndeks
       {
           AboneId = g.Key.AboneId,
-          Donem = g.Key.Donem,
-          Carpan = g.Key.Carpan,
-          TotalTuketimCekis = g.Sum(x => x.CekisTuketim),
-          TotalUretimVeris = g.Sum(x => x.Uretim),
-          TotalReakIndVeris = g.Sum(x => x.VerisReaktifInduktif),
-          TotalReakKapVeris = g.Sum(x => x.VerisReaktifKapasitif),
-          TotalReakIndCekis = g.Sum(x => x.CekisReaktifInduktif),
-          TotalReakKapCekis = g.Sum(x => x.CekisReaktifKapasitif),
-          IsDeleted = false // Varsayılan olarak false olarak belirlenebilir
+          EndexYear = Convert.ToInt32(g.Key.Donem.Substring(4)),
+          EndexMonth = Convert.ToInt32(g.Key.Donem.Substring(4, 2)),
+          T1Endex = 0,
+          T2Endex = 0,
+          T3Endex = 0,
+          T4Endex = 0
       })
       .First();
 
-            var aylikEndeksSonuc = await _unitOfWork.Repository<AboneAylikEndeks>().AddAsync(aylikVeriler);
+            var aylikEndeksSonuc = await _unitOfWork.Repository<AboneEndeks>().AddAsync(aylikVeriler);
 
             try
             {
@@ -94,7 +92,38 @@ namespace Humanity.Application.Services
             return new SaatlikEndeksRes() { };
         }
 
+        public async Task<bool> AylikEndeksKaydet(int aboneId, GetEndOfMonthEndexesResponse res)
+        {
 
-       
+            // ilk data son okuma t1 t2 t3 tür o yüzden kümülatip gitnez. aktif ay endeksi
+            if (res.ResultList.Count == 0)
+                throw new Exception("Bu aya ait endeks bulunamadı");
+            var aylikEndeks = mapper.Map<AboneEndeks>(res.ResultList[0]);
+            aylikEndeks.AboneId = aboneId;
+            aylikEndeks.EndexMonth = aylikEndeks.EndexMonth == 0 ? DateTime.Now.Month : aylikEndeks.EndexMonth;
+            aylikEndeks.EndexYear = aylikEndeks.EndexYear == 0 ? DateTime.Now.Year : aylikEndeks.EndexYear;
+
+            // bu ay endeksi varsa once sil sonra ekle
+
+            var spec = new BaseSpecification<AboneEndeks>(x => x.EndexYear == aylikEndeks.EndexYear && x.EndexMonth == aylikEndeks.EndexMonth&& x.AboneId==aboneId);
+            var dataExist = await _unitOfWork.Repository<AboneEndeks>().ListAsync(spec);
+            foreach (var item in dataExist)
+            {
+                _unitOfWork.Repository<AboneEndeks>().Delete(item);
+            }
+
+            _ = await _unitOfWork.Repository<AboneEndeks>().AddAsync(aylikEndeks);
+
+            try
+            {
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return true;
+        }
     }
 }

@@ -7,6 +7,7 @@ using Humanity.Application.Models.Responses;
 using Humanity.Domain.Core.Repositories;
 using Humanity.Domain.Core.Specifications;
 using Humanity.Domain.Entities;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,12 +24,14 @@ namespace Humanity.Application.Services
         private static string token = string.Empty;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IFirmaService _firmaService;
+        private readonly IEndeksService _endeksService;
 
 
-        public ArilService(IUnitOfWork unitOfWork, IFirmaService firmaService)
+        public ArilService(IUnitOfWork unitOfWork, IFirmaService firmaService, IEndeksService endeksService)
         {
             _unitOfWork = unitOfWork;
             _firmaService = firmaService;
+            _endeksService = endeksService;
             // _ = GetToken();
         }
 
@@ -77,7 +80,6 @@ namespace Humanity.Application.Services
             spec.AddInclude(a => a.Musteri);
             var entegre = await _unitOfWork.Repository<MusteriEntegrasyon>().ListAsync(spec);
 
-
             if (entegre != null && entegre.Count > 0)
             {
                 await GetToken(entegre.First().Musteri.DagitimFirmaId, entegre.First());
@@ -117,7 +119,7 @@ namespace Humanity.Application.Services
             return null;
         }
 
-        // müşteriye bağlı tüm abonelerin datasını alan servis.
+        // müşteriye bağlı tüm abonelerin saatlik datasını alan servis.
         public async Task<GetOwnerConsumptionsResponse> GetOwnerConsumptions(int musteriId, DateTime startDate, DateTime endDate)
         {
             var currentDate = startDate;
@@ -207,14 +209,25 @@ namespace Humanity.Application.Services
 
 
         //müşteri aylık data
-        public async Task<GetEndOfMonthEndexesResponse> GetEndOfMonthEndexes(int aboneid, string donem)
+        public async Task<GetEndOfMonthEndexesResponse> GetEndOfMonthEndexes(int aboneid, string donem, string donemSon, bool kaydet = false)
         {
             // Post isteği için body verisi
 
-            var startDate =Convert.ToDateTime(donem + "/01");
-            var endDate = Convert.ToDateTime(startDate).AddMonths(1);
+            var startDate = Convert.ToDateTime(donem + "/01");
+            var endDate = Convert.ToDateTime(donem + "/01").AddMonths(1);
+
+            // eğer güncel ayda ise diğer metoda gidelim. buradan sonuç dönmez
+
+            if (startDate.Month == DateTime.Now.Month && startDate.Year == DateTime.Now.Year)
+            {
+
+                var result = await GetCurrentEndexes(aboneid, kaydet);
+                return result;
+            }
+
+
             var abone = await _unitOfWork.Repository<Abone>().GetByIdAsync(aboneid);
-            
+
             var postData = new
             {
                 OwnerSerno = abone.SeriNo,  // Dinamik olarak serno geliyor
@@ -225,7 +238,8 @@ namespace Humanity.Application.Services
                 IsOnlySuccess = true,       // Sadece başarılı kayıtlar (sabit)
                 IncludeLoadProfiles = false, // Yük profilleri dahil değil
                 WithoutMultiplier = false,  // Çarpansız veri
-                MergeResult = false         // Sonuçları birleştirme
+                MergeResult = false,        // Sonuçları birleştirme
+                EndexDirection = 0 // 1 üretim endeksi 0 tüketim endeksi
             };
 
             var entegreList = await _unitOfWork.Repository<MusteriEntegrasyon>().ListAsync(new BaseSpecification<MusteriEntegrasyon>(a => a.MusteriId == abone.MusteriId));
@@ -256,13 +270,133 @@ namespace Humanity.Application.Services
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<GetEndOfMonthEndexesResponse>(json);  // Gelen cevabı deserialize et ve döndür
+                var res = JsonSerializer.Deserialize<GetEndOfMonthEndexesResponse>(json);
+
+                if (kaydet)
+                {
+                    await _endeksService.AylikEndeksKaydet(aboneid, res);
+                }
+                return res;  // Gelen cevabı deserialize et ve döndür
             }
             else
             {
                 Console.WriteLine($"Owner Consumptions API çağrısı başarısız. Status Code: {response.StatusCode}");
                 return null;
             }
+        }
+
+
+        //müşteri aylık data
+        public async Task<GetEndOfMonthEndexesResponse> GetCurrentEndexes(int aboneid, bool kaydet = false)
+        {
+            // Post isteği için body verisi
+
+            var startDate = Convert.ToDateTime(DateTime.Now.Year.ToString() + "/" + DateTime.Now.Month.ToString().PadLeft(2, '0') + "/01");
+            var endDate = Convert.ToDateTime(DateTime.Now.Year.ToString() + "/" + DateTime.Now.Month.ToString().PadLeft(2, '0') + "/01").AddMonths(1);
+            var abone = await _unitOfWork.Repository<Abone>().GetByIdAsync(aboneid);
+            var postData = new
+            {
+                OwnerSerno = abone.SeriNo,  // Dinamik olarak serno geliyor
+                StartDate = startDate.ToString("yyyyMMddHHmmss"), // Başlangıç tarihi (sabit)
+                EndDate = endDate.ToString("yyyyMMddHHmmss"),   // Bitiş tarihi (sabit)
+                PageSize = 1000,            // Sayfa boyutu (sabit)
+                PageNumber = 1,             // Sayfa numarası (sabit)
+                IsOnlySuccess = true,       // Sadece başarılı kayıtlar (sabit)
+                IncludeLoadProfiles = false, // Yük profilleri dahil değil
+                WithoutMultiplier = false,  // Çarpansız veri
+                MergeResult = false,// Sonuçları birleştirme
+                EndexDirection = 0 // 1 üretim endeksi 0 tüketim endeksi
+            };
+
+            var entegreList = await _unitOfWork.Repository<MusteriEntegrasyon>().ListAsync(new BaseSpecification<MusteriEntegrasyon>(a => a.MusteriId == abone.MusteriId));
+            var entegre = entegreList.FirstOrDefault();
+
+            await GetToken(-1, entegre);
+
+            // Post verisini JSON formatına çevirip istek gönderiyoruz
+            var content = new StringContent(JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
+
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Add("aril-service-token", token);
+
+            // aril-service-token header'ı eklenmiş durumda
+
+            if (!entegre.ServisAdres.EndsWith(".com.tr/"))
+            {
+                throw new Exception("Entegrasyon Bilgileri Hatalı");
+            }
+            string firmaArilAdres = entegre.ServisAdres;
+
+            string url = "aril-portalserver/customer-rest-api/proxy-aril/GetCurrentEndexes";
+            url = firmaArilAdres + url;
+
+            var response = await client.PostAsync(url, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                var res = JsonSerializer.Deserialize<GetEndOfMonthEndexesResponse>(json);
+
+                if (kaydet)
+                {
+                    await _endeksService.AylikEndeksKaydet(aboneid, res);
+                }
+                return res;  // Gelen cevabı deserialize et ve döndür
+            }
+            else
+            {
+                Console.WriteLine($"Owner Consumptions API çağrısı başarısız. Status Code: {response.StatusCode}");
+                return null;
+            }
+        }
+
+        // tüm abonelerin aktif aya ait endekslerini alalım
+        public async Task<object> GetCurrentEndexesAll(int musteriId)
+        {
+            var customers = await GetCustomerPortalSubscriptions(musteriId);
+
+            var startOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            var endOfMonth = startOfMonth.AddMonths(1).AddMinutes(-1); // Ayın son günü
+            var currentDate = DateTime.Now;
+
+            var spec = new BaseSpecification<MusteriEntegrasyon>(x => x.MusteriId == musteriId);
+            spec.AddInclude(a => a.Musteri);
+            var entegre = await _unitOfWork.Repository<MusteriEntegrasyon>().ListAsync(spec);
+
+            List<GetEndOfMonthEndexesResponse> retVal = new List<GetEndOfMonthEndexesResponse>();
+            List<EndexData> endexDatas = new List<EndexData>();
+
+            string donem = DateTime.Now.Year.ToString() + "/" + DateTime.Now.Month.ToString().PadLeft(2, '0');
+            if (customers != null)
+            {
+                foreach (var result in customers.ResultList)
+                {
+                    var abone = await _unitOfWork.Repository<Abone>().GetBy(new BaseSpecification<Abone>(x => x.SeriNo == result.SubscriptionSerno));
+                    if (abone == null)
+                        continue;
+                    var currentEndex = await GetCurrentEndexes(abone.Id);
+                    endexDatas.AddRange(currentEndex.ResultList);
+                    retVal.Add(currentEndex);
+                }
+            }
+
+            var groupedData = endexDatas
+          .GroupBy(r => new
+          {
+              r.SensorSerno,
+              YearMonth = r.EndexDate.ToString().Substring(0, 6)
+          })
+          .Select(g => new
+          {
+              SensorSerno = g.Key.SensorSerno,
+              EndexDate = g.Key.YearMonth,
+              T1Endex = g.Sum(x => x.T1Endex),
+              T2Endex = g.Sum(x => x.T2Endex),
+              T3Endex = g.Sum(x => x.T3Endex),
+          })
+          .ToList();
+
+            return groupedData;
         }
     }
 }

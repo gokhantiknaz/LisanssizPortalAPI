@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Humanity.Application.Models.DTOs;
 using Humanity.Application.Models.Requests;
 using Humanity.Application.Models.Responses;
 using Humanity.Domain.Entities;
@@ -16,7 +17,7 @@ namespace Humanity.Application.Core.Mapper
         public SaatlikEndeksProfile()
         {
             var gmtPlus3 = TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time");
-            
+
 
             CreateMap<SaatlikEndeksRequest, AboneSaatlikEndeks>()
            .ForMember(dest => dest.CekisTuketim, opt => opt.MapFrom(src => src.TuketimCekis))
@@ -26,7 +27,7 @@ namespace Humanity.Application.Core.Mapper
            .ForMember(dest => dest.VerisReaktifKapasitif, opt => opt.MapFrom(src => src.ReakKapVeris))
            .ForMember(dest => dest.Uretim, opt => opt.MapFrom(src => src.UretimVeris))
            .ForMember(dest => dest.Donem, opt => opt.MapFrom(src => src.Donem))
-           .ForMember(dest => dest.ProfilDate, opt => opt.MapFrom(src => TimeZoneInfo.ConvertTimeFromUtc(DateTime.Parse(src.ProfilTarihi),gmtPlus3)))
+           .ForMember(dest => dest.ProfilDate, opt => opt.MapFrom(src => TimeZoneInfo.ConvertTimeFromUtc(DateTime.Parse(src.ProfilTarihi), gmtPlus3)))
            .ForMember(dest => dest.AboneId, opt => opt.MapFrom(src => src.AboneId))
            .ForMember(dest => dest.Carpan, opt => opt.MapFrom(src => src.Carpan));
 
@@ -48,8 +49,8 @@ namespace Humanity.Application.Core.Mapper
     {
         public AylikEndeksProfile()
         {
-            CreateMap<AboneAylikEndeks, AylikEndeksRes>().ReverseMap();
+            CreateMap<AboneEndeks, AylikEndeksRes>().ReverseMap();
+            CreateMap<AboneEndeks, EndexData>().ReverseMap();
         }
     }
-
 }

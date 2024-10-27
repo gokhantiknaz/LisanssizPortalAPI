@@ -61,7 +61,7 @@ namespace Humanity.Infrastructure.Data
 
         }
 
-  
+
         public DbSet<Musteri> Musteri { get; set; }
 
         public DbSet<Iletisim> Iletisim { get; set; }
@@ -70,7 +70,7 @@ namespace Humanity.Infrastructure.Data
 
         public DbSet<AboneIletisim> AboneIletisim { get; set; }
 
-    
+
         public DbSet<AboneSayac> AboneSayac { get; set; }
 
         public DbSet<MusteriIletisim> MusteriIletisim { get; set; }
@@ -83,7 +83,7 @@ namespace Humanity.Infrastructure.Data
         public DbSet<AboneTuketici> AboneTuketici { get; set; }
 
 
-        public DbSet<Firma> Firma{ get; set; }
+        public DbSet<Firma> Firma { get; set; }
 
         public DbSet<FirmaIletisim> FirmaIletisim { get; set; }
 
@@ -94,8 +94,10 @@ namespace Humanity.Infrastructure.Data
 
         public DbSet<AboneSaatlikEndeks> AboneSaatlikEndeks { get; set; }
 
-        public DbSet<AboneAylikEndeks> AboneAylikEndeks { get; set; }
-
         public DbSet<OwnerConsumpiton> OwnerConsumpiton { get; set; }
+
+        public DbSet<AboneEndeks> AboneEndeks { get; set; }
+
+
     }
 }

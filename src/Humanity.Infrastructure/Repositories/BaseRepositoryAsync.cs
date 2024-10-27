@@ -25,6 +25,11 @@ namespace Humanity.Infrastructure.Repositories
             return await _dbContext.Set<T>().FindAsync(id);
         }
 
+        public async Task<T> GetBy(ISpecification<T> spec)
+        {
+            return await ApplySpecification(spec).FirstOrDefaultAsync();
+        }
+
         public async Task<IList<T>> ListAllAsync()
         {
             return await _dbContext.Set<T>().ToListAsync();

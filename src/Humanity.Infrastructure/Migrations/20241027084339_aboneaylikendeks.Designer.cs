@@ -3,6 +3,7 @@ using System;
 using Humanity.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Humanity.Infrastructure.Migrations
 {
     [DbContext(typeof(LisanssizContext))]
-    partial class LisanssizContextModelSnapshot : ModelSnapshot
+    [Migration("20241027084339_aboneaylikendeks")]
+    partial class aboneaylikendeks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -147,6 +150,10 @@ namespace Humanity.Infrastructure.Migrations
                     b.Property<double>("ReactiveInductive")
                         .HasColumnType("double precision");
 
+                    b.Property<string>("SensorIdentifier")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("SensorSerno")
                         .HasColumnType("integer");
 
@@ -164,6 +171,10 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.Property<double>("TSum")
                         .HasColumnType("double precision");
+
+                    b.Property<string>("UpdateMongoID")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

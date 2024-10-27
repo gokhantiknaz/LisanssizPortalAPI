@@ -8,6 +8,8 @@ namespace Humanity.Domain.Core.Repositories
         Task<T> GetByIdAsync(Guid id);
 
         Task<T> GetByIdAsync(int id);
+
+        Task<T> GetBy(ISpecification<T> spec);
         Task<IList<T>> ListAllAsync();
         Task<IList<T>> ListAsync(ISpecification<T> spec);
         Task<T?> FirstOrDefaultAsync(ISpecification<T?> spec);
