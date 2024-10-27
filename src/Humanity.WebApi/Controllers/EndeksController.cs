@@ -24,7 +24,6 @@ namespace Humanity.WebApi.Controllers
             _logService = loggerService;
         }
 
-
         [HttpGet]
         public async Task<ActionResult<AylikEndeksRes>> Get([FromQuery] int aboneId, [FromQuery] string donem)
         {
@@ -46,5 +45,13 @@ namespace Humanity.WebApi.Controllers
             var result = await _endeksService.Create(endeksReq);
             return Ok(result);
         }
+        [HttpGet("GetAboneBazliTuketim")]
+
+        public async Task<ActionResult<List<SaatlikEndeksRes>>> GetAboneBazliTuketim()
+        {
+            return Ok();
+        }
+
+        
     }
 }
