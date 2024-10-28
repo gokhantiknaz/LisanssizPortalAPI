@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Humanity.Application.Models.DTOs;
 using Humanity.Application.Models.DTOs.Musteri;
 using Humanity.Domain.Entities;
 using System;
@@ -15,7 +16,16 @@ namespace Humanity.Application.Core.Mapper
         {
             CreateMap<Abone, AboneDTO>().ReverseMap();
             CreateMap<AboneIletisim, AboneIletisimDTO>().ReverseMap();
+            CreateMap<Abone, CustomerSubscription>()
+                 .ForMember(dest => dest.GroupInfo, opt => opt.MapFrom(src => src.Adi))
+                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Unvan))
+                 .ForMember(dest => dest.MinInductiveRate, opt => opt.MapFrom(src => src.SozlesmeGucu))
+                 .ForMember(dest => dest.IdentifierValue, opt => opt.MapFrom(src => src.EtsoKodu))
+                 .ForMember(dest => dest.InstalledPower, opt => opt.MapFrom(src => src.KuruluGuc))
+                 .ForMember(dest => dest.AccordPower, opt => opt.MapFrom(src => src.BaglantiGucu))
+                 .ForMember(dest => dest.SubscriptionSerno, opt => opt.MapFrom(src => src.SeriNo)).ReverseMap();
+
         }
     }
- 
+
 }

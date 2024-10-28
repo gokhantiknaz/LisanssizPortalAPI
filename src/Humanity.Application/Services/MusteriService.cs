@@ -66,11 +66,15 @@ namespace Humanity.Application.Services
                 CreatedOn = DateTime.UtcNow,
             };
             _ = await _unitOfWork.Repository<MusteriIletisim>().AddAsync(iletisim);
-            
 
-            var musterEntegrasyon = new MusteriEntegrasyon { ServisAdres = req.MusteriEntegrasyon.ServisAdres ?? "", 
-                KullaniciAdi = req.MusteriEntegrasyon.KullaniciAdi ?? "", Sifre = req.MusteriEntegrasyon.Sifre ?? "", 
-                ServisId = 1 };
+
+            var musterEntegrasyon = new MusteriEntegrasyon
+            {
+                ServisAdres = req.MusteriEntegrasyon.ServisAdres ?? "",
+                KullaniciAdi = req.MusteriEntegrasyon.KullaniciAdi ?? "",
+                Sifre = req.MusteriEntegrasyon.Sifre ?? "",
+                ServisId = 1
+            };
             musterEntegrasyon.Musteri = m;
 
             _ = await _unitOfWork.Repository<MusteriEntegrasyon>().AddAsync(musterEntegrasyon);
@@ -112,7 +116,7 @@ namespace Humanity.Application.Services
 
             _unitOfWork.Repository<Musteri>().Update(m);
 
-            if(m.MusteriEntegrasyon!=null && m.MusteriEntegrasyon.Id>0)
+            if (m.MusteriEntegrasyon != null && m.MusteriEntegrasyon.Id > 0)
             {
                 var musterEntegrasyon = mapper.Map<MusteriEntegrasyon>(m.MusteriEntegrasyon);
                 _unitOfWork.Repository<MusteriEntegrasyon>().Update(musterEntegrasyon);
@@ -130,7 +134,7 @@ namespace Humanity.Application.Services
 
                 _ = await _unitOfWork.Repository<MusteriEntegrasyon>().AddAsync(musterEntegrasyon);
             }
-    
+
 
             try
             {
@@ -218,9 +222,35 @@ namespace Humanity.Application.Services
         {
 
             var musteriler = await _arilService.GetCustomerPortalSubscriptions(musteriid);
-            foreach (var item in musteriler.ResultList)
+            try
             {
-                
+                foreach (var item in musteriler.ResultList)
+                {
+                    var kayitli = await _unitOfWork.Repository<Abone>().ListAsync(new BaseSpecification<Abone>(a => a.SeriNo == item.SubscriptionSerno));
+                    if (kayitli.Count > 0)
+                        continue;
+
+                    Abone a = mapper.Map<Abone>(item);
+                    a.MusteriId = musteriid;
+                    a.Durum = Status.Aktif;
+                    if(item.DefinitionType==15)
+                    {
+                        a.SahisTip = SahisTip.Uretici;
+                    }
+                    else
+                        a.SahisTip = SahisTip.DisTuketici;
+
+                    AboneIletisim iletisim = new AboneIletisim() { CreatedBy = new Guid(), CreatedOn = DateTime.UtcNow, IsDeleted = false, Iletisim = new Iletisim() { Ilid = 6, Ilceid = 1130, Adres = item.Address, CepTel = "0535", Email = "a@a.com" } };
+                    a.AboneIletisim = iletisim;
+                    _ = await _unitOfWork.Repository<Abone>().AddAsync(a);
+                }
+
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
             }
 
             return true;

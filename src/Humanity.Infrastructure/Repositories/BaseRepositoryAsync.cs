@@ -76,5 +76,10 @@ namespace Humanity.Infrastructure.Repositories
             await _dbContext.Set<T>().AddRangeAsync(entity);
             return entity;
         }
+
+        public async Task<IList<T>> RawSql(string sql)
+        {
+            return await _dbContext.Set<T>().FromSqlRaw(sql).ToListAsync();
+        }
     }
 }

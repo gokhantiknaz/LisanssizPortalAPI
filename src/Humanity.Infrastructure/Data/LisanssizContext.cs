@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Data;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Humanity.Application.Models.Responses.Dashboard;
 
 namespace Humanity.Infrastructure.Data
 {
@@ -58,10 +59,12 @@ namespace Humanity.Infrastructure.Data
                     .WithMany(u => u.UserRoles).HasForeignKey(ur => ur.UserId).IsRequired();
             });
 
+            builder.Entity<AboneAylikTuketim>().HasNoKey();
 
         }
 
 
+        public DbSet<AboneAylikTuketim> AboneAylikTuketim { get; set; }
         public DbSet<Musteri> Musteri { get; set; }
 
         public DbSet<Iletisim> Iletisim { get; set; }

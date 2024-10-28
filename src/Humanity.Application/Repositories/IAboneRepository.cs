@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Humanity.Application.Repositories
 {
-    public interface IAboneRepository : IBaseRepositoryAsync<Humanity.Domain.Entities.Musteri>
+    public interface IAboneRepository : IBaseRepositoryAsync<Humanity.Domain.Entities.Abone>
     {
-        MusteriDTO get(int id);
+        AboneDTO get(int id);
         List<TuketiciTableDTO> GetBagimsizTuketiciler(int musteriId);
     }
 }

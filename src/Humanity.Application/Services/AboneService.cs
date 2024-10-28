@@ -254,8 +254,8 @@ namespace Humanity.Application.Services
             {
                 var aboneUretici = await _unitOfWork.Repository<AboneUretici>().GetByIdAsync(req.UreticiBilgileri.Id);
 
-                aboneUretici.CagrimektupTarihi = req.UreticiBilgileri.CagrimektupTarihi;
-                aboneUretici.LisansBilgisi = req.UreticiBilgileri.LisansBilgisi;
+                //aboneUretici.CagrimektupTarihi = req.UreticiBilgileri.CagrimektupTarihi;
+                //aboneUretici.LisansBilgisi = req.UreticiBilgileri.LisansBilgisi;
                 aboneUretici.MahsupTipi = req.UreticiBilgileri.MahsupTipi;
                 aboneUretici.UretimBaslama = req.UreticiBilgileri.UretimBaslama;
                 aboneUretici.UretimSekli = req.UreticiBilgileri.UretimSekli;

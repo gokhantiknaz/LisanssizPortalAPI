@@ -19,5 +19,7 @@ namespace Humanity.Domain.Core.Repositories
         void Update(T entity);
         void Delete(T entity);
         Task<int> CountAsync(ISpecification<T> spec);
+
+        Task<IList<T>> RawSql(string sql);
     }
 }

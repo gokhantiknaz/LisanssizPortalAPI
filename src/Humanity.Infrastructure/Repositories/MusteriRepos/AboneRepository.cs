@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Humanity.Infrastructure.Repositories.MusteriRepos
 {
-    public  class AboneRepository: BaseRepositoryAsync<Musteri>, IAboneRepository
+    public  class AboneRepository: BaseRepositoryAsync<Abone>, IAboneRepository
     {
         protected readonly LisanssizContext _dbContext;
 
@@ -25,7 +25,7 @@ namespace Humanity.Infrastructure.Repositories.MusteriRepos
             _dbContext = dbContext;
         }
 
-        public MusteriDTO get(int id)   
+        public AboneDTO get(int id)   
         {
             var result = _dbContext.Musteri
     .Where(m => m.Id == 4) // Musteri tablosunda filtreleme
@@ -46,7 +46,7 @@ namespace Humanity.Infrastructure.Repositories.MusteriRepos
                aboneUretici => aboneUretici.AboneId,
                (temp, aboneUreticiler) => new { temp.musteri, temp.musteriIletisim, temp.iletisim, temp.abone, aboneUreticiler })
     .SelectMany(temp => temp.aboneUreticiler.DefaultIfEmpty(), // LEFT JOIN için DefaultIfEmpty kullanımı
-                (temp, aboneUretici) => new MusteriDTO(temp.musteri)
+                (temp, aboneUretici) => new AboneDTO()
                 {
                     Id = temp.musteri.Id,
                     Adi = temp.musteri.Adi,
@@ -54,12 +54,9 @@ namespace Humanity.Infrastructure.Repositories.MusteriRepos
                     Unvan = temp.musteri.Unvan,
                     Tckn = temp.musteri.Tckn,
                     Vkn = temp.musteri.Vkn,
-                    Durum = temp.musteri.Durum,
-                    GercekTuzel = temp.musteri.GercekTuzel,
                     OzelkodId1 = temp.musteri.OzelkodId1,
                     OzelkodId2 = temp.musteri.OzelkodId2,
                     OzelkodId3 = temp.musteri.OzelkodId3,
-                    MusteriIletisim = new MusteriIletisimDTO(temp.musteriIletisim)
                   
                 })
     .FirstOrDefault();
@@ -68,14 +65,14 @@ namespace Humanity.Infrastructure.Repositories.MusteriRepos
 
         }
 
-        public List<TuketiciTableDTO> GetBagimsizTuketiciler(int musteriId)
+        public List<TuketiciTableDTO> GetBagimsizTuketiciler(int aboneid)
         {
             var result = (from m in _dbContext.Musteri
                           join a in _dbContext.Abone on m.Id equals a.MusteriId
                           join ilm in _dbContext.MusteriIletisim on m.Id equals ilm.MusteriId
                           join il in _dbContext.Iletisim on ilm.IletisimId equals il.Id 
 
-                          where m.Id == musteriId
+                          where a.Id == aboneid
                           && a.SahisTip != Domain.Enums.Enums.SahisTip.Uretici
                           && (!_dbContext.AboneTuketici.Any(atu => atu.AboneId == a.Id) || (_dbContext.AboneTuketici.Any(atu => atu.AboneId == a.Id && atu.IsDeleted)))
                           select new
