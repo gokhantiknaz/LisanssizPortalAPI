@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Humanity.Domain.Entities
 {
-    public class AboneEndeks:BaseEntity
+    public class AboneEndeks : BaseEntity
     {
         [Key]
         public int Id { get; set; }
@@ -27,10 +27,11 @@ namespace Humanity.Domain.Entities
         public double T3Endex { get; set; }
         public double T4Endex { get; set; }
         public double ReactiveCapasitive { get; set; }
+        public double ReactiveInductive { get; set; }
         public double MaxDemand { get; set; }
         public long DemandDate { get; set; }
         public double TSum { get; set; }
-        public double ReactiveInductive { get; set; }
+
         public int SensorSerno { get; set; }
     }
 }

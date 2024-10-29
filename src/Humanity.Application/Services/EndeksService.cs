@@ -98,7 +98,7 @@ namespace Humanity.Application.Services
             // ilk data son okuma t1 t2 t3 tür o yüzden kümülatip gitnez. aktif ay endeksi
             if (res.ResultList.Count == 0)
                 throw new Exception("Bu aya ait endeks bulunamadı");
-            
+
 
             foreach (var item in res.ResultList)
             {
@@ -107,9 +107,18 @@ namespace Humanity.Application.Services
                 aylikEndeks.EndexMonth = aylikEndeks.EndexMonth == 0 ? DateTime.Now.Month : aylikEndeks.EndexMonth;
                 aylikEndeks.EndexYear = aylikEndeks.EndexYear == 0 ? DateTime.Now.Year : aylikEndeks.EndexYear;
 
+
+                var oncekiAy = res.ResultList.FirstOrDefault(a => a.EndexMonth == aylikEndeks.EndexMonth - 1);
+
+                AboneEndeksPeriod periodGunduz = new AboneEndeksPeriod() { AboneEndeks = aylikEndeks, IlkEndeks = oncekiAy != null ? oncekiAy.T1Endex : 0, SonEndeks = item.T1Endex, EnerijCinsi = EnumEnerjiCinsi.Gunduz, EneriTur = EnunEneriTur.Aktif, EndeksDirection =  (EnumEndeksDirection)item.EndexType };
+                AboneEndeksPeriod periodPuant = new AboneEndeksPeriod() { AboneEndeks = aylikEndeks, IlkEndeks = oncekiAy != null ? oncekiAy.T2Endex : 0, SonEndeks = item.T2Endex, EnerijCinsi = EnumEnerjiCinsi.Gece, EneriTur = EnunEneriTur.Aktif, EndeksDirection = (EnumEndeksDirection)item.EndexType };
+                AboneEndeksPeriod periodGece = new AboneEndeksPeriod() { AboneEndeks = aylikEndeks, IlkEndeks = oncekiAy != null ? oncekiAy.T3Endex : 0, SonEndeks = item.T3Endex, EnerijCinsi = EnumEnerjiCinsi.Gece, EneriTur = EnunEneriTur.Aktif, EndeksDirection = (EnumEndeksDirection)item.EndexType };
+                AboneEndeksPeriod periodInduktif = new AboneEndeksPeriod() { AboneEndeks = aylikEndeks, IlkEndeks = oncekiAy != null ? oncekiAy.ReactiveInductive : 0, SonEndeks = item.ReactiveInductive, EnerijCinsi = EnumEnerjiCinsi.Tum, EneriTur = EnunEneriTur.Induktif, EndeksDirection = (EnumEndeksDirection)item.EndexType };
+                AboneEndeksPeriod periodKapasitif = new AboneEndeksPeriod() { AboneEndeks = aylikEndeks, IlkEndeks = oncekiAy != null ? oncekiAy.ReactiveCapasitive : 0, SonEndeks = item.ReactiveCapasitive, EnerijCinsi = EnumEnerjiCinsi.Tum, EneriTur = EnunEneriTur.Kapasitif, EndeksDirection = (EnumEndeksDirection)item.EndexType };
+
                 // bu ay endeksi varsa once sil sonra ekle
 
-                var spec = new BaseSpecification<AboneEndeks>(x => x.EndexYear == aylikEndeks.EndexYear && x.EndexMonth == aylikEndeks.EndexMonth && x.AboneId == aboneId);
+                var spec = new BaseSpecification<AboneEndeks>(x => x.EndexYear == aylikEndeks.EndexYear && x.EndexMonth == aylikEndeks.EndexMonth && x.AboneId == aboneId && x.EndexType==item.EndexType);
                 var dataExist = await _unitOfWork.Repository<AboneEndeks>().ListAsync(spec);
                 foreach (var end in dataExist)
                 {
@@ -117,8 +126,15 @@ namespace Humanity.Application.Services
                 }
 
                 _ = await _unitOfWork.Repository<AboneEndeks>().AddAsync(aylikEndeks);
+
+                _ = await _unitOfWork.Repository<AboneEndeksPeriod>().AddAsync(periodGunduz);
+                _ = await _unitOfWork.Repository<AboneEndeksPeriod>().AddAsync(periodPuant);
+                _ = await _unitOfWork.Repository<AboneEndeksPeriod>().AddAsync(periodGece);
+                _ = await _unitOfWork.Repository<AboneEndeksPeriod>().AddAsync(periodInduktif);
+                _ = await _unitOfWork.Repository<AboneEndeksPeriod>().AddAsync(periodKapasitif);
+
             }
-        
+
             try
             {
                 await _unitOfWork.SaveChangesAsync();

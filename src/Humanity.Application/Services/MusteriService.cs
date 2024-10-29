@@ -238,13 +238,25 @@ namespace Humanity.Application.Services
                     if (item.DefinitionType == 15)
                     {
                         a.SahisTip = SahisTip.Uretici;
+                        AboneUretici uretici = new AboneUretici()
+                        {
+                            CagrimektupTarihi = DateTime.UtcNow,
+                            LisansBilgisi = LisansBilgisi.Lisanssız,
+                            MahsupTipi = MahsupTipi.Aylık.GetHashCode(),
+                            UretimBaslama = DateTime.UtcNow,
+                            UretimSekli = UretimSekli.Ges
+                        };
+                        uretici.Abone = a;
+                        _ = await _unitOfWork.Repository<AboneUretici>().AddAsync(uretici);
                     }
                     else
                         a.SahisTip = SahisTip.DisTuketici;
 
                     AboneIletisim iletisim = new AboneIletisim() { CreatedBy = new Guid(), CreatedOn = DateTime.UtcNow, IsDeleted = false, Iletisim = new Iletisim() { Ilid = 6, Ilceid = 1130, Adres = item.Address, CepTel = "0535", Email = "a@a.com" } };
                     a.AboneIletisim = iletisim;
+
                     _ = await _unitOfWork.Repository<Abone>().AddAsync(a);
+                    
                     retVal.Data.Add(mapper.Map<AboneDTO>(a));
                 }
 
@@ -273,7 +285,7 @@ namespace Humanity.Application.Services
                 {
                     string basDonem = DateTime.Now.Year.ToString() + "/" + "01";
                     string sonDonem = DateTime.Now.Year.ToString() + "/" + DateTime.Now.Month.ToString();
-                    _ = await _arilService.GetEndOfMonthEndexes(item.Id, basDonem, sonDonem, true);
+                    _ = await _arilService.GetEndOfMonthEndexes(item.Id, basDonem, sonDonem, true,item.SahisTip==SahisTip.Uretici);
 
                 }
             }
