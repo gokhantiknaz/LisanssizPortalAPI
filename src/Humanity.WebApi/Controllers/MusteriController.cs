@@ -95,6 +95,12 @@ namespace Humanity.WebApi.Controllers
             var result = await _musteriService.ArilBagliTuketiciKaydet(musteriid);
             return Ok(result);
         }
+        [HttpGet]
+        public async Task<ActionResult<bool>> KaydedilenAboneEndeksleriAl([FromQuery] int musteriid)
+        {
+            var result = await _musteriService.KaydedilenAboneEndeksleriAl(musteriid);
+            return Ok(result);
+        }
 
 
     }

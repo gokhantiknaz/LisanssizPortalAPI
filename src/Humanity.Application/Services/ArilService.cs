@@ -214,7 +214,7 @@ namespace Humanity.Application.Services
             // Post isteği için body verisi
 
             var startDate = Convert.ToDateTime(donem + "/01");
-            var endDate = Convert.ToDateTime(donem + "/01").AddMonths(1);
+            var endDate = Convert.ToDateTime(donemSon + "/01").AddMonths(1);
 
             // eğer güncel ayda ise diğer metoda gidelim. buradan sonuç dönmez
 
@@ -350,7 +350,7 @@ namespace Humanity.Application.Services
             }
         }
 
-        // tüm abonelerin aktif aya ait endekslerini alalım
+        // tüm abonelerin aktif aya ait endekslerini
         public async Task<object> GetCurrentEndexesAll(int musteriId)
         {
             var customers = await GetCustomerPortalSubscriptions(musteriId);

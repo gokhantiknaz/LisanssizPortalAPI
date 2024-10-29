@@ -8,7 +8,7 @@ namespace Humanity.Application.Models.Responses
         public MusteriDTO Data { get; set; }
     }
 
-    
+
     public class GetTuketiciListRes
     {
         public IList<TuketiciTableDTO> Data { get; set; }
@@ -16,7 +16,7 @@ namespace Humanity.Application.Models.Responses
 
     public class FirmaRes
     {
-      
+
     }
 
     public class GetFirmaRes
@@ -39,7 +39,7 @@ namespace Humanity.Application.Models.Responses
         public List<AboneDTO> Data { get; set; }
     }
 
-    
+ 
 
 
 }

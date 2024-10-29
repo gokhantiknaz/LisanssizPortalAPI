@@ -222,6 +222,8 @@ namespace Humanity.Application.Services
         {
 
             var musteriler = await _arilService.GetCustomerPortalSubscriptions(musteriid);
+            var retVal = new GetAboneResList();
+            retVal.Data = new List<AboneDTO>();
             try
             {
                 foreach (var item in musteriler.ResultList)
@@ -233,7 +235,7 @@ namespace Humanity.Application.Services
                     Abone a = mapper.Map<Abone>(item);
                     a.MusteriId = musteriid;
                     a.Durum = Status.Aktif;
-                    if(item.DefinitionType==15)
+                    if (item.DefinitionType == 15)
                     {
                         a.SahisTip = SahisTip.Uretici;
                     }
@@ -243,9 +245,37 @@ namespace Humanity.Application.Services
                     AboneIletisim iletisim = new AboneIletisim() { CreatedBy = new Guid(), CreatedOn = DateTime.UtcNow, IsDeleted = false, Iletisim = new Iletisim() { Ilid = 6, Ilceid = 1130, Adres = item.Address, CepTel = "0535", Email = "a@a.com" } };
                     a.AboneIletisim = iletisim;
                     _ = await _unitOfWork.Repository<Abone>().AddAsync(a);
+                    retVal.Data.Add(mapper.Map<AboneDTO>(a));
                 }
 
                 await _unitOfWork.SaveChangesAsync();
+
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return true;
+        }
+
+
+        public async Task<bool> KaydedilenAboneEndeksleriAl(int musteriId)
+        {
+
+            try
+            {
+                // musteriye ait Aboneleri alalaım
+
+               var allCustomers= await _unitOfWork.Repository<Abone>().ListAsync(new BaseSpecification<Abone>(x => x.MusteriId == musteriId));
+                foreach (var item in allCustomers)
+                {
+                    string basDonem = DateTime.Now.Year.ToString() + "/" + "01";
+                    string sonDonem = DateTime.Now.Year.ToString() + "/" + DateTime.Now.Month.ToString();
+                    _ = await _arilService.GetEndOfMonthEndexes(item.Id, basDonem, sonDonem, true);
+
+                }
             }
             catch (Exception ex)
             {

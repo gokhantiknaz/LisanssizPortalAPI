@@ -98,22 +98,27 @@ namespace Humanity.Application.Services
             // ilk data son okuma t1 t2 t3 tür o yüzden kümülatip gitnez. aktif ay endeksi
             if (res.ResultList.Count == 0)
                 throw new Exception("Bu aya ait endeks bulunamadı");
-            var aylikEndeks = mapper.Map<AboneEndeks>(res.ResultList[0]);
-            aylikEndeks.AboneId = aboneId;
-            aylikEndeks.EndexMonth = aylikEndeks.EndexMonth == 0 ? DateTime.Now.Month : aylikEndeks.EndexMonth;
-            aylikEndeks.EndexYear = aylikEndeks.EndexYear == 0 ? DateTime.Now.Year : aylikEndeks.EndexYear;
+            
 
-            // bu ay endeksi varsa once sil sonra ekle
-
-            var spec = new BaseSpecification<AboneEndeks>(x => x.EndexYear == aylikEndeks.EndexYear && x.EndexMonth == aylikEndeks.EndexMonth&& x.AboneId==aboneId);
-            var dataExist = await _unitOfWork.Repository<AboneEndeks>().ListAsync(spec);
-            foreach (var item in dataExist)
+            foreach (var item in res.ResultList)
             {
-                _unitOfWork.Repository<AboneEndeks>().Delete(item);
+                var aylikEndeks = mapper.Map<AboneEndeks>(item);
+                aylikEndeks.AboneId = aboneId;
+                aylikEndeks.EndexMonth = aylikEndeks.EndexMonth == 0 ? DateTime.Now.Month : aylikEndeks.EndexMonth;
+                aylikEndeks.EndexYear = aylikEndeks.EndexYear == 0 ? DateTime.Now.Year : aylikEndeks.EndexYear;
+
+                // bu ay endeksi varsa once sil sonra ekle
+
+                var spec = new BaseSpecification<AboneEndeks>(x => x.EndexYear == aylikEndeks.EndexYear && x.EndexMonth == aylikEndeks.EndexMonth && x.AboneId == aboneId);
+                var dataExist = await _unitOfWork.Repository<AboneEndeks>().ListAsync(spec);
+                foreach (var end in dataExist)
+                {
+                    _unitOfWork.Repository<AboneEndeks>().Delete(end);
+                }
+
+                _ = await _unitOfWork.Repository<AboneEndeks>().AddAsync(aylikEndeks);
             }
-
-            _ = await _unitOfWork.Repository<AboneEndeks>().AddAsync(aylikEndeks);
-
+        
             try
             {
                 await _unitOfWork.SaveChangesAsync();
