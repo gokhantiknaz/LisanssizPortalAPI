@@ -54,8 +54,8 @@ namespace Humanity.Application.Services
             var data = _mapper.Map<AboneDTO>(abone);
 
             data.AboneIletisim = AboneIletisimDto;
-       
-            if (aboneUretici.Count > 0)
+
+            if (aboneUretici != null && aboneUretici.Count > 0)
                 data.UreticiBilgileri = new UreticiDTO(aboneUretici.FirstOrDefault(new AboneUretici()));
 
             //tujeticileri varsa
@@ -100,8 +100,8 @@ namespace Humanity.Application.Services
                 OzelkodId1 = req.OzelkodId1,
                 OzelkodId2 = req.OzelkodId2,
                 OzelkodId3 = req.OzelkodId3,
-                MusteriId=req.MusteriId,
-              
+                MusteriId = req.MusteriId,
+
                 AboneIletisim = new AboneIletisim
                 {
                     Iletisim = newiletisimAbone,
@@ -109,7 +109,7 @@ namespace Humanity.Application.Services
                     CreatedBy = Guid.Empty,
                     CreatedOn = DateTime.UtcNow,
                 }
-               
+
             });
 
             if (req.SahisTip == SahisTip.Uretici)
@@ -174,7 +174,7 @@ namespace Humanity.Application.Services
 
             //_ = _unitOfWork.Repository<AboneIletisim>().AddAsync(iletisimabone);
 
-          
+
 
             try
             {
@@ -269,10 +269,10 @@ namespace Humanity.Application.Services
                     var kayitlilar = await AboneyeBagliTuketicileriGetir(m.Id);
                     foreach (var item in kayitlilar.Data)
                     {
-                        if(!req.TuketiciList.Any(a => a.AboneId == item.AboneId)) // silinmiş
+                        if (!req.TuketiciList.Any(a => a.AboneId == item.AboneId)) // silinmiş
                         {
                             var tuketici = await _unitOfWork.Repository<AboneTuketici>().ListAsync(new BaseSpecification<AboneTuketici>(a => a.AboneId == item.AboneId));
-                            tuketici.First().IsDeleted= true;
+                            tuketici.First().IsDeleted = true;
                             _unitOfWork.Repository<AboneTuketici>().Update(tuketici.First());
                         }
                     }
@@ -280,7 +280,7 @@ namespace Humanity.Application.Services
                     foreach (TuketiciListDTO tuketici in req.TuketiciList)
                     {
                         //delete i de yapalım
-                        if (kayitlilar.Data.Count(a=>a.AboneId== tuketici.AboneId && abone.Id== tuketici.UreticiAboneId)>0)
+                        if (kayitlilar.Data.Count(a => a.AboneId == tuketici.AboneId && abone.Id == tuketici.UreticiAboneId) > 0)
                         {
                             var tuketiciTekrar = await _unitOfWork.Repository<AboneTuketici>().ListAsync(new BaseSpecification<AboneTuketici>(a => a.AboneId == tuketici.AboneId));
                             tuketiciTekrar.First().IsDeleted = false;
@@ -294,7 +294,7 @@ namespace Humanity.Application.Services
                                 BaslamaZamani = DateTime.UtcNow,
                                 Durum = Status.Aktif,
                                 AboneId = tuketici.AboneId,
-                                UreticiAboneId=abone.Id
+                                UreticiAboneId = abone.Id
                             };
 
                             _ = await _unitOfWork.Repository<AboneTuketici>().AddAsync(yenituketici);
@@ -372,18 +372,18 @@ namespace Humanity.Application.Services
         {
             var tuketiciAboneSpec = AboneSpecifications.GetTuketiciByUretici(ureticiAboneId);
             tuketiciAboneSpec.AddInclude(a => a.Abone);
-            tuketiciAboneSpec.AddInclude(a=>a.Abone);
+            tuketiciAboneSpec.AddInclude(a => a.Abone);
             tuketiciAboneSpec.AddInclude(a => a.Abone.AboneIletisim);
             tuketiciAboneSpec.AddInclude(a => a.Abone.AboneIletisim.Iletisim);
 
             var ureticiAbone = await _unitOfWork.Repository<Abone>().GetByIdAsync(ureticiAboneId);
 
-            var activeSpec = new BaseSpecification<Abone>(a => a.Id == ureticiAboneId&& a.SahisTip == SahisTip.Uretici);
-          
+            var activeSpec = new BaseSpecification<Abone>(a => a.Id == ureticiAboneId && a.SahisTip == SahisTip.Uretici);
+
 
             var Aboneler = await _unitOfWork.Repository<AboneTuketici>().ListAsync(tuketiciAboneSpec);
 
-            var data = Aboneler.Select(x => new TuketiciTableDTO(x) { UreticiAboneId=ureticiAboneId,UreticiAbone=new AboneDTO(ureticiAbone) {  } }).ToList();
+            var data = Aboneler.Select(x => new TuketiciTableDTO(x) { UreticiAboneId = ureticiAboneId, UreticiAbone = new AboneDTO(ureticiAbone) { } }).ToList();
             return new GetTuketiciListRes()
             {
                 Data = data

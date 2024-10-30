@@ -188,11 +188,6 @@ namespace Humanity.Application.Services
             };
         }
 
-        public Task<GetTuketiciListRes> GetBagimsizTuketiciler(int cariId)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task<GetTuketiciListRes> MusteriyeBagliTuketicileriGetir(int aboneureticiId)
         {
             throw new NotImplementedException();

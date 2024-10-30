@@ -75,12 +75,7 @@ namespace Humanity.WebApi.Controllers
         }
 
 
-        [HttpGet]
-        public async Task<ActionResult<GetTuketiciListRes>> GetBagimsizTuketiciler([FromQuery] int cariId)
-        {
-            var result = await _musteriService.GetBagimsizTuketiciler(cariId);
-            return Ok(result);
-        }
+   
 
         [HttpGet]
         public async Task<ActionResult<GetTuketiciListRes>> ArilBagliTuketiciGetir([FromQuery] int musteriid)
