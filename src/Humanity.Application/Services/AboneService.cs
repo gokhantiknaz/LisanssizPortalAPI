@@ -205,6 +205,7 @@ namespace Humanity.Application.Services
             m.OzelkodId1 = req.OzelkodId1;
             m.OzelkodId2 = req.OzelkodId2;
             m.OzelkodId3 = req.OzelkodId3;
+            m.DagitimFirmaId = req.DagitimFirmaId;
 
             _unitOfWork.Repository<Abone>().Update(m);
 
