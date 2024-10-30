@@ -244,8 +244,11 @@ namespace Humanity.Application.Services
                         uretici.Abone = a;
                         _ = await _unitOfWork.Repository<AboneUretici>().AddAsync(uretici);
                     }
-                    else
+                    if(item.DefinitionType == 2)
+                    {
                         a.SahisTip = SahisTip.DisTuketici;
+                    }
+                        
 
                     AboneIletisim iletisim = new AboneIletisim() { CreatedBy = new Guid(), CreatedOn = DateTime.UtcNow, IsDeleted = false, Iletisim = new Iletisim() { Ilid = 6, Ilceid = 1130, Adres = item.Address, CepTel = "0535", Email = "a@a.com" } };
                     a.AboneIletisim = iletisim;
@@ -280,7 +283,16 @@ namespace Humanity.Application.Services
                 {
                     string basDonem = DateTime.Now.Year.ToString() + "/" + "01";
                     string sonDonem = DateTime.Now.Year.ToString() + "/" + DateTime.Now.Month.ToString();
-                    _ = await _arilService.GetEndOfMonthEndexes(item.Id, basDonem, sonDonem, true,item.SahisTip==SahisTip.Uretici);
+                    try
+                    {
+                        _ = await _arilService.GetEndOfMonthEndexes(item.Id, basDonem, sonDonem, true, item.SahisTip == SahisTip.Uretici);
+                        // donem endeksini de getirelim
+                        _ = await _arilService.GetCurrentEndexes(item.Id,true);
+                    }
+                    catch (Exception er)
+                    {
+                        continue;
+                    }
 
                 }
             }
