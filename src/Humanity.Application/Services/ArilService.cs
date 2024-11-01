@@ -209,7 +209,7 @@ namespace Humanity.Application.Services
 
 
         //müşteri aylık data
-        public async Task<GetEndOfMonthEndexesResponse> GetEndOfMonthEndexes(int aboneid, string donem, string donemSon, bool kaydet = false)
+        public async Task<GetEndOfMonthEndexesResponse> GetEndOfMonthEndexes(int aboneid, string donem, string donemSon, bool kaydet = false, bool uretimEndeksAl=false)
         {
             // Post isteği için body verisi
 
@@ -275,6 +275,32 @@ namespace Humanity.Application.Services
                 if (kaydet)
                 {
                     await _endeksService.AylikEndeksKaydet(aboneid, res);
+
+                    if(uretimEndeksAl)
+                    {
+                        postData= new
+                        {
+                            OwnerSerno = abone.SeriNo,  // Dinamik olarak serno geliyor
+                            StartDate = startDate.ToString("yyyyMMddHHmmss"), // Başlangıç tarihi (sabit)
+                            EndDate = endDate.ToString("yyyyMMddHHmmss"),   // Bitiş tarihi (sabit)
+                            PageSize = 1000,            // Sayfa boyutu (sabit)
+                            PageNumber = 1,             // Sayfa numarası (sabit)
+                            IsOnlySuccess = true,       // Sadece başarılı kayıtlar (sabit)
+                            IncludeLoadProfiles = false, // Yük profilleri dahil değil
+                            WithoutMultiplier = false,  // Çarpansız veri
+                            MergeResult = false,        // Sonuçları birleştirme
+                            EndexDirection = 1 // 1 üretim endeksi 0 tüketim endeksi
+                        };
+
+
+                        content = new StringContent(JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
+                        var responseUretim = await client.PostAsync(url, content);
+
+                        var jsonUretim = await responseUretim.Content.ReadAsStringAsync();
+                        var resUretim = JsonSerializer.Deserialize<GetEndOfMonthEndexesResponse>(jsonUretim);
+                        await _endeksService.AylikEndeksKaydet(aboneid, resUretim);
+
+                    }
                 }
                 return res;  // Gelen cevabı deserialize et ve döndür
             }

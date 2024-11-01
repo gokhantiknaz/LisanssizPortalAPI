@@ -100,7 +100,7 @@ namespace Humanity.Infrastructure.Data
         public DbSet<OwnerConsumpiton> OwnerConsumpiton { get; set; }
 
         public DbSet<AboneEndeks> AboneEndeks { get; set; }
-
+        public DbSet<AboneEndeksPeriod> AboneEndeksPeriod { get; set; }
 
     }
 }

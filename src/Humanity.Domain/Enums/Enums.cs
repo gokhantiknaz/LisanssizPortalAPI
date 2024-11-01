@@ -64,9 +64,21 @@ namespace Humanity.Domain.Enums
 
         public enum EnumEnerjiCinsi
         {
+            Tum = 0,
             Gunduz = 1,
             Puant,
             Gece
+        }
+        public enum EnunEneriTur
+        {
+            Aktif = 1,
+            Induktif = 2,
+            Kapasitif = 3
+        }
+        public enum EnumEndeksDirection
+        {
+            Tuketim = 0,
+            Ureitm = 1
         }
     }
 }

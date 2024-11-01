@@ -264,35 +264,50 @@ namespace Humanity.Application.Services
         //}
 
 
-        //public async Task<bool> ArilBagliTuketiciKaydet(int musteriid)
-        //{
+        public async Task<bool> ArilBagliTuketiciKaydet(int musteriid)
+        {
 
-        //    var musteriler = await _arilService.GetCustomerPortalSubscriptions(musteriid);
-        //    var retVal = new GetAboneResList();
-        //    retVal.Data = new List<AboneDTO>();
-        //    try
-        //    {
-        //        foreach (var item in musteriler.ResultList)
-        //        {
-        //            var kayitli = await _unitOfWork.Repository<Abone>().ListAsync(new BaseSpecification<Abone>(a => a.SeriNo == item.SubscriptionSerno));
-        //            if (kayitli.Count > 0)
-        //                continue;
+            var musteriler = await _arilService.GetCustomerPortalSubscriptions(musteriid);
+            var retVal = new GetAboneResList();
+            retVal.Data = new List<AboneDTO>();
+            try
+            {
+                foreach (var item in musteriler.ResultList)
+                {
+                    var kayitli = await _unitOfWork.Repository<Abone>().ListAsync(new BaseSpecification<Abone>(a => a.SeriNo == item.SubscriptionSerno));
+                    if (kayitli.Count > 0)
+                        continue;
 
-        //            Abone a = mapper.Map<Abone>(item);
-        //            a.MusteriId = musteriid;
-        //            a.Durum = Status.Aktif;
-        //            if (item.DefinitionType == 15)
-        //            {
-        //                a.SahisTip = SahisTip.Uretici;
-        //            }
-        //            else
-        //                a.SahisTip = SahisTip.DisTuketici;
+                    Abone a = mapper.Map<Abone>(item);
+                    a.MusteriId = musteriid;
+                    a.Durum = Status.Aktif;
+                    if (item.DefinitionType == 15)
+                    {
+                        a.SahisTip = SahisTip.Uretici;
+                        AboneUretici uretici = new AboneUretici()
+                        {
+                            CagrimektupTarihi = DateTime.UtcNow,
+                            LisansBilgisi = LisansBilgisi.Lisanssız,
+                            MahsupTipi = MahsupTipi.Aylık.GetHashCode(),
+                            UretimBaslama = DateTime.UtcNow,
+                            UretimSekli = UretimSekli.Ges
+                        };
+                        uretici.Abone = a;
+                        _ = await _unitOfWork.Repository<AboneUretici>().AddAsync(uretici);
+                    }
+                    if(item.DefinitionType == 2)
+                    {
+                        a.SahisTip = SahisTip.DisTuketici;
+                    }
+                        
 
-        //            AboneIletisim iletisim = new AboneIletisim() { CreatedBy = new Guid(), CreatedOn = DateTime.UtcNow, IsDeleted = false, Iletisim = new Iletisim() { Ilid = 6, Ilceid = 1130, Adres = item.Address, CepTel = "0535", Email = "a@a.com" } };
-        //            a.AboneIletisim = iletisim;
-        //            _ = await _unitOfWork.Repository<Abone>().AddAsync(a);
-        //            retVal.Data.Add(mapper.Map<AboneDTO>(a));
-        //        }
+                    AboneIletisim iletisim = new AboneIletisim() { CreatedBy = new Guid(), CreatedOn = DateTime.UtcNow, IsDeleted = false, Iletisim = new Iletisim() { Ilid = 6, Ilceid = 1130, Adres = item.Address, CepTel = "0535", Email = "a@a.com" } };
+                    a.AboneIletisim = iletisim;
+
+                    _ = await _unitOfWork.Repository<Abone>().AddAsync(a);
+                    
+                    retVal.Data.Add(mapper.Map<AboneDTO>(a));
+                }
 
         //        await _unitOfWork.SaveChangesAsync();
 
@@ -307,19 +322,28 @@ namespace Humanity.Application.Services
         //}
 
 
-        //public async Task<bool> KaydedilenAboneEndeksleriAl(int musteriId)
-        //{
+        public async Task<bool> KaydedilenAboneEndeksleriAl(int musteriId)
+        {
 
-        //    try
-        //    {
-        //        // musteriye ait Aboneleri alalaım
+            try
+            {
+                // musteriye ait Aboneleri alalaım
 
-        //       var allCustomers= await _unitOfWork.Repository<Abone>().ListAsync(new BaseSpecification<Abone>(x => x.MusteriId == musteriId));
-        //        foreach (var item in allCustomers)
-        //        {
-        //            string basDonem = DateTime.Now.Year.ToString() + "/" + "01";
-        //            string sonDonem = DateTime.Now.Year.ToString() + "/" + DateTime.Now.Month.ToString();
-        //            _ = await _arilService.GetEndOfMonthEndexes(item.Id, basDonem, sonDonem, true);
+               var allCustomers= await _unitOfWork.Repository<Abone>().ListAsync(new BaseSpecification<Abone>(x => x.MusteriId == musteriId));
+                foreach (var item in allCustomers)
+                {
+                    string basDonem = DateTime.Now.Year.ToString() + "/" + "01";
+                    string sonDonem = DateTime.Now.Year.ToString() + "/" + DateTime.Now.Month.ToString();
+                    try
+                    {
+                        _ = await _arilService.GetEndOfMonthEndexes(item.Id, basDonem, sonDonem, true, item.SahisTip == SahisTip.Uretici);
+                        // donem endeksini de getirelim
+                        _ = await _arilService.GetCurrentEndexes(item.Id,true);
+                    }
+                    catch (Exception er)
+                    {
+                        continue;
+                    }
 
         //        }
         //    }

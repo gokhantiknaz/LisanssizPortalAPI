@@ -16,7 +16,8 @@ namespace Humanity.Application.Models.DTOs.Musteri
         public int MusteriId { get; set; }
         public int Tarife { get; set; }
         public string? EtsoKodu { get; set; }
-   
+
+        public int DagitimFirmaId { get; set; }
         public long? SeriNo { get; set; }
         public double? SozlesmeGucu { get; set; }
         public double? BaglantiGucu { get; set; }

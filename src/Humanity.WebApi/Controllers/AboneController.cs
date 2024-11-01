@@ -61,5 +61,12 @@ namespace Humanity.WebApi.Controllers
             var result = await _aboneService.GetFirmaAboneler();
             return Ok(result);
         }
+
+        [HttpGet("GetBagimsizTuketiciler")]
+        public async Task<ActionResult<GetTuketiciListRes>> GetBagimsizTuketiciler([FromQuery] int musteriId)
+        {
+            var result = await _aboneService.GetBagimsizTuketiciler(musteriId);
+            return Ok(result);
+        }
     }
 }
