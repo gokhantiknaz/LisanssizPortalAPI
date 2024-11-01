@@ -19,13 +19,16 @@ namespace Humanity.Application.Services
     public class MusteriService<Entity, Dto> : IMusteriService<Entity, Dto> where Entity : BaseEntity where Dto : class
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ILoggerService _loggerService;
+        private readonly IArilService _arilService;
         private readonly IMapper mapper;
 
-        public MusteriService(IUnitOfWork unitOfWork, IMapper mapper)
+        public MusteriService(IUnitOfWork unitOfWork, ILoggerService loggerService, IMapper mapper, IArilService arilService)
         {
             _unitOfWork = unitOfWork;
+            _loggerService = loggerService;
             this.mapper = mapper;
-           
+            _arilService = arilService;
         }
 
         public async Task<CustomResponseDto<IEnumerable<Dto>>> GetAllMusteri()
@@ -309,17 +312,17 @@ namespace Humanity.Application.Services
                     retVal.Data.Add(mapper.Map<AboneDTO>(a));
                 }
 
-        //        await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
 
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
 
-        //    return true;
-        //}
+            return true;
+        }
 
 
         public async Task<bool> KaydedilenAboneEndeksleriAl(int musteriId)
@@ -345,15 +348,15 @@ namespace Humanity.Application.Services
                         continue;
                     }
 
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
+                }
+            }
+            catch (Exception ex)
+            {
 
-        //        throw ex;
-        //    }
+                throw ex;
+            }
 
-        //    return true;
-        //}
+            return true;
+        }
     }
 }

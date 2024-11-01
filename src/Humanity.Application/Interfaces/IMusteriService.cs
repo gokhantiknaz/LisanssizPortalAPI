@@ -18,7 +18,8 @@ namespace Humanity.Application.Interfaces
         Task<CustomResponseDto<Dto>> GetMusteriById(int id);
         Task<CustomResponseDto<Dto>> CreateMusteri(MusteriDTO musteri);
         Task<CustomResponseDto<Dto>> Update(MusteriDTO req);
-
+        Task<bool> KaydedilenAboneEndeksleriAl(int musteriId);
+        Task<bool> ArilBagliTuketiciKaydet(int musteriid);
         //Task<GetMusteriRes> GetMusteriById(int id);
 
         //Task<GetAllActiveMusteriRes> GetAllMusteri();
