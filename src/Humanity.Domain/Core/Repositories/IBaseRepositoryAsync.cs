@@ -14,6 +14,7 @@ namespace Humanity.Domain.Core.Repositories
         Task<IList<T>> ListAsync(ISpecification<T> spec);
         Task<T?> FirstOrDefaultAsync(ISpecification<T?> spec);
         Task<T> AddAsync(T entity);
+        //Task AddAsync(T entity);
 
         Task<IEnumerable<T>> AddRandeAsync(IEnumerable<T> entity);
         void Update(T entity);
@@ -21,5 +22,6 @@ namespace Humanity.Domain.Core.Repositories
         Task<int> CountAsync(ISpecification<T> spec);
 
         Task<IList<T>> RawSql(string sql);
+       
     }
 }

@@ -16,11 +16,16 @@ namespace Humanity.Application.Core.Mapper
     {
         public MusteriProfile()
         {
-            CreateMap<Musteri, MusteriDTO>().ReverseMap();
+           
             CreateMap<Musteri, CreateMusteriReq>().ReverseMap();
             CreateMap<Musteri, UpdateMusteriReq>().ReverseMap();
             CreateMap<Musteri, CreateMusteriRes>().ReverseMap();
+
+            CreateMap<Musteri, MusteriDTO>().ReverseMap();
+
             CreateMap<MusteriIletisim, MusteriIletisimDTO>().ReverseMap();
+            CreateMap<Iletisim, IletisimDTO>().ReverseMap();
+            CreateMap<MusteriEntegrasyon, MusteriEntegrasyonDTO>().ReverseMap();
         }
     }
 }

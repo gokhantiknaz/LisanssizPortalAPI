@@ -55,7 +55,11 @@ namespace Humanity.Infrastructure.Repositories
             await _dbContext.Set<T>().AddAsync(entity);
             return entity;
         }
-
+        //public async Task  AddAsync(T entity)
+        //{
+        //    await _dbContext.Set<T>().AddAsync(entity);
+          
+        //}
         public void Update(T entity)
         {
             _dbContext.Set<T>().Update(entity);
@@ -81,5 +85,7 @@ namespace Humanity.Infrastructure.Repositories
         {
             return await _dbContext.Set<T>().FromSqlRaw(sql).ToListAsync();
         }
+
+       
     }
 }

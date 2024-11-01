@@ -6,101 +6,96 @@ using Humanity.Application.Models.Requests.Musteri;
 using Humanity.Application.Models.Responses;
 using Humanity.Application.Models.Responses.Musteri;
 using Humanity.Domain.Core.Repositories;
+using Humanity.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Humanity.WebApi.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]/[action]")]
-    //[Authorize(Roles = "Admin")]
+
     [AllowAnonymous]
-    public class MusteriController : Controller
+    public class MusteriController : CustomBaseController
     {
-        private readonly IMusteriService _musteriService;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly ILoggerService _loggerService;
-        private readonly IArilService _arilService;
+        private readonly IMusteriService<Musteri, MusteriDTO> _musteriService;
 
 
-        public MusteriController(IMusteriService musteriService, IUnitOfWork unitOfWork, IArilService arilService)
+        public MusteriController(IMusteriService<Musteri, MusteriDTO> musteriService)
         {
             _musteriService = musteriService;
-            _unitOfWork = unitOfWork;
-            _arilService = arilService; 
         }
 
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<GetMusteriRes>> Get(int id)
+        [HttpGet]
+        public async Task<IActionResult> GetAllActiveMusteri()
         {
-            var result = await _musteriService.GetMusteriById(id);
-            return Ok(result);
+            return CreateActionResult(await _musteriService.GetAllMusteri());
+        }
+
+ 
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            return CreateActionResult(await _musteriService.GetMusteriById(id));
         }
 
         [HttpPost]
-        public async Task<ActionResult<CreateMusteriReq>> Create(CreateMusteriReq musteri)
+        public async Task<IActionResult> Create(MusteriDTO musteri)
         {
-            var result = await _musteriService.CreateMusteri(musteri);
-            return Ok(result);
+            return CreateActionResult(await _musteriService.CreateMusteri(musteri));
+          
         }
+
 
         [HttpPut]
-        public async Task<ActionResult<CreateMusteriReq>> Update(UpdateMusteriReq musteri)
+        public async Task<IActionResult> Update(MusteriDTO musteri)
         {
-            var result = await _musteriService.Update(musteri);
-            return Ok(result);
+            return CreateActionResult(await _musteriService.Update(musteri));
         }
 
 
-        [HttpGet]
-        public async Task<ActionResult<GetAllActiveMusteriRes>> GetAllActiveMusteri()
-        {
-            var result = await _musteriService.GetAllMusteri();
-            return Ok(result);
-        }
 
 
-        [HttpGet]
-        public async Task<ActionResult<GetAllActiveMusteriRes>> MusteriyeBagliUreticiGetir([FromQuery] int cariId)
-        {
-            var result = await _musteriService.MusteriyeBagliUreticiGetir(cariId);
-            return Ok(result);
-        }
 
-        [HttpGet]
-        public async Task<ActionResult<GetTuketiciListRes>> MusteriyeBagliTuketicileriGetir([FromQuery]int aboneureticiId)
-        {
-            var result = await _musteriService.MusteriyeBagliTuketicileriGetir(aboneureticiId);
-            return Ok(result);
-        }
+        //[HttpGet]
+        //public async Task<ActionResult<GetAllActiveMusteriRes>> MusteriyeBagliUreticiGetir([FromQuery] int cariId)
+        //{
+        //    var result = await _musteriService.MusteriyeBagliUreticiGetir(cariId);
+        //    return Ok(result);
+        //}
+
+        //[HttpGet]
+        //public async Task<ActionResult<GetTuketiciListRes>> MusteriyeBagliTuketicileriGetir([FromQuery]int aboneureticiId)
+        //{
+        //    var result = await _musteriService.MusteriyeBagliTuketicileriGetir(aboneureticiId);
+        //    return Ok(result);
+        //}
 
 
-        [HttpGet]
-        public async Task<ActionResult<GetTuketiciListRes>> GetBagimsizTuketiciler([FromQuery] int cariId)
-        {
-            var result = await _musteriService.GetBagimsizTuketiciler(cariId);
-            return Ok(result);
-        }
+        //[HttpGet]
+        //public async Task<ActionResult<GetTuketiciListRes>> GetBagimsizTuketiciler([FromQuery] int cariId)
+        //{
+        //    var result = await _musteriService.GetBagimsizTuketiciler(cariId);
+        //    return Ok(result);
+        //}
 
-        [HttpGet]
-        public async Task<ActionResult<GetTuketiciListRes>> ArilBagliTuketiciGetir([FromQuery] int musteriid)
-        {
-            var result = await _arilService.GetCustomerPortalSubscriptions(musteriid);
-            return Ok(result);
-        }
+        //[HttpGet]
+        //public async Task<ActionResult<GetTuketiciListRes>> ArilBagliTuketiciGetir([FromQuery] int musteriid)
+        //{
+        //    var result = await _arilService.GetCustomerPortalSubscriptions(musteriid);
+        //    return Ok(result);
+        //}
 
-        [HttpGet]
-        public async Task<ActionResult<GetTuketiciListRes>> ArilBagliTuketiciKaydet([FromQuery] int musteriid)
-        {
-            var result = await _musteriService.ArilBagliTuketiciKaydet(musteriid);
-            return Ok(result);
-        }
-        [HttpGet]
-        public async Task<ActionResult<bool>> KaydedilenAboneEndeksleriAl([FromQuery] int musteriid)
-        {
-            var result = await _musteriService.KaydedilenAboneEndeksleriAl(musteriid);
-            return Ok(result);
-        }
+        //[HttpGet]
+        //public async Task<ActionResult<GetTuketiciListRes>> ArilBagliTuketiciKaydet([FromQuery] int musteriid)
+        //{
+        //    var result = await _musteriService.ArilBagliTuketiciKaydet(musteriid);
+        //    return Ok(result);
+        //}
+        //[HttpGet]
+        //public async Task<ActionResult<bool>> KaydedilenAboneEndeksleriAl([FromQuery] int musteriid)
+        //{
+        //    var result = await _musteriService.KaydedilenAboneEndeksleriAl(musteriid);
+        //    return Ok(result);
+        //}
 
 
     }

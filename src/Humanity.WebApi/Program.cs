@@ -3,8 +3,12 @@ using Humanity.Domain.Core.Models;
 using Humanity.Infrastructure;
 using Humanity.Infrastructure.Data;
 using Humanity.WebApi.Extensions;
+using Humanity.WebApi.Middlewares;
 using Humanity.WebApi.StartupTasks;
+using Microsoft.EntityFrameworkCore;
 using NLog.Web;
+using System;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,8 +16,25 @@ var appSettings = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
-    .Build();
+.Build();
 
+
+builder.Services.AddDbContext<LisanssizContext>(x =>
+{
+    //x.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection"), options =>
+    //{
+    //    options.MigrationsAssembly(Assembly.GetAssembly(typeof(AppDbContext)).GetName().Name);
+    //});
+
+
+    x.UseNpgsql(builder.Configuration.GetConnectionString("PostgreConnection"), options =>
+    {
+        options.MigrationsAssembly(Assembly.GetAssembly(typeof(LisanssizContext)).GetName().Name);
+
+    });
+
+
+});
 
 builder.Services.ConfigureApplication();
 
@@ -32,7 +53,7 @@ builder.Host.UseNLog();
 
 var app = builder.Build();
 
-app.UseMiddleware<ExceptionMiddleware>();
+//app.UseMiddleware<ExceptionMiddleware>();
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -66,7 +87,7 @@ app.UseRouting();
 
 app.MapControllers();
 
-
+app.UseCustomException();
 app.UseAuthentication();
 app.UseAuthorization();
 
