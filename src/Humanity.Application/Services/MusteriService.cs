@@ -298,17 +298,17 @@ namespace Humanity.Application.Services
                         uretici.Abone = a;
                         _ = await _unitOfWork.Repository<AboneUretici>().AddAsync(uretici);
                     }
-                    if(item.DefinitionType == 2)
+                    if (item.DefinitionType == 2)
                     {
                         a.SahisTip = SahisTip.DisTuketici;
                     }
-                        
+
 
                     AboneIletisim iletisim = new AboneIletisim() { CreatedBy = new Guid(), CreatedOn = DateTime.UtcNow, IsDeleted = false, Iletisim = new Iletisim() { Ilid = 6, Ilceid = 1130, Adres = item.Address, CepTel = "0535", Email = "a@a.com" } };
                     a.AboneIletisim = iletisim;
 
                     _ = await _unitOfWork.Repository<Abone>().AddAsync(a);
-                    
+
                     retVal.Data.Add(mapper.Map<AboneDTO>(a));
                 }
 
@@ -332,7 +332,7 @@ namespace Humanity.Application.Services
             {
                 // musteriye ait Aboneleri alalaım
 
-               var allCustomers= await _unitOfWork.Repository<Abone>().ListAsync(new BaseSpecification<Abone>(x => x.MusteriId == musteriId));
+                var allCustomers = await _unitOfWork.Repository<Abone>().ListAsync(new BaseSpecification<Abone>(x => x.MusteriId == musteriId));
                 foreach (var item in allCustomers)
                 {
                     string basDonem = DateTime.Now.Year.ToString() + "/" + "01";
@@ -341,7 +341,7 @@ namespace Humanity.Application.Services
                     {
                         _ = await _arilService.GetEndOfMonthEndexes(item.Id, basDonem, sonDonem, true, item.SahisTip == SahisTip.Uretici);
                         // donem endeksini de getirelim
-                        _ = await _arilService.GetCurrentEndexes(item.Id,true);
+                        _ = await _arilService.GetCurrentEndexes(item.Id, true);
                     }
                     catch (Exception er)
                     {
