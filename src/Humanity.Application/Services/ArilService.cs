@@ -82,39 +82,47 @@ namespace Humanity.Application.Services
 
             if (entegre != null && entegre.Count > 0)
             {
-                await GetToken(entegre.First().Musteri.DagitimFirmaId, entegre.First());
+                foreach (var entegrasyon in entegre)
+                {
+                    await GetToken(entegrasyon.Musteri.DagitimFirmaId, entegrasyon);
+
+                    var postData = new
+                    {
+                        PageNumber = 1,
+                        PageSize = 100
+                    };
+
+                    var content = new StringContent(JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
+
+                    client.DefaultRequestHeaders.Clear();
+                    client.DefaultRequestHeaders.Add("aril-service-token", token);
+
+                    if (!entegrasyon.ServisAdres.EndsWith(".com.tr/"))
+                    {
+                        throw new Exception("Entegrasyon Bilgileri Hatalı");
+                    }
+                    string firmaArilAdres = entegrasyon.ServisAdres;
+
+                    string url = "aril-portalserver/customer-rest-api/proxy-aril/GetCustomerPortalSubscriptions";
+                    url = firmaArilAdres + url;
+
+                    var response = await client.PostAsync(url, content);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var json = await response.Content.ReadAsStringAsync();
+                        var retVal = JsonSerializer.Deserialize<CustomerSubscriptionResponse>(json);
+                        foreach (var r in retVal.ResultList)
+                        {
+                            r.DagitimFİrmaId = entegrasyon.DagitimFirmaId;
+                        }
+
+                        return retVal;
+                    }
+                }
             }
             else
             {
                 throw new Exception("Entegrasyon Bilgileri Bulunamadı");
-            }
-
-            var postData = new
-            {
-                PageNumber = 1,
-                PageSize = 100
-            };
-
-            var content = new StringContent(JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
-
-            client.DefaultRequestHeaders.Clear();
-            client.DefaultRequestHeaders.Add("aril-service-token", token);
-
-
-            if (!entegre.First().ServisAdres.EndsWith(".com.tr/"))
-            {
-                throw new Exception("Entegrasyon Bilgileri Hatalı");
-            }
-            string firmaArilAdres = entegre.First().ServisAdres;
-
-            string url = "aril-portalserver/customer-rest-api/proxy-aril/GetCustomerPortalSubscriptions";
-            url = firmaArilAdres + url;
-
-            var response = await client.PostAsync(url, content);
-            if (response.IsSuccessStatusCode)
-            {
-                var json = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<CustomerSubscriptionResponse>(json);
             }
             return null;
         }
@@ -209,7 +217,7 @@ namespace Humanity.Application.Services
 
 
         //müşteri aylık data
-        public async Task<GetEndOfMonthEndexesResponse> GetEndOfMonthEndexes(int aboneid, string donem, string donemSon, bool kaydet = false, bool uretimEndeksAl=false)
+        public async Task<GetEndOfMonthEndexesResponse> GetEndOfMonthEndexes(int aboneid, string donem, string donemSon, bool kaydet = false, bool uretimEndeksAl = false)
         {
             // Post isteği için body verisi
 
@@ -276,9 +284,9 @@ namespace Humanity.Application.Services
                 {
                     await _endeksService.AylikEndeksKaydet(aboneid, res);
 
-                    if(uretimEndeksAl)
+                    if (uretimEndeksAl)
                     {
-                        postData= new
+                        postData = new
                         {
                             OwnerSerno = abone.SeriNo,  // Dinamik olarak serno geliyor
                             StartDate = startDate.ToString("yyyyMMddHHmmss"), // Başlangıç tarihi (sabit)

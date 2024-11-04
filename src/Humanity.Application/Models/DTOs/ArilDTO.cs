@@ -44,7 +44,9 @@ namespace Humanity.Application.Models.DTOs
         public object CustomerFields { get; set; }
 
         public string ScheduleCode { get; set; }
-        
+
+        public int DagitimFİrmaId { get; set; }
+
         public string DefinitionTypeStr
         {
             get

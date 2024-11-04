@@ -17,11 +17,12 @@ namespace Humanity.WebApi.Controllers
     public class MusteriController : CustomBaseController
     {
         private readonly IMusteriService<Musteri, MusteriDTO> _musteriService;
+        private readonly IArilService _arilService;
 
-
-        public MusteriController(IMusteriService<Musteri, MusteriDTO> musteriService)
+        public MusteriController(IMusteriService<Musteri, MusteriDTO> musteriService,IArilService arilService)
         {
             _musteriService = musteriService;
+            _arilService = arilService;
         }
 
         [HttpGet]
@@ -77,25 +78,25 @@ namespace Humanity.WebApi.Controllers
         //    return Ok(result);
         //}
 
-        //[HttpGet]
-        //public async Task<ActionResult<GetTuketiciListRes>> ArilBagliTuketiciGetir([FromQuery] int musteriid)
-        //{
-        //    var result = await _arilService.GetCustomerPortalSubscriptions(musteriid);
-        //    return Ok(result);
-        //}
+        [HttpGet]
+        public async Task<ActionResult<GetTuketiciListRes>> ArilBagliTuketiciGetir([FromQuery] int musteriid)
+        {
+            var result = await _arilService.GetCustomerPortalSubscriptions(musteriid);
+            return Ok(result);
+        }
 
-        //[HttpGet]
-        //public async Task<ActionResult<GetTuketiciListRes>> ArilBagliTuketiciKaydet([FromQuery] int musteriid)
-        //{
-        //    var result = await _musteriService.ArilBagliTuketiciKaydet(musteriid);
-        //    return Ok(result);
-        //}
-        //[HttpGet]
-        //public async Task<ActionResult<bool>> KaydedilenAboneEndeksleriAl([FromQuery] int musteriid)
-        //{
-        //    var result = await _musteriService.KaydedilenAboneEndeksleriAl(musteriid);
-        //    return Ok(result);
-        //}
+        [HttpGet]
+        public async Task<ActionResult<GetTuketiciListRes>> ArilBagliTuketiciKaydet([FromQuery] int musteriid)
+        {
+            var result = await _musteriService.ArilBagliTuketiciKaydet(musteriid);
+            return Ok(result);
+        }
+        [HttpGet]
+        public async Task<ActionResult<bool>> KaydedilenAboneEndeksleriAl([FromQuery] int musteriid)
+        {
+            var result = await _musteriService.KaydedilenAboneEndeksleriAl(musteriid);
+            return Ok(result);
+        }
 
 
     }

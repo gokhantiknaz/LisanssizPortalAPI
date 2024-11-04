@@ -84,7 +84,7 @@ namespace Humanity.WebApi.Controllers
         {
             FirebaseResponse response = await client.GetAsync("DagitimFirma");
             List<DagitimFirma> result = response.ResultAs<List<DagitimFirma>>();
-            return Ok(result);
+            return Ok(result.OrderBy(a => a.Adi).ToList());
         }
 
 

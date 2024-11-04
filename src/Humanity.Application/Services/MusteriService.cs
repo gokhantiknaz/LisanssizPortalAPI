@@ -142,11 +142,6 @@ namespace Humanity.Application.Services
             return CustomResponseDto<Dto>.Success(StatusCodes.Status200OK, newDto);
         }
 
-
-
-
-
-
         //public Task<GetAllActiveMusteriRes> MusteriyeBagliUreticiGetir(int musteriId)
         //{
         //    throw new NotImplementedException();
@@ -283,7 +278,6 @@ namespace Humanity.Application.Services
         //    return iletisim.FirstOrDefault();
         //}
 
-
         public async Task<bool> ArilBagliTuketiciKaydet(int musteriid)
         {
 
@@ -301,6 +295,8 @@ namespace Humanity.Application.Services
                     Abone a = mapper.Map<Abone>(item);
                     a.MusteriId = musteriid;
                     a.Durum = Status.Aktif;
+                    a.DagitimFirmaId = item.DagitimFİrmaId;
+
                     if (item.DefinitionType == 15)
                     {
                         a.SahisTip = SahisTip.Uretici;
@@ -318,6 +314,7 @@ namespace Humanity.Application.Services
                     if (item.DefinitionType == 2)
                     {
                         a.SahisTip = SahisTip.DisTuketici;
+
                     }
 
 
