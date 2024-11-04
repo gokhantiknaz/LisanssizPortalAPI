@@ -42,6 +42,7 @@ namespace Humanity.Application.Models.DTOs.Musteri
         public string? KullaniciAdi { get; set; }
         public string? Sifre { get; set; }
         public string? ServisAdres { get; set; }
+        public int DagitimFirmaId { get; set; }
     }
 
 }

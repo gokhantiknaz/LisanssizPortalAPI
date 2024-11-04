@@ -41,7 +41,7 @@ namespace Humanity.Application.Services
             return CustomResponseDto<IEnumerable<Dto>>.Success(StatusCodes.Status200OK, dtos);
         }
 
-        public async Task<CustomResponseDto<Dto>> GetMusteriById(int id)
+        public async Task<CustomResponseDto<MusteriDTO>> GetMusteriById(int id)
         {
             var musteri = await _unitOfWork.Repository<Musteri>().GetByIdAsync(id);
 
@@ -54,10 +54,12 @@ namespace Humanity.Application.Services
                 throw new Exception("Müşteri Bulunamadı");
 
             musteri.MusteriIletisim = await GetMusteriIletisim(id);
-         //   musteri.MusteriEntegrasyon = await GetMusteriEntegrasyon(id);
 
-            var musteriDto = mapper.Map<Dto>(musteri);
-            return CustomResponseDto<Dto>.Success(StatusCodes.Status200OK, musteriDto);
+            var musteriDto = mapper.Map<MusteriDTO>(musteri);
+            var entList = await GetMusteriEntegrasyon(id);
+            musteriDto.MusteriEntegrasyon = mapper.Map<List<MusteriEntegrasyonDTO>>(entList);
+
+            return CustomResponseDto<MusteriDTO>.Success(StatusCodes.Status200OK, musteriDto);
 
         }
 
@@ -108,14 +110,26 @@ namespace Humanity.Application.Services
         public async Task<CustomResponseDto<Dto>> Update(MusteriDTO req)
         {
             Musteri m = mapper.Map<Musteri>(req);
-
+            m.Durum = Status.Aktif;
             _unitOfWork.Repository<Musteri>().Update(m);
 
-            //if (m.MusteriEntegrasyon != null && m.MusteriEntegrasyon.Id > 0)
-            //{
-            //    var musterEntegrasyon = mapper.Map<MusteriEntegrasyon>(m.MusteriEntegrasyon);
-            //    _unitOfWork.Repository<MusteriEntegrasyon>().Update(musterEntegrasyon);
-            //}
+            if (req.MusteriEntegrasyon != null && req.MusteriEntegrasyon.Count > 0)
+            {
+                foreach (var item in req.MusteriEntegrasyon)
+                {
+                    var musterEntegrasyon = mapper.Map<MusteriEntegrasyon>(item);
+                    if (musterEntegrasyon.Id > 0)
+                    {
+                        _unitOfWork.Repository<MusteriEntegrasyon>().Update(musterEntegrasyon);
+                    }
+                    else
+                    {
+                        musterEntegrasyon.Musteri = m;
+                        _ = await _unitOfWork.Repository<MusteriEntegrasyon>().AddAsync(musterEntegrasyon);
+                    }
+                }
+            }
+
             if (m.MusteriIletisim != null && m.MusteriIletisim.IletisimId > 0)
             {
                 var musteriIletisim = mapper.Map<MusteriIletisim>(m.MusteriIletisim);
@@ -123,7 +137,6 @@ namespace Humanity.Application.Services
             }
 
             await _unitOfWork.SaveChangesAsync();
-
 
             var newDto = mapper.Map<Dto>(m);
             return CustomResponseDto<Dto>.Success(StatusCodes.Status200OK, newDto);

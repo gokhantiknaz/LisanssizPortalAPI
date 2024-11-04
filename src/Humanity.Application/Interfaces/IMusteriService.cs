@@ -15,7 +15,7 @@ namespace Humanity.Application.Interfaces
     public interface IMusteriService<T, Dto> where Dto : class
     {
         Task<CustomResponseDto<IEnumerable<Dto>>> GetAllMusteri();
-        Task<CustomResponseDto<Dto>> GetMusteriById(int id);
+        Task<CustomResponseDto<MusteriDTO>> GetMusteriById(int id);
         Task<CustomResponseDto<Dto>> CreateMusteri(MusteriDTO musteri);
         Task<CustomResponseDto<Dto>> Update(MusteriDTO req);
         Task<bool> KaydedilenAboneEndeksleriAl(int musteriId);
