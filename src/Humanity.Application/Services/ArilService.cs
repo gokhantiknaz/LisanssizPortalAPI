@@ -79,7 +79,7 @@ namespace Humanity.Application.Services
             var spec = new BaseSpecification<MusteriEntegrasyon>(x => x.MusteriId == musteriid);
             spec.AddInclude(a => a.Musteri);
             var entegre = await _unitOfWork.Repository<MusteriEntegrasyon>().ListAsync(spec);
-
+            var retVal = new CustomerSubscriptionResponse() { ResultList = new List<CustomerSubscription>() };
             if (entegre != null && entegre.Count > 0)
             {
                 foreach (var entegrasyon in entegre)
@@ -110,15 +110,16 @@ namespace Humanity.Application.Services
                     if (response.IsSuccessStatusCode)
                     {
                         var json = await response.Content.ReadAsStringAsync();
-                        var retVal = JsonSerializer.Deserialize<CustomerSubscriptionResponse>(json);
-                        foreach (var r in retVal.ResultList)
+                        var customers = JsonSerializer.Deserialize<CustomerSubscriptionResponse>(json);
+                        foreach (var r in customers.ResultList)
                         {
                             r.DagitimFİrmaId = entegrasyon.DagitimFirmaId;
                         }
-
-                        return retVal;
+                        retVal.ResultList.AddRange(customers.ResultList);
                     }
                 }
+
+                return retVal;
             }
             else
             {
