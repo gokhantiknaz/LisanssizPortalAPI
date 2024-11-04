@@ -33,7 +33,5 @@ namespace Humanity.Domain.Entities
         public int DagitimFirmaId { get; set; }
         public MusteriIletisim MusteriIletisim { get; set; }
 
-        public MusteriEntegrasyon MusteriEntegrasyon { get; set; }
-
     }
 }
