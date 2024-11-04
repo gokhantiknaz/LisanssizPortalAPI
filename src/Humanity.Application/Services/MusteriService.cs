@@ -54,7 +54,7 @@ namespace Humanity.Application.Services
                 throw new Exception("Müşteri Bulunamadı");
 
             musteri.MusteriIletisim = await GetMusteriIletisim(id);
-            musteri.MusteriEntegrasyon = await GetMusteriEntegrasyon(id);
+         //   musteri.MusteriEntegrasyon = await GetMusteriEntegrasyon(id);
 
             var musteriDto = mapper.Map<Dto>(musteri);
             return CustomResponseDto<Dto>.Success(StatusCodes.Status200OK, musteriDto);
@@ -71,13 +71,13 @@ namespace Humanity.Application.Services
             return iletisim.FirstOrDefault();
         }
 
-        public async Task<MusteriEntegrasyon> GetMusteriEntegrasyon(int musteriId)
+        public async Task<List<MusteriEntegrasyon>> GetMusteriEntegrasyon(int musteriId)
         {
             var spec = new BaseSpecification<MusteriEntegrasyon>(x => x.MusteriId == musteriId);
 
             var entegre = await _unitOfWork.Repository<MusteriEntegrasyon>().ListAsync(spec);
 
-            return entegre.FirstOrDefault();
+            return entegre.ToList();
         }
 
         public async Task<CustomResponseDto<Dto>> CreateMusteri(MusteriDTO req)
@@ -111,11 +111,11 @@ namespace Humanity.Application.Services
 
             _unitOfWork.Repository<Musteri>().Update(m);
 
-            if (m.MusteriEntegrasyon != null && m.MusteriEntegrasyon.Id > 0)
-            {
-                var musterEntegrasyon = mapper.Map<MusteriEntegrasyon>(m.MusteriEntegrasyon);
-                _unitOfWork.Repository<MusteriEntegrasyon>().Update(musterEntegrasyon);
-            }
+            //if (m.MusteriEntegrasyon != null && m.MusteriEntegrasyon.Id > 0)
+            //{
+            //    var musterEntegrasyon = mapper.Map<MusteriEntegrasyon>(m.MusteriEntegrasyon);
+            //    _unitOfWork.Repository<MusteriEntegrasyon>().Update(musterEntegrasyon);
+            //}
             if (m.MusteriIletisim != null && m.MusteriIletisim.IletisimId > 0)
             {
                 var musteriIletisim = mapper.Map<MusteriIletisim>(m.MusteriIletisim);
