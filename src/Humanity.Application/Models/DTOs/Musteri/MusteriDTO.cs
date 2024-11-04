@@ -31,13 +31,14 @@ namespace Humanity.Application.Models.DTOs.Musteri
         public int? OzelkodId3 { get; set; }
         public int DagitimFirmaId { get; set; }
         public MusteriIletisimDTO MusteriIletisim { get; set; }
-        public MusteriEntegrasyonDTO MusteriEntegrasyon { get; set; }
+        public List<MusteriEntegrasyonDTO> MusteriEntegrasyon { get; set; }
 
     }
 
     public class MusteriEntegrasyonDTO
     {
         public int? Id { get; set; }
+        public int DagitimFirmaId { get; set; }
         public int? MusteriId { get; set; }
         public int? ServisId { get; set; }
         public string? KullaniciAdi { get; set; }

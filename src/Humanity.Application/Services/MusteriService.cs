@@ -47,7 +47,7 @@ namespace Humanity.Application.Services
 
             if (musteri == null)
             {
-                throw new NotFoundException   ($"{typeof(Musteri).Name} ({id}) not found");
+                throw new NotFoundException($"{typeof(Musteri).Name} ({id}) not found");
             }
 
             if (musteri == null)
@@ -86,15 +86,19 @@ namespace Humanity.Application.Services
 
             var musteri = mapper.Map<Musteri>(req);
             var musteriIletisim = mapper.Map<MusteriIletisim>(req.MusteriIletisim);
-            var musteriEntergrasyon = mapper.Map<MusteriEntegrasyon>(req.MusteriEntegrasyon);
+            var musteriEntergrasyon = mapper.Map<List<MusteriEntegrasyon>>(req.MusteriEntegrasyon);
 
-           // await _unitOfWork.Repository<Musteri>().AddAsync(musteri);
+            // await _unitOfWork.Repository<Musteri>().AddAsync(musteri);
 
             musteriIletisim.Musteri = musteri;
             await _unitOfWork.Repository<MusteriIletisim>().AddAsync(musteriIletisim);
 
-            musteriEntergrasyon.Musteri = musteri;
-            await _unitOfWork.Repository<MusteriEntegrasyon>().AddAsync(musteriEntergrasyon);
+            foreach (var item in musteriEntergrasyon)
+            {
+                item.Musteri = musteri;
+            }
+
+            await _unitOfWork.Repository<MusteriEntegrasyon>().AddRandeAsync(musteriEntergrasyon);
 
             await _unitOfWork.SaveChangesAsync();
             var newDto = mapper.Map<Dto>(musteri);
