@@ -20,7 +20,6 @@ namespace Humanity.Application.Models.DTOs.Musteri
         public string Adi { get; set; }
         public string Soyadi { get; set; }
         public string? Unvan { get; set; }
-        public int CariKartId { get; set; }
         public long? Tckn { get; set; }
         public long? Vkn { get; set; }
         [JsonIgnore]
@@ -31,7 +30,7 @@ namespace Humanity.Application.Models.DTOs.Musteri
         public int? OzelkodId3 { get; set; }
         public int DagitimFirmaId { get; set; }
         public MusteriIletisimDTO MusteriIletisim { get; set; }
-        public MusteriEntegrasyonDTO? MusteriEntegrasyon { get; set; }
+        public List<MusteriEntegrasyonDTO>? MusteriEntegrasyon { get; set; }
 
     }
 
