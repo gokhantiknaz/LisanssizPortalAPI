@@ -67,12 +67,12 @@ namespace Humanity.Application.Models.DTOs.ListDTOS
         public TuketiciTableDTO(AboneTuketici tuketici)
         {
             AboneId = tuketici.AboneId;
-            Adi = tuketici.Abone.Musteri.Adi;
-            Soyadi = tuketici.Abone.Musteri.Soyadi;
-            Unvan = tuketici.Abone.Musteri.Unvan;
+            Adi = tuketici.Abone.Adi;
+            Soyadi = tuketici.Abone.Soyadi;
+            Unvan = tuketici.Abone.Unvan;
             BaslamaZamani = tuketici.BaslamaZamani;
-            Ilid = tuketici.Abone.Musteri.MusteriIletisim.Iletisim.Ilid;
-            Ilceid = tuketici.Abone.Musteri.MusteriIletisim.Iletisim.Ilceid;
+            Ilid = tuketici.Abone.AboneIletisim.Iletisim.Ilid;
+            Ilceid = tuketici.Abone.AboneIletisim.Iletisim.Ilceid;
             IsDeleted = tuketici.IsDeleted;
         }
     }

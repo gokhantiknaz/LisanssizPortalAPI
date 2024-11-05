@@ -55,15 +55,25 @@ namespace Humanity.Application.Services
 
             data.AboneIletisim = AboneIletisimDto;
 
-            if (aboneUretici != null && aboneUretici.Count > 0)
-                data.UreticiBilgileri = new UreticiDTO(aboneUretici.FirstOrDefault(new AboneUretici()));
+         
+       
 
             //tujeticileri varsa
             if (aboneUretici.Count > 0 && abone.SahisTip == SahisTip.Uretici)
             {
-                var tuketicilerSpec = new BaseSpecification<AboneTuketici>(a => a.UreticiAboneId == aboneUretici.FirstOrDefault().Id);
-                var tuketiciler = await _unitOfWork.Repository<AboneTuketici>().ListAsync(tuketicilerSpec);
+               
+                data.UreticiBilgileri = new UreticiDTO(aboneUretici.FirstOrDefault(new AboneUretici()));
+                var kayitliTuketiciler = await AboneyeBagliTuketicileriGetir(data.UreticiBilgileri.AboneId);
+
                 data.TuketiciList = new List<TuketiciListDTO>();
+
+                var tuketicilerSpec = new BaseSpecification<AboneTuketici>(a => a.UreticiAboneId == aboneUretici.FirstOrDefault().AboneId);
+                var tuketiciler = await _unitOfWork.Repository<AboneTuketici>().ListAsync(tuketicilerSpec);
+
+
+                var tmp = tuketiciler.Select(x => new TuketiciTableDTO(x) { UreticiAboneId = aboneUretici.FirstOrDefault().Id, 
+                    UreticiAbone = new AboneDTO(aboneUretici.FirstOrDefault().Abone) { } }).ToList();
+
             }
 
             return new GetAboneRes()

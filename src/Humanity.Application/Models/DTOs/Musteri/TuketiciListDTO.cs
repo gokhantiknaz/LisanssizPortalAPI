@@ -14,5 +14,7 @@ namespace Humanity.Application.Models.DTOs.Musteri
         public int UreticiAboneId { get; set; }
         public DateTime BaslamaZamani { get; set; }
 
+
+
     }
 }

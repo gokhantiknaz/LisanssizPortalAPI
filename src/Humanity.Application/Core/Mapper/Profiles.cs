@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Humanity.Application.Models.DTOs;
+using Humanity.Application.Models.DTOs.ListDTOS;
 using Humanity.Application.Models.DTOs.Musteri;
 using Humanity.Domain.Entities;
 using System;
@@ -24,6 +25,8 @@ namespace Humanity.Application.Core.Mapper
                  .ForMember(dest => dest.InstalledPower, opt => opt.MapFrom(src => src.KuruluGuc))
                  .ForMember(dest => dest.AccordPower, opt => opt.MapFrom(src => src.BaglantiGucu))
                  .ForMember(dest => dest.SubscriptionSerno, opt => opt.MapFrom(src => src.SeriNo)).ReverseMap();
+
+            CreateMap<TuketiciTableDTO, AboneTuketici>().ReverseMap();
 
         }
     }

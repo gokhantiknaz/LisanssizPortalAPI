@@ -65,14 +65,14 @@ namespace Humanity.Infrastructure.Repositories.MusteriRepos
 
         }
 
-        public List<TuketiciTableDTO> GetBagimsizTuketiciler(int aboneid)
+        public List<TuketiciTableDTO> GetBagimsizTuketiciler(int musteriId)
         {
             var result = (from m in _dbContext.Musteri
                           join a in _dbContext.Abone on m.Id equals a.MusteriId
                           join ilm in _dbContext.MusteriIletisim on m.Id equals ilm.MusteriId
                           join il in _dbContext.Iletisim on ilm.IletisimId equals il.Id 
 
-                          where a.Id == aboneid
+                          where a.MusteriId == musteriId
                           && a.SahisTip != Domain.Enums.Enums.SahisTip.Uretici
                           && (!_dbContext.AboneTuketici.Any(atu => atu.AboneId == a.Id) || (_dbContext.AboneTuketici.Any(atu => atu.AboneId == a.Id && atu.IsDeleted)))
                           select new
