@@ -1,11 +1,6 @@
-﻿using Humanity.Application.Core.Services;
-using Humanity.Application.Interfaces;
+﻿using Humanity.Application.Interfaces;
 using Humanity.Application.Models.DTOs.Musteri;
-using Humanity.Application.Models.Requests;
-using Humanity.Application.Models.Requests.Musteri;
 using Humanity.Application.Models.Responses;
-using Humanity.Application.Models.Responses.Musteri;
-using Humanity.Domain.Core.Repositories;
 using Humanity.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -53,22 +48,19 @@ namespace Humanity.WebApi.Controllers
         }
 
 
+        [HttpGet]
+        public async Task<IActionResult> MusteriyeBagliUreticiGetir([FromQuery] int musteriid)
+        {
+            var result = await _musteriService.MusteriyeBagliUreticiGetir(musteriid);
+            return CreateActionResult(result);
+        }
 
-
-
-        //[HttpGet]
-        //public async Task<ActionResult<GetAllActiveMusteriRes>> MusteriyeBagliUreticiGetir([FromQuery] int cariId)
-        //{
-        //    var result = await _musteriService.MusteriyeBagliUreticiGetir(cariId);
-        //    return Ok(result);
-        //}
-
-        //[HttpGet]
-        //public async Task<ActionResult<GetTuketiciListRes>> MusteriyeBagliTuketicileriGetir([FromQuery]int aboneureticiId)
-        //{
-        //    var result = await _musteriService.MusteriyeBagliTuketicileriGetir(aboneureticiId);
-        //    return Ok(result);
-        //}
+        [HttpGet]
+        public async Task<ActionResult<GetTuketiciListRes>> MusteriyeBagliTuketicileriGetir([FromQuery] int aboneureticiId)
+        {
+            var result = await _musteriService.MusteriyeBagliTuketicileriGetir(aboneureticiId);
+            return Ok(result);
+        }
 
 
         //[HttpGet]

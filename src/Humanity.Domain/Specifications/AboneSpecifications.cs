@@ -38,10 +38,11 @@ namespace Humanity.Domain.Specifications
             return specAbone;
         }
 
-        public static BaseSpecification<AboneUretici> GetUreticiByAboneId(int aboneid)
+        public static BaseSpecification<AboneUretici> GetUreticiByMusteriId(int musteriId)
         {
-            var specAbone = new BaseSpecification<AboneUretici>(x => x.Abone.SahisTip == Enums.Enums.SahisTip.Uretici && x.Abone.Id == aboneid);
+            var specAbone = new BaseSpecification<AboneUretici>(x => x.Abone.MusteriId== musteriId && x.Abone.SahisTip== Enums.Enums.SahisTip.Uretici);
             specAbone.AddInclude(a => a.Abone);
+
             return specAbone;
         }
 

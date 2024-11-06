@@ -20,11 +20,14 @@ namespace Humanity.Application.Interfaces
         Task<CustomResponseDto<Dto>> Update(MusteriDTO req);
         Task<bool> KaydedilenAboneEndeksleriAl(int musteriId);
         Task<bool> ArilBagliTuketiciKaydet(int musteriid);
-        //Task<GetMusteriRes> GetMusteriById(int id);
 
+        Task<CustomResponseDto<IEnumerable<AboneDTO>>> MusteriyeBagliUreticiGetir(int musteriId);
+
+        Task<CustomResponseDto<IEnumerable<AboneDTO>>> MusteriyeBagliTuketicileriGetir(int aboneureticiId);
+     
+        
+        //Task<GetMusteriRes> GetMusteriById(int id);
         //Task<GetAllActiveMusteriRes> GetAllMusteri();
-        //Task<GetAllActiveMusteriRes> MusteriyeBagliUreticiGetir(int musteriId);
-        //Task<GetTuketiciListRes> MusteriyeBagliTuketicileriGetir(int aboneureticiId);
         //Task<GetTuketiciListRes> GetBagimsizTuketiciler(int cariId);
         //Task<CreateMusteriRes> Update(UpdateMusteriReq musteri);
         //Task<MusteriEntegrasyonDTO> GetMusteriEntegrasyon(int musteriId);

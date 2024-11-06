@@ -1,12 +1,9 @@
 ﻿using Humanity.Application.Core.Services;
 using Humanity.Application.Interfaces;
-using Humanity.Application.Models.Requests.Musteri;
-using Humanity.Application.Models.Responses.Musteri;
-using Humanity.Application.Models.Responses;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Humanity.Application.Models.Requests;
+using Humanity.Application.Models.Responses;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Humanity.WebApi.Controllers
 {

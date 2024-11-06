@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Http;
 
 using static Humanity.Domain.Enums.Enums;
 using Humanity.Application.Models.Responses;
+using Humanity.Domain.Specifications;
+using Humanity.Application.Models.DTOs.ListDTOS;
 
 namespace Humanity.Application.Services
 {
@@ -73,7 +75,7 @@ namespace Humanity.Application.Services
             return iletisim.FirstOrDefault();
         }
 
-        public async Task<List<MusteriEntegrasyon>> GetMusteriEntegrasyon(int musteriId)
+        public async Task<IEnumerable<MusteriEntegrasyon>> GetMusteriEntegrasyon(int musteriId)
         {
             var spec = new BaseSpecification<MusteriEntegrasyon>(x => x.MusteriId == musteriId);
 
@@ -142,99 +144,47 @@ namespace Humanity.Application.Services
             return CustomResponseDto<Dto>.Success(StatusCodes.Status200OK, newDto);
         }
 
-        //public Task<GetAllActiveMusteriRes> MusteriyeBagliUreticiGetir(int musteriId)
-        //{
-        //    throw new NotImplementedException();
-        //}
 
-        //public async Task<CreateMusteriRes> CreateMusteri(CreateMusteriReq req)
-        //{
-        //    req.Durum = Status.Aktif.GetHashCode();
-        //    Musteri m = mapper.Map<Musteri>(req);
+        public async Task<CustomResponseDto<IEnumerable<AboneDTO>>> MusteriyeBagliTuketicileriGetir(int aboneid)
+        {
+            var tuketiciAboneSpec = AboneSpecifications.GetTuketiciByUretici(aboneid);
+            tuketiciAboneSpec.AddInclude(a => a.Abone);
+            tuketiciAboneSpec.AddInclude(a => a.Abone.Musteri);
 
-        //    _ = await _unitOfWork.Repository<Musteri>().AddAsync(m);
+            var ureticiAbone = await _unitOfWork.Repository<Abone>().GetByIdAsync(aboneid);
 
-        //    var miletisim = new Iletisim { Email = req.MusteriIletisim.Email ?? "", Adres = req.MusteriIletisim.Adres ?? "", CepTel = req.MusteriIletisim.CepTel ?? "", Ilid = req.MusteriIletisim.Ilid, Ilceid = req.MusteriIletisim.Ilceid };
+            var tuketiciler = await _unitOfWork.Repository<AboneTuketici>().ListAsync(tuketiciAboneSpec);
 
-        //    MusteriIletisim iletisim = new MusteriIletisim
-        //    {
-        //        Musteri = m,
-        //        Iletisim = miletisim,
-        //        IsDeleted = false,
-        //        CreatedBy = Guid.Empty,
-        //        CreatedOn = DateTime.UtcNow,
-        //    };
-        //    _ = await _unitOfWork.Repository<MusteriIletisim>().AddAsync(iletisim);
+            var data = new List<AboneDTO>();
+            foreach (var item in tuketiciler)
+            {
+                AboneDTO dTO = mapper.Map<AboneDTO>(item.Abone);
+                data.Add(dTO);
+            }
 
+            return new CustomResponseDto<IEnumerable<AboneDTO>>() { Data = data };
+        }
 
-        //    var musterEntegrasyon = new MusteriEntegrasyon
-        //    {
-        //        ServisAdres = req.MusteriEntegrasyon.ServisAdres ?? "",
-        //        KullaniciAdi = req.MusteriEntegrasyon.KullaniciAdi ?? "",
-        //        Sifre = req.MusteriEntegrasyon.Sifre ?? "",
-        //        ServisId = 1
-        //    };
-        //    musterEntegrasyon.Musteri = m;
+        public async Task<CustomResponseDto<IEnumerable<AboneDTO>>> MusteriyeBagliUreticiGetir(int musteriId)
+        {
+            var ureticiAboneSpec = AboneSpecifications.GetUreticiByMusteriId(musteriId);
 
-        //    _ = await _unitOfWork.Repository<MusteriEntegrasyon>().AddAsync(musterEntegrasyon);
+            var ureticiAboneler = await _unitOfWork.Repository<AboneUretici>().ListAsync(ureticiAboneSpec);
 
-        //    //var listSubs= await _arilService.GetCustomerPortalSubscriptions();
+            //var ureticiAboneler = await _unitOfWork.Repository<Abone>().ListAsync(ureticiAboneSpec);
 
+            var data = new List<AboneDTO>();
+            foreach (var item in ureticiAboneler)
+            {
+                AboneDTO dTO = mapper.Map<AboneDTO>(item.Abone);
+                dTO.UreticiBilgileri = mapper.Map<UreticiDTO>(item);
 
-        //    //foreach (var sub in listSubs.ResultList)
-        //    //{
-        //    //    //herbiri yeni abonedir.tüketici
-        //    //    Abone a = new Abone()
-        //    //    {
+                data.Add(dTO);
+            }
 
-        //    //    };
+            return new CustomResponseDto<IEnumerable<AboneDTO>>() { Data = data };
 
-        //    //    _ = await _unitOfWork.Repository<Abone>().AddAsync(a);
-        //    //}
-
-
-        //    try
-        //    {
-        //        await _unitOfWork.SaveChangesAsync();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-
-        //    _loggerService.LogInfo("Müşteri Kaydedildi");
-
-        //    return new CreateMusteriRes() { Data = new MusteriDTO(m) };
-
-        //}
-
-
-
-
-        //public async Task<GetMusteriRes> GetMusteriById(int id)
-        //{
-        //    var musteri = await _unitOfWork.Repository<Musteri>().GetByIdAsync(id);
-
-        //    if (musteri == null)
-        //        throw new Exception("Müşteri Bulunamadı");
-        //    //throw NotFoundException("Cari");
-
-        //    //iletisim bilgisi
-        //    var iletisimDto = await GetMusteriIletisim(id);
-
-
-        //    var data = mapper.Map<MusteriDTO>(musteri);
-        //    var entegrasyon = await GetMusteriEntegrasyon(id);
-        //    data.MusteriIletisim = new MusteriIletisimDTO(iletisimDto);
-
-        //    data.MusteriEntegrasyon = entegrasyon;
-
-
-        //    return new GetMusteriRes()
-        //    {
-        //        Data = data
-        //    };
-        //}
+        }
 
         //public Task<CustomResponseDto<IEnumerable<Dto>>> GetAllMusteri()
         //{
@@ -254,10 +204,7 @@ namespace Humanity.Application.Services
         //    throw new NotImplementedException();
         //}
 
-        //public Task<GetTuketiciListRes> MusteriyeBagliTuketicileriGetir(int aboneureticiId)
-        //{
-        //    throw new NotImplementedException();
-        //}
+
 
         //public async Task<MusteriEntegrasyonDTO> GetMusteriEntegrasyon(int musteriId)
         //{

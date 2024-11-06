@@ -3,10 +3,7 @@ using Humanity.Application.Interfaces;
 using Humanity.Application.Models.DTOs.Musteri;
 using Humanity.Application.Models.Requests.Musteri;
 using Humanity.Application.Models.Responses;
-using Humanity.Application.Models.Responses.Musteri;
-using Humanity.Application.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Humanity.WebApi.Controllers
