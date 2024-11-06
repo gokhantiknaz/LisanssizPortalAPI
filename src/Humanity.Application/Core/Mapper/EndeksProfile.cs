@@ -6,6 +6,7 @@ using Humanity.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,7 +19,6 @@ namespace Humanity.Application.Core.Mapper
         {
             var gmtPlus3 = TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time");
 
-
             CreateMap<SaatlikEndeksRequest, AboneSaatlikEndeks>()
            .ForMember(dest => dest.CekisTuketim, opt => opt.MapFrom(src => src.TuketimCekis))
            .ForMember(dest => dest.CekisReaktifInduktif, opt => opt.MapFrom(src => src.ReakIndCekis))
@@ -29,8 +29,7 @@ namespace Humanity.Application.Core.Mapper
            .ForMember(dest => dest.Donem, opt => opt.MapFrom(src => src.Donem))
            .ForMember(dest => dest.ProfilDate, opt => opt.MapFrom(src => TimeZoneInfo.ConvertTimeFromUtc(DateTime.Parse(src.ProfilTarihi), gmtPlus3)))
            .ForMember(dest => dest.AboneId, opt => opt.MapFrom(src => src.AboneId))
-           .ForMember(dest => dest.Carpan, opt => opt.MapFrom(src => src.Carpan));
-
+           .ForMember(dest => dest.Carpan, opt => opt.MapFrom(src => src.Carpan)).ReverseMap();
 
             CreateMap<AboneSaatlikEndeks, SaatlikEndeksRes>()
        .ForMember(dest => dest.TuketimCekis, opt => opt.MapFrom(src => src.CekisTuketim))
@@ -42,14 +41,16 @@ namespace Humanity.Application.Core.Mapper
        .ForMember(dest => dest.Donem, opt => opt.MapFrom(src => src.Donem))
        .ForMember(dest => dest.ProfilTarihi, opt => opt.MapFrom(src => src.ProfilDate.ToLocalTime().ToString()))
        .ForMember(dest => dest.AboneId, opt => opt.MapFrom(src => src.AboneId))
-       .ForMember(dest => dest.Carpan, opt => opt.MapFrom(src => src.Carpan));
+       .ForMember(dest => dest.Carpan, opt => opt.MapFrom(src => src.Carpan)).ReverseMap();
         }
     }
     public class AylikEndeksProfile : Profile
     {
         public AylikEndeksProfile()
         {
-            CreateMap<AboneEndeks, AylikEndeksRes>().ReverseMap();
+            CreateMap<AboneEndeks, AylikEndeksRes>().
+                ForMember(dest => dest.Donem, opt => opt.MapFrom(src => src.EndexYear.ToString() + "/" + src.EndexMonth.ToString().PadLeft(2, '0'))).ReverseMap();
+
             CreateMap<AboneEndeks, EndexData>().ReverseMap();
         }
     }

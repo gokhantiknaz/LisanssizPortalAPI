@@ -33,21 +33,17 @@ namespace Humanity.Application.Models.Responses
 
         public int AboneId { get; set; }
 
+        public int EndexYear { get; set; }
+        public int EndexMonth { get; set; }
         public string Donem { get; set; }
+        public long EndexDate { get; set; }
+        public double T1Endex { get; set; }
+        public double T2Endex { get; set; }
+        public double T3Endex { get; set; }
+        public double T4Endex { get; set; }
 
-        public decimal TotalTuketimCekis { get; set; }
-
-        public decimal TotalUretimVeris { get; set; }
-
-        public decimal TotalReakIndVeris { get; set; }
-
-        public decimal TotalReakKapVeris { get; set; }
-
-        public decimal TotalReakIndCekis { get; set; }
-
-        public decimal TotalReakKapCekis { get; set; }
-
-        public decimal Carpan { get; set; }
+        public double ReactiveCapasitive { get; set; }
+        public double ReactiveInductive { get; set; }
 
     }
 }

@@ -42,7 +42,8 @@ namespace Humanity.Application.Services
         public async Task<GetAboneRes> GetAboneById(int AboneId)
         {
             var abone = await _unitOfWork.Repository<Abone>().GetByIdAsync(AboneId);
-
+            if (abone == null)
+                throw new Exception("Abone Bulunamadı");
             //uretici bilgisi varsa
             var ureticiSpec = new BaseSpecification<AboneUretici>(a => a.AboneId == AboneId);
             var aboneUretici = await _unitOfWork.Repository<AboneUretici>().ListAsync(ureticiSpec);
@@ -51,6 +52,7 @@ namespace Humanity.Application.Services
             //iletisim bilgisi
             var AboneIletisimDto = await GetAboneIletisim(AboneId);
 
+          
             var data = _mapper.Map<AboneDTO>(abone);
 
             data.AboneIletisim = AboneIletisimDto;

@@ -10,6 +10,7 @@ using Humanity.Domain.Core.Specifications;
 using Humanity.Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -45,8 +46,22 @@ namespace Humanity.Application.Services
 
         public async Task<List<AylikEndeksRes>> GetAboneDonemEndeks(int aboneId, string donem)
         {
-            var endeksler = await _unitOfWork.Repository<AboneEndeks>().ListAsync(new BaseSpecification<AboneEndeks>(a => a.AboneId == aboneId && (a.EndexYear.ToString() == donem.Substring(4) && a.EndexMonth.ToString() == donem.Substring(4, 2)) || donem == "-1"));
+            var donemYear = DateTime.Now.Year;
+            var donemMonth = DateTime.Now.Month;
 
+            if (donem != "-1")
+            {
+                donemYear = Convert.ToInt32(donem.Split('/')[0]);
+                donemMonth = Convert.ToInt32(donem.Split('/')[1]);
+            }
+
+            var spec = new BaseSpecification<AboneEndeks>(
+                    a => a.AboneId == aboneId && ((a.EndexYear == donemYear && a.EndexMonth == donemMonth) || donem == "-1" ) );
+            spec.ApplyOrderByDescending(a => a.EndexYear);
+            spec.ApplyOrderByDescending(a => a.EndexMonth);
+            
+            var endeksler = await _unitOfWork.Repository<AboneEndeks>().ListAsync(spec);
+            
             if (endeksler == null)
                 throw new Exception("Endeks Bulunamadı");
             if (endeksler.Count() > 0)
@@ -136,7 +151,7 @@ namespace Humanity.Application.Services
 
                 _ = await _unitOfWork.Repository<AboneEndeks>().AddAsync(aylikEndeks);
 
-     
+
 
                 //_ = await _unitOfWork.Repository<AboneEndeksPeriod>().AddAsync(periodGunduz);
                 //_ = await _unitOfWork.Repository<AboneEndeksPeriod>().AddAsync(periodPuant);
