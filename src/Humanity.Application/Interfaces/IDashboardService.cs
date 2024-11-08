@@ -13,5 +13,9 @@ namespace Humanity.Application.Interfaces
     public  interface IDashboardService
     {
         Task<List<AboneAylikTuketim>> AboneAylikTuketimGetir();
+
+        Task<IEnumerable<YillikUretimTuketim>> AboneUretimTuketimKarsilastirma();
+
+        Task<IEnumerable<AylikUretimTuketim>> AylikUretimTuketimKarsilastirma();
     }
 }

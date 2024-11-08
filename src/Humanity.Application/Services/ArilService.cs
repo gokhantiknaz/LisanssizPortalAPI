@@ -252,7 +252,7 @@ namespace Humanity.Application.Services
             };
 
             var entegreList = await _unitOfWork.Repository<MusteriEntegrasyon>().ListAsync(new BaseSpecification<MusteriEntegrasyon>(a => a.MusteriId == abone.MusteriId));
-            var entegre = entegreList.FirstOrDefault();
+            var entegre = entegreList.FirstOrDefault(a=>a.DagitimFirmaId==abone.DagitimFirmaId);
 
             await GetToken(-1, entegre);
 
