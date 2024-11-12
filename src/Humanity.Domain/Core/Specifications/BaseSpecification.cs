@@ -28,6 +28,7 @@ namespace Humanity.Domain.Core.Specifications
         {
             IncludeStrings.Add(includeString);
         }
+   
 
         public virtual void ApplyPaging(int skip, int take)
         {

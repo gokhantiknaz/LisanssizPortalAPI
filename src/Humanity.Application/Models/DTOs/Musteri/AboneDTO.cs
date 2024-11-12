@@ -39,6 +39,8 @@ namespace Humanity.Application.Models.DTOs.Musteri
         public long? Tckn { get; set; }
         public long? Vkn { get; set; }
 
+        public bool MahsubaDahil { get; set; }
+
         public List<TuketiciListDTO>? TuketiciList { get; set; }
 
         public List<SayacListDTO>? SayacList { get; set; }

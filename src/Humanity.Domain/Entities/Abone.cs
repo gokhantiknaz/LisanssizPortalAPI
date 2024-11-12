@@ -16,7 +16,7 @@ namespace Humanity.Domain.Entities
         public int Id { get; set; }
 
         [ForeignKey("MusteriId")]
-        public Musteri Musteri{ get; set; }
+        public Musteri Musteri { get; set; }
 
         public int MusteriId { get; set; }
 
@@ -48,9 +48,11 @@ namespace Humanity.Domain.Entities
         public DateTimeOffset? LastModifiedOn { get; set; }
 
         public AboneIletisim AboneIletisim { get; set; }
-
+        public bool MahsubaDahil { get; set; }
         public Status Durum { get; set; }
         public bool IsDeleted { get; set; }
+
+        public decimal Carpan { get; set; }
     }
 
 }

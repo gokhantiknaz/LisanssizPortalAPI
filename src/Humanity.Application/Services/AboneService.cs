@@ -52,18 +52,18 @@ namespace Humanity.Application.Services
             //iletisim bilgisi
             var AboneIletisimDto = await GetAboneIletisim(AboneId);
 
-          
+
             var data = _mapper.Map<AboneDTO>(abone);
 
             data.AboneIletisim = AboneIletisimDto;
 
-         
-       
+
+
 
             //tujeticileri varsa
             if (aboneUretici.Count > 0 && abone.SahisTip == SahisTip.Uretici)
             {
-               
+
                 data.UreticiBilgileri = new UreticiDTO(aboneUretici.FirstOrDefault(new AboneUretici()));
                 var kayitliTuketiciler = await AboneyeBagliTuketicileriGetir(data.UreticiBilgileri.AboneId);
 
@@ -73,8 +73,11 @@ namespace Humanity.Application.Services
                 var tuketiciler = await _unitOfWork.Repository<AboneTuketici>().ListAsync(tuketicilerSpec);
 
 
-                var tmp = tuketiciler.Select(x => new TuketiciTableDTO(x) { UreticiAboneId = aboneUretici.FirstOrDefault().Id, 
-                    UreticiAbone = new AboneDTO(aboneUretici.FirstOrDefault().Abone) { } }).ToList();
+                var tmp = tuketiciler.Select(x => new TuketiciTableDTO(x)
+                {
+                    UreticiAboneId = aboneUretici.FirstOrDefault().Id,
+                    UreticiAbone = new AboneDTO(aboneUretici.FirstOrDefault().Abone) { }
+                }).ToList();
 
             }
 
@@ -87,42 +90,10 @@ namespace Humanity.Application.Services
 
         public async Task<CreateAboneRes> CreateAbone(AboneDTO req)
         {
-            var newiletisimAbone = new Iletisim { Email = req.AboneIletisim.Email ?? "", Adres = req.AboneIletisim.Adres ?? "", CepTel = req.AboneIletisim.CepTel ?? "", Ilid = req.AboneIletisim.Ilid, Ilceid = req.AboneIletisim.Ilceid };
+            var abone = _mapper.Map<Abone>(req);
+            var aboneIletisim = _mapper.Map<AboneIletisim>(req.AboneIletisim);
 
-            var abone = await _unitOfWork.Repository<Abone>().AddAsync(new Abone
-            {
-                Adi = req.Adi,
-                Soyadi = req.Soyadi,
-                CreatedOn = DateTime.UtcNow,
-                Durum = Status.Aktif,
-                SahisTip = req.SahisTip,
-                SeriNo = req.SeriNo,
-                SozlesmeGucu = req.SozlesmeGucu.GetValueOrDefault(0),
-                IsDeleted = false,
-                KuruluGuc = req.KuruluGuc.GetValueOrDefault(0),
-                EtsoKodu = req.EtsoKodu,
-                Agog = req.Agog,
-                BaglantiGucu = req.BaglantiGucu.GetValueOrDefault(0),
-                Tarife = req.Tarife,
-                Terim = req.Terim,
-                CreatedBy = Guid.Empty,
-                Tckn = req.Tckn,
-                Vkn = req.Vkn,
-                Unvan = req.Unvan,
-                OzelkodId1 = req.OzelkodId1,
-                OzelkodId2 = req.OzelkodId2,
-                OzelkodId3 = req.OzelkodId3,
-                MusteriId = req.MusteriId,
-
-                AboneIletisim = new AboneIletisim
-                {
-                    Iletisim = newiletisimAbone,
-                    IsDeleted = false,
-                    CreatedBy = Guid.Empty,
-                    CreatedOn = DateTime.UtcNow,
-                }
-
-            });
+            _ = await _unitOfWork.Repository<Abone>().AddAsync(abone);
 
             if (req.SahisTip == SahisTip.Uretici)
             {
@@ -157,36 +128,21 @@ namespace Humanity.Application.Services
                 }
             }
 
-            if (req.SayacList.Count > 0)
-            {
-                foreach (var item in req.SayacList)
-                {
-                    var sayacBilgi = new AboneSayac()
-                    {
-                        Abone = abone,
-                        FazAdedi = item.FazAdedi,
-                        Marka = item.Marka,
-                        SayacNo = item.SayacNo
-                    };
-
-                    _ = await _unitOfWork.Repository<AboneSayac>().AddAsync(sayacBilgi);
-                }
-            }
-
-            //var newiletisimAbone = new Iletisim { CepTel = "", Email = "", Adres = "", Ilid = req.Abone.AboneIletisim.Ilid, Ilceid = req.Abone.AboneIletisim.Ilceid };
-
-            //AboneIletisim iletisimabone = new AboneIletisim
+            //if (req.SayacList.Count > 0)
             //{
-            //    Abone = Abone.Abone,
-            //    Iletisim = newiletisimAbone,
-            //    CreatedBy = Guid.Empty,
-            //    CreatedOn = DateTime.UtcNow,
-            //    IsDeleted = false
-            //};
+            //    foreach (var item in req.SayacList)
+            //    {
+            //        var sayacBilgi = new AboneSayac()
+            //        {
+            //            Abone = abone,
+            //            FazAdedi = item.FazAdedi,
+            //            Marka = item.Marka,
+            //            SayacNo = item.SayacNo
+            //        };
 
-            //_ = _unitOfWork.Repository<AboneIletisim>().AddAsync(iletisimabone);
-
-
+            //        _ = await _unitOfWork.Repository<AboneSayac>().AddAsync(sayacBilgi);
+            //    }
+            //}
 
             try
             {
@@ -204,34 +160,18 @@ namespace Humanity.Application.Services
 
         public async Task<GetAboneRes> Update(AboneDTO req)
         {
-            var m = await _unitOfWork.Repository<Abone>().GetByIdAsync(req.Id);
+            //var m = await _unitOfWork.Repository<Abone>().GetByIdAsync(req.Id);
+            Abone a = _mapper.Map<Abone>(req);
 
-            m.Adi = req.Adi;
-            m.Soyadi = req.Soyadi;
-            m.CreatedOn = DateTime.UtcNow;
-            m.Durum = Status.Aktif;
-            m.IsDeleted = false;
-            m.Tckn = req.Tckn;
-            m.Vkn = req.Vkn;
-            m.Unvan = req.Unvan;
-            m.OzelkodId1 = req.OzelkodId1;
-            m.OzelkodId2 = req.OzelkodId2;
-            m.OzelkodId3 = req.OzelkodId3;
-            m.DagitimFirmaId = req.DagitimFirmaId;
+            a.Durum = Status.Aktif;
+            a.LastModifiedBy = Guid.Empty;
+            a.LastModifiedOn = DateTime.UtcNow;
+            _unitOfWork.Repository<Abone>().Update(a);
 
-            _unitOfWork.Repository<Abone>().Update(m);
-
-            Iletisim Aboneiletisim;
             if (req.AboneIletisim.IletisimId > 0)
             {
-                Aboneiletisim = await _unitOfWork.Repository<Iletisim>().GetByIdAsync(req.AboneIletisim.IletisimId);
-
-                Aboneiletisim.Adres = req.AboneIletisim.Adres ?? "";
-                Aboneiletisim.Ilid = req.AboneIletisim.Ilid.HasValue ? req.AboneIletisim.Ilid.Value : null;
-                Aboneiletisim.Ilceid = req.AboneIletisim.Ilceid.HasValue ? req.AboneIletisim.Ilceid.Value : null;
-                Aboneiletisim.CepTel = req.AboneIletisim.CepTel ?? "";
-                Aboneiletisim.Email = req.AboneIletisim.Email ?? "";
-                _unitOfWork.Repository<Iletisim>().Update(Aboneiletisim);
+                var aboneIletisim = _mapper.Map<AboneIletisim>(a.AboneIletisim);
+                _unitOfWork.Repository<AboneIletisim>().Update(aboneIletisim);
             }
             else
             {
@@ -239,7 +179,7 @@ namespace Humanity.Application.Services
 
                 AboneIletisim iletisimNEw = new AboneIletisim
                 {
-                    Abone = m,
+                    Abone = a,
                     Iletisim = newIletisim,
                     IsDeleted = false,
                     CreatedBy = Guid.Empty,
@@ -248,20 +188,6 @@ namespace Humanity.Application.Services
 
                 _ = await _unitOfWork.Repository<AboneIletisim>().AddAsync(iletisimNEw);
             }
-
-            var abone = await _unitOfWork.Repository<Abone>().GetByIdAsync(req.Id);
-            abone.SahisTip = req.SahisTip;
-            abone.SeriNo = req.SeriNo;
-            abone.SozlesmeGucu = req.SozlesmeGucu;
-            abone.IsDeleted = false;
-            abone.KuruluGuc = req.KuruluGuc;
-            abone.EtsoKodu = req.EtsoKodu;
-            abone.Agog = req.Agog;
-            abone.BaglantiGucu = req.BaglantiGucu.GetValueOrDefault(0);
-            abone.Tarife = req.Tarife;
-            abone.Terim = req.Terim;
-            abone.LastModifiedBy = Guid.Empty;
-            abone.LastModifiedOn = DateTime.UtcNow;
 
             if (req.SahisTip == SahisTip.Uretici)
             {
@@ -279,7 +205,7 @@ namespace Humanity.Application.Services
 
                 if (req.TuketiciList.Count > 0)
                 {
-                    var kayitlilar = await AboneyeBagliTuketicileriGetir(m.Id);
+                    var kayitlilar = await AboneyeBagliTuketicileriGetir(a.Id);
                     foreach (var item in kayitlilar.Data)
                     {
                         if (!req.TuketiciList.Any(a => a.AboneId == item.AboneId)) // silinmiş
@@ -293,7 +219,7 @@ namespace Humanity.Application.Services
                     foreach (TuketiciListDTO tuketici in req.TuketiciList)
                     {
                         //delete i de yapalım
-                        if (kayitlilar.Data.Count(a => a.AboneId == tuketici.AboneId && abone.Id == tuketici.UreticiAboneId) > 0)
+                        if (kayitlilar.Data.Count(a => a.AboneId == tuketici.AboneId && a.Id == tuketici.UreticiAboneId) > 0)
                         {
                             var tuketiciTekrar = await _unitOfWork.Repository<AboneTuketici>().ListAsync(new BaseSpecification<AboneTuketici>(a => a.AboneId == tuketici.AboneId));
                             tuketiciTekrar.First().IsDeleted = false;
@@ -307,7 +233,7 @@ namespace Humanity.Application.Services
                                 BaslamaZamani = DateTime.UtcNow,
                                 Durum = Status.Aktif,
                                 AboneId = tuketici.AboneId,
-                                UreticiAboneId = abone.Id
+                                UreticiAboneId = a.Id
                             };
 
                             _ = await _unitOfWork.Repository<AboneTuketici>().AddAsync(yenituketici);
@@ -316,28 +242,28 @@ namespace Humanity.Application.Services
                 }
             }
 
-            if (req.SayacList.Count > 0)
-            {
-                foreach (var item in req.SayacList)
-                {
-                    var sayacBilgi = new AboneSayac()
-                    {
-                        Abone = abone,
-                        FazAdedi = item.FazAdedi,
-                        Marka = item.Marka,
-                        SayacNo = item.SayacNo
-                    };
+            //if (req.SayacList.Count > 0)
+            //{
+            //    foreach (var item in req.SayacList)
+            //    {
+            //        var sayacBilgi = new AboneSayac()
+            //        {
+            //            Abone = a,
+            //            FazAdedi = item.FazAdedi,
+            //            Marka = item.Marka,
+            //            SayacNo = item.SayacNo
+            //        };
 
-                    _ = await _unitOfWork.Repository<AboneSayac>().AddAsync(sayacBilgi);
-                }
-            }
+            //        _ = await _unitOfWork.Repository<AboneSayac>().AddAsync(sayacBilgi);
+            //    }
+            //}
 
 
             await _unitOfWork.SaveChangesAsync();
 
             _loggerService.LogInfo("Yeni Müşteri Eklendi");
 
-            return new GetAboneRes() { Data = new AboneDTO(m) };
+            return new GetAboneRes() { Data = _mapper.Map<AboneDTO>(a) };
         }
 
         //public async Task<GetAllActiveAboneTableRes> GetAllAbone()

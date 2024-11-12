@@ -3,6 +3,7 @@ using System;
 using Humanity.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Humanity.Infrastructure.Migrations
 {
     [DbContext(typeof(LisanssizContext))]
-    partial class LisanssizContextModelSnapshot : ModelSnapshot
+    [Migration("20241111130617_aboneMahsupDahil")]
+    partial class aboneMahsupDahil
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,56 +49,6 @@ namespace Humanity.Infrastructure.Migrations
                     b.ToTable("AboneAylikTuketim");
                 });
 
-            modelBuilder.Entity("Humanity.Application.Models.Responses.Dashboard.AylikBazdaTumAbonelerTuketimSummary", b =>
-                {
-                    b.Property<double>("Agustos")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("Aralik")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("Ekim")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("Eylul")
-                        .HasColumnType("double precision");
-
-                    b.Property<int>("Firma")
-                        .HasColumnType("integer");
-
-                    b.Property<double>("Haziran")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("Kasim")
-                        .HasColumnType("double precision");
-
-                    b.Property<bool>("MahsubaDahil")
-                        .HasColumnType("boolean");
-
-                    b.Property<double>("Mart")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("Mayis")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("Nisan")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("Ocak")
-                        .HasColumnType("double precision");
-
-                    b.Property<long>("SeriNo")
-                        .HasColumnType("bigint");
-
-                    b.Property<double>("Subat")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("Temmuz")
-                        .HasColumnType("double precision");
-
-                    b.ToTable("AylikUTuketimSummaryretimTuketim");
-                });
-
             modelBuilder.Entity("Humanity.Domain.Entities.Abone", b =>
                 {
                     b.Property<int>("Id")
@@ -112,9 +65,6 @@ namespace Humanity.Infrastructure.Migrations
 
                     b.Property<double>("BaglantiGucu")
                         .HasColumnType("double precision");
-
-                    b.Property<decimal>("Carpan")
-                        .HasColumnType("numeric");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");

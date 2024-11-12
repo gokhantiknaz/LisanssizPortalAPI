@@ -24,6 +24,7 @@ namespace Humanity.Application.Core.Mapper
                  .ForMember(dest => dest.IdentifierValue, opt => opt.MapFrom(src => src.EtsoKodu))
                  .ForMember(dest => dest.InstalledPower, opt => opt.MapFrom(src => src.KuruluGuc))
                  .ForMember(dest => dest.AccordPower, opt => opt.MapFrom(src => src.BaglantiGucu))
+                 .ForMember(dest => dest.Multiplier, opt => opt.MapFrom(src => src.Carpan))
                  .ForMember(dest => dest.SubscriptionSerno, opt => opt.MapFrom(src => src.SeriNo)).ReverseMap();
 
             CreateMap<TuketiciTableDTO, AboneTuketici>().ReverseMap();

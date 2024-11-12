@@ -17,5 +17,9 @@ namespace Humanity.Application.Interfaces
         Task<IEnumerable<YillikUretimTuketim>> AboneUretimTuketimKarsilastirma();
 
         Task<IEnumerable<AylikUretimTuketim>> AylikUretimTuketimKarsilastirma();
+
+        Task<IEnumerable<AylikBazdaTumAbonelerTuketimSummary>> YillikToplamTuketimGetir();
+
+        Task<IEnumerable<AylikBazdaTumAbonelerTuketimSummary>> YillikToplamUretimmGetir();
     }
 }

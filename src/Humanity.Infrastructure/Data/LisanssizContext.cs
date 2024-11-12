@@ -60,11 +60,15 @@ namespace Humanity.Infrastructure.Data
             });
 
             builder.Entity<AboneAylikTuketim>().HasNoKey();
+            builder.Entity<AylikBazdaTumAbonelerTuketimSummary>().HasNoKey();
 
         }
 
 
+        public DbSet<AylikBazdaTumAbonelerTuketimSummary> AylikUTuketimSummaryretimTuketim { get; set; }
+
         public DbSet<AboneAylikTuketim> AboneAylikTuketim { get; set; }
+
         public DbSet<Musteri> Musteri { get; set; }
 
         public DbSet<Iletisim> Iletisim { get; set; }

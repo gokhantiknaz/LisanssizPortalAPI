@@ -296,7 +296,7 @@ namespace Humanity.Application.Services
                 var allCustomers = await _unitOfWork.Repository<Abone>().ListAsync(new BaseSpecification<Abone>(x => x.MusteriId == musteriId));
                 foreach (var item in allCustomers)
                 {
-                    string basDonem = DateTime.Now.Year.ToString() + "/" + "01";
+                    string basDonem = (DateTime.Now.Year-1).ToString() + "/" + "01";
                     string sonDonem = DateTime.Now.Year.ToString() + "/" + DateTime.Now.Month.ToString();
                     try
                     {

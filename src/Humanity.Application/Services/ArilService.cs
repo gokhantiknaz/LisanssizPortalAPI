@@ -229,7 +229,6 @@ namespace Humanity.Application.Services
 
             if (startDate.Month == DateTime.Now.Month && startDate.Year == DateTime.Now.Year)
             {
-
                 var result = await GetCurrentEndexes(aboneid, kaydet);
                 return result;
             }
