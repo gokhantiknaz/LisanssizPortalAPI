@@ -144,7 +144,6 @@ GROUP BY ""EndexType"",
          CASE WHEN rn <= 4 THEN ""Unvan"" ELSE 'Diğer' END
 ORDER BY ""EndexType"" DESC, ""Unvan"";";
 
-
         public DashboardService(IUnitOfWork unitOfWork, ILoggerService loggerService, IMapper mapper, IFirebaseService fireService)
         {
             _unitOfWork = unitOfWork;
