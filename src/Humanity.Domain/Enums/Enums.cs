@@ -78,7 +78,7 @@ namespace Humanity.Domain.Enums
         public enum EnumEndeksDirection
         {
             Tuketim = 0,
-            Ureitm = 1
+            Uretim = 1
         }
     }
 }

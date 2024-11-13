@@ -84,6 +84,8 @@ namespace Humanity.WebApi.Controllers
             return Ok(result.OrderBy(a => a.Adi).ToList());
         }
 
+    
+
 
 
     }

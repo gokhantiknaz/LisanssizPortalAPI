@@ -59,11 +59,16 @@ namespace Humanity.Infrastructure.Data
                     .WithMany(u => u.UserRoles).HasForeignKey(ur => ur.UserId).IsRequired();
             });
 
+            builder.Entity<YillikUretimTuketim>().HasNoKey();
             builder.Entity<AboneAylikTuketim>().HasNoKey();
+            builder.Entity<AylikUretimTuketim>().HasNoKey();
             builder.Entity<AylikBazdaTumAbonelerTuketimSummary>().HasNoKey();
 
         }
 
+        
+                public DbSet<YillikUretimTuketim> YillikUretimTuketim { get; set; }
+        public DbSet<AylikUretimTuketim> AylikUretimTuketim { get; set; }
 
         public DbSet<AylikBazdaTumAbonelerTuketimSummary> AylikUTuketimSummaryretimTuketim { get; set; }
 

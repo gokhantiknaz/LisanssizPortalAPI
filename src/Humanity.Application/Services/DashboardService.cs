@@ -6,6 +6,7 @@ using Humanity.Application.Models.Responses.Dashboard;
 using Humanity.Domain.Core.Repositories;
 using Humanity.Domain.Core.Specifications;
 using Humanity.Domain.Entities;
+using Humanity.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,31 +20,24 @@ namespace Humanity.Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILoggerService _logService;
-
+        private readonly IFirebaseService _fireService;
         private readonly IMapper mapper;
 
-        public DashboardService(IUnitOfWork unitOfWork, ILoggerService loggerService, IMapper mapper)
-        {
-            _unitOfWork = unitOfWork;
-            _logService = loggerService;
-            this.mapper = mapper;
-        }
-
-        public async Task<List<AboneAylikTuketim>> AboneAylikTuketimGetir()
-        {
-            string sql = @"
+        const string sqlAylikTuketimUretim = @"
             WITH PreviousMonth AS (
                 SELECT 
                     ""AboneId"",
                     ""EndexMonth"",
                     ""EndexYear"",
+                    ""EndexType"",
                     ""T1Endex"" AS PreviousT1Endex,
                     ""T2Endex"" AS PreviousT2Endex,
                     ""T3Endex"" AS PreviousT3Endex
                 FROM 
                     ""AboneEndeks""
-                WHERE 
-                    (""EndexMonth"" = EXTRACT(MONTH FROM CURRENT_DATE) - 1 
+                WHERE
+                  
+                     (""EndexMonth"" = EXTRACT(MONTH FROM CURRENT_DATE) - 1 
                      AND ""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE))
                     OR
                     (""EndexMonth"" = 12 AND EXTRACT(MONTH FROM CURRENT_DATE) = 1 AND ""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE) - 1)
@@ -53,12 +47,14 @@ namespace Humanity.Application.Services
                     ""AboneId"",
                     ""EndexMonth"",
                     ""EndexYear"",
+                    ""EndexType"",
                     ""T1Endex"",
                     ""T2Endex"",
                     ""T3Endex""
                 FROM 
                     ""AboneEndeks""
                 WHERE 
+                 
                     ""EndexMonth"" = EXTRACT(MONTH FROM CURRENT_DATE)
                     AND ""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE)
             )
@@ -67,6 +63,7 @@ namespace Humanity.Application.Services
                 c.""EndexMonth"",
                 c.""EndexYear"",
                 a.""SeriNo"",
+                c.""EndexType"",
                 COALESCE(c.""T1Endex"" - p.PreviousT1Endex, 0) * a.""Carpan"" AS ""T1Usage"",
                 COALESCE(c.""T2Endex"" - p.PreviousT2Endex, 0) * a.""Carpan"" AS ""T2Usage"",
                 COALESCE(c.""T3Endex"" - p.PreviousT3Endex, 0) * a.""Carpan"" AS ""T3Usage""
@@ -75,14 +72,96 @@ namespace Humanity.Application.Services
             LEFT JOIN 
                 PreviousMonth p ON c.""AboneId"" = p.""AboneId"";
         ";
+
+        const string sqlYillikTuketimUretim = @"
+         WITH EndeksFark AS (
+    SELECT
+        ""AboneId"",
+        ""EndexMonth"",
+        ""EndexYear"",
+        ""EndexType"",
+        LAG(""T1Endex"") OVER(PARTITION BY ""AboneId"", ""EndexType"" ORDER BY ""EndexYear"", ""EndexMonth"") AS PrevT1,
+        LAG(""T2Endex"") OVER(PARTITION BY ""AboneId"", ""EndexType"" ORDER BY ""EndexYear"", ""EndexMonth"") AS PrevT2,
+        LAG(""T3Endex"") OVER(PARTITION BY ""AboneId"", ""EndexType"" ORDER BY ""EndexYear"", ""EndexMonth"") AS PrevT3,
+        ""T1Endex"",
+        ""T2Endex"",
+        ""T3Endex""
+    FROM ""AboneEndeks""
+    WHERE ""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE) OR (""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE) - 1 AND ""EndexMonth"" = 12)
+)
+SELECT
+    ""EndexMonth"",
+    ""EndexYear"",
+    SUM(CASE
+            WHEN ""EndexType"" = 1 THEN
+                (""T1Endex"" - COALESCE(PrevT1, 0)
+                + ""T2Endex"" - COALESCE(PrevT2, 0)
+                + ""T3Endex"" - COALESCE(PrevT3, 0)) * ""Abone"".""Carpan""
+            ELSE 0
+        END) AS Uretim,
+    SUM(CASE
+            WHEN ""EndexType"" = 0 AND ""Abone"".""MahsubaDahil"" = TRUE THEN
+                (""T1Endex"" - COALESCE(PrevT1, 0)
+                + ""T2Endex"" - COALESCE(PrevT2, 0)
+                + ""T3Endex"" - COALESCE(PrevT3, 0)) * ""Abone"".""Carpan""
+            ELSE 0
+        END) AS Tuketim,
+    SUM(CASE
+            WHEN ""EndexType"" = 0 AND ""Abone"".""MahsubaDahil"" = FALSE THEN
+                (""T1Endex"" - COALESCE(PrevT1, 0)
+                + ""T2Endex"" - COALESCE(PrevT2, 0)
+                + ""T3Endex"" - COALESCE(PrevT3, 0)) * ""Abone"".""Carpan""
+            ELSE 0
+        END) AS TuketimMahsubaDahilDegil
+FROM EndeksFark
+JOIN ""Abone"" ON EndeksFark.""AboneId"" = ""Abone"".""Id""
+WHERE ""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE)
+GROUP BY ""EndexMonth"",""EndexYear""
+ORDER BY ""EndexMonth"";
+
+        ";
+
+        const string sqlYillikUretimTuketimToplam = @"
+WITH RankedData AS (
+    SELECT 
+        ""AboneEndeks"".""EndexType"",  
+        (MAX(""TSum"") - MIN(""TSum"")) * ""Carpan"" as Tuketim , 
+        A.""Unvan"",
+        ROW_NUMBER() OVER (PARTITION BY ""EndexType"" ORDER BY (MAX(""TSum"") - MIN(""TSum"")) * ""Carpan"" DESC) AS rn
+    FROM ""AboneEndeks""
+    INNER JOIN public.""Abone"" A ON ""AboneEndeks"".""AboneId"" = A.""Id""
+    GROUP BY ""EndexType"", A.""Id"", A.""Unvan""
+)
+SELECT 
+    ""EndexType"",
+    CASE 
+        WHEN rn <= 4 THEN ""Unvan"" 
+        ELSE 'Diğer' 
+    END AS ""Unvan"",
+    SUM(Tuketim) AS TotalEndex
+FROM RankedData
+GROUP BY ""EndexType"", 
+         CASE WHEN rn <= 4 THEN ""Unvan"" ELSE 'Diğer' END
+ORDER BY ""EndexType"" DESC, ""Unvan"";";
+
+
+        public DashboardService(IUnitOfWork unitOfWork, ILoggerService loggerService, IMapper mapper, IFirebaseService fireService)
+        {
+            _unitOfWork = unitOfWork;
+            _logService = loggerService;
+            _fireService = fireService;
+            this.mapper = mapper;
+        }
+
+        public async Task<List<AboneAylikTuketim>> AboneAylikTuketimGetir()
+        {
             try
             {
-                var endeksler = await _unitOfWork.Repository<AboneAylikTuketim>().RawSql(sql);
-
+                var endeksler = await _unitOfWork.Repository<AboneAylikTuketim>().RawSql(sqlAylikTuketimUretim);
                 if (endeksler == null)
                     throw new Exception("Endeks Bulunamadı");
 
-                return mapper.Map<List<AboneAylikTuketim>>(endeksler.ToList());
+                return mapper.Map<List<AboneAylikTuketim>>(endeksler.Where(a => a.EndexType == Enums.EnumEndeksDirection.Tuketim.GetHashCode()).ToList());
             }
             catch (Exception ex)
             {
@@ -96,43 +175,84 @@ namespace Humanity.Application.Services
         {
             try
             {
-                //var uretimEndeksSpect = new BaseSpecification<AboneEndeks>(a => a.EndexType == 1);
-                //var yearlyUretimData = await _unitOfWork.Repository<AboneEndeks>().ListAsync(uretimEndeksSpect);
 
 
-                var tuketimEndeksSpect = new BaseSpecification<AboneEndeks>(a => a.EndexYear == 2024);
-                tuketimEndeksSpect.AddInclude(a => a.Abone);
-                tuketimEndeksSpect.ApplyOrderByDescending(a => a.TSum);
-                var yearlyUtuketimData = await _unitOfWork.Repository<AboneEndeks>().ListAsync(tuketimEndeksSpect);
 
-                var all = yearlyUtuketimData.GroupBy(e => new { e.EndexType, e.Abone.Unvan, e.AboneId }).Select(g => new
-                {
-                    AboneId = g.Key.AboneId,
-                    Unvan = g.Key.Unvan,
-                    Uretim = g.Where(e => e.EndexType == 1).Sum(e => e.T1Endex + e.T2Endex + e.T3Endex),
-                    Tuketim = g.Where(e => e.EndexType == 0).Sum(e => e.T1Endex + e.T2Endex + e.T3Endex),
-                    EndexType = g.Key.EndexType
-                }).OrderByDescending(a => a.EndexType);
+                //            var endeksSpect = new BaseSpecification<AboneEndeks>(a => a.EndexYear == DateTime.Now.Year);
+                //            endeksSpect.AddInclude(a => a.Abone);
+                //            var yearlyUretimData = await _unitOfWork.Repository<AboneEndeks>().ListAsync(endeksSpect);
+
+                //            var endeksresult = yearlyUretimData.GroupBy(a => new { a.Abone.Unvan, a.AboneId, a.EndexType, a.Abone.Carpan })
+                //.Select(g => new
+                //{
+                //    AboneId = g.Key,
+                //    Carpan = g.Key.Carpan,
+                //    Unvan = g.Key.Unvan,
+                //    EndexType = g.Key.EndexType,
+                //    // En düşük yıl ve aya ait T1, T2, T3 endeks değerleri
+                //    MinEndeks = g
+                //        .OrderBy(a => a.EndexYear)
+                //        .ThenBy(a => a.EndexMonth)
+                //        .Select(a => new
+                //        {
+                //            a.EndexYear,
+                //            a.EndexMonth,
+                //            a.T1Endex,
+                //            a.T2Endex,
+                //            a.T3Endex,
+                //            a.TSum
+                //        })
+                //        .FirstOrDefault(),
+
+                //    // En yüksek yıl ve aya ait T1, T2, T3 endeks değerleri
+                //    MaxEndeks = g
+                //        .OrderByDescending(a => a.EndexYear)
+                //        .ThenByDescending(a => a.EndexMonth)
+                //        .Select(a => new
+                //        {
+                //            a.EndexYear,
+                //            a.EndexMonth,
+                //            a.T1Endex,
+                //            a.T2Endex,
+                //            a.T3Endex,
+                //            a.TSum
+                //        })
+                //        .FirstOrDefault()
+                //}).ToList();
+                //son endeks - ilk endeks tüketimi verecek
 
 
-                var result = all.GroupBy(e => new { e.AboneId, e.Unvan, e.EndexType }).Select(g => new YillikUretimTuketim
-                {
-                    EndexType = g.Key.EndexType,
-                    Unvan = g.Key.Unvan,
-                    TotalEndex = g.Sum(e => e.Uretim + e.Tuketim)
-                }).OrderByDescending(x => x.EndexType).ToList();
+                //var all = endeksresult.GroupBy(e => new { e.Unvan, e.EndexType, e.AboneId, e.Carpan }).Select(g => new
+                //{
+                //    AboneId = g.Key.AboneId,
+                //    Unvan = g.Key.Unvan,
+                //    Uretim = g.Where(e => e.EndexType == 1).Sum(e => e.MaxEndeks.TSum - e.MinEndeks.TSum) * (double)g.Key.Carpan,
+                //    Tuketim = g.Where(e => e.EndexType == 0).Sum(e => e.MaxEndeks.TSum - e.MinEndeks.TSum) * (double)g.Key.Carpan,
+                //    EndexType = g.Key.EndexType
+                //}).OrderByDescending(a => a.EndexType);
 
-                //ilk 4 tüketici ve 1 üretici
-                var topFourTuketici = result.Take(4).ToList();
-                var otjhers = result.Skip(4).Aggregate(new YillikUretimTuketim { Unvan = "Diğer", TotalEndex = 0, EndexType = 1 }, (acc, x) =>
-                {
-                    acc.TotalEndex += x.TotalEndex;
-                    return acc;
-                });
+                //var result = all.GroupBy(e => new { e.AboneId, e.Unvan, e.EndexType }).Select(g => new YillikUretimTuketim
+                //{
+                //    EndexType = g.Key.EndexType,
+                //    Unvan = g.Key.Unvan,
+                //    TotalEndex = g.Key.EndexType == 0 ? g.Sum(e => e.Tuketim) : g.Sum(e => e.Uretim)
+                //}).OrderByDescending(x => x.EndexType).ToList();
 
-                topFourTuketici.Add(otjhers);
+                ////ilk 4 tüketici ve 1 üretici
 
-                return topFourTuketici;
+                //var topFourTuketici = result.Take(4).ToList();
+                //var otjhers = result.Skip(4).Aggregate(new YillikUretimTuketim { Unvan = "Diğer", TotalEndex = 0, EndexType = 0 }, (acc, x) =>
+                //{
+                //    acc.TotalEndex += x.TotalEndex;
+                //    return acc;
+                //});
+
+                //topFourTuketici.Add(otjhers);
+
+                var endeksler = await _unitOfWork.Repository<YillikUretimTuketim>().RawSql(sqlYillikUretimTuketimToplam);
+
+                return endeksler.ToList();
+
             }
             catch (Exception er)
             {
@@ -144,21 +264,9 @@ namespace Humanity.Application.Services
         {
             try
             {
-                var tuketimEndeksSpect = new BaseSpecification<AboneEndeks>(a => a.EndexYear == 2024);
-                tuketimEndeksSpect.AddInclude(a => a.Abone);
-                tuketimEndeksSpect.ApplyOrderByDescending(a => a.TSum);
-                var yearlyUtuketimData = await _unitOfWork.Repository<AboneEndeks>().ListAsync(tuketimEndeksSpect);
+                var endeksler = await _unitOfWork.Repository<AylikUretimTuketim>().RawSql(sqlYillikTuketimUretim);
 
-                var all = yearlyUtuketimData.GroupBy(e => new { e.EndexMonth, e.EndexYear }).Select(g => new AylikUretimTuketim
-                {
-                    Uretim = g.Where(e => e.EndexType == 1).Sum(e => e.T1Endex + e.T2Endex + e.T3Endex),
-                    Tuketim = g.Where(e => e.EndexType == 0).Sum(e => e.T1Endex + e.T2Endex + e.T3Endex),
-                    EndexMonth = g.Key.EndexMonth
-                });
-
-                //ilk 4 tüketici ve 1 üretici
-
-                return all;
+                return endeksler.ToList();
             }
             catch (Exception er)
             {
@@ -193,17 +301,18 @@ namespace Humanity.Application.Services
 
             //            var endeksler = await _unitOfWork.Repository<AylikUTuketimSummaryretimTuketim>().RawSql(rawSql);
 
+            var firmalar = await _fireService.GetDagitimFirmalar();
 
             var result = (from e in _unitOfWork.Repository<AboneEndeks>().ListAllAsync().Result
                           join a in _unitOfWork.Repository<Abone>().ListAllAsync().Result on e.AboneId equals a.Id
-                          where e.EndexType == 0 && (e.EndexYear== DateTime.Now.Year || (e.EndexYear==DateTime.Now.Year-1 && e.EndexMonth==12))
-                          group e by new { a.DagitimFirmaId, a.SeriNo, a.MahsubaDahil,a.Carpan } into g
+                          where e.EndexType == 0 && (e.EndexYear == DateTime.Now.Year || (e.EndexYear == DateTime.Now.Year - 1 && e.EndexMonth == 12))
+                          group e by new { a.DagitimFirmaId, a.SeriNo, a.MahsubaDahil, a.Carpan } into g
                           select new AylikBazdaTumAbonelerTuketimSummary
                           {
-                              Firma = g.Key.DagitimFirmaId.Value,
+                              Firma = firmalar.FirstOrDefault(a => a.Id == g.Key.DagitimFirmaId.Value).Adi,
                               SeriNo = g.Key.SeriNo.Value,
                               MahsubaDahil = g.Key.MahsubaDahil,
-                              Carpan= g.Key.Carpan,
+                              Carpan = g.Key.Carpan,
                               AralikOncekiYil = g.Where(x => x.EndexMonth == 12 && x.EndexYear == DateTime.Now.Year - 1).Sum(x => x.TSum),
                               Ocak = g.Where(x => x.EndexMonth == 1).Sum(x => x.TSum),
                               Subat = g.Where(x => x.EndexMonth == 2).Sum(x => x.TSum),
@@ -226,7 +335,7 @@ namespace Humanity.Application.Services
                 SeriNo = x.SeriNo,
                 MahsubaDahil = x.MahsubaDahil,
                 Ocak = (x.Ocak - x.AralikOncekiYil) * (double)x.Carpan,  // Ocak tüketimi = Ocak endeksi - Bir önceki yıl Aralık endeksi
-                Subat = (x.Subat - x.Ocak)*(double)x.Carpan,         // Şubat = Şubat Endeksi - Ocak Endeksi
+                Subat = (x.Subat - x.Ocak) * (double)x.Carpan,         // Şubat = Şubat Endeksi - Ocak Endeksi
                 Mart = (x.Mart - x.Subat) * (double)x.Carpan,          // Mart = Mart Endeksi - Şubat Endeksi
                 Nisan = (x.Nisan - x.Mart) * (double)x.Carpan,         // Nisan = Nisan Endeksi - Mart Endeksi
                 Mayis = (x.Mayis - x.Nisan) * (double)x.Carpan,
@@ -235,7 +344,7 @@ namespace Humanity.Application.Services
                 Agustos = (x.Agustos - x.Temmuz) * (double)x.Carpan,
                 Eylul = (x.Eylul - x.Agustos) * (double)x.Carpan,
                 Ekim = (x.Ekim - x.Eylul) * (double)x.Carpan,
-                Kasim =     (x.Kasim - x.Ekim) * (double)x.Carpan,
+                Kasim = (x.Kasim - x.Ekim) * (double)x.Carpan,
                 Aralik = (x.Aralik - x.Kasim) * (double)x.Carpan
             }).ToList();
 
@@ -244,13 +353,15 @@ namespace Humanity.Application.Services
 
         public async Task<IEnumerable<AylikBazdaTumAbonelerTuketimSummary>> YillikToplamUretimmGetir()
         {
+            var firmalar = await _fireService.GetDagitimFirmalar();
+
             var result = (from e in _unitOfWork.Repository<AboneEndeks>().ListAllAsync().Result
                           join a in _unitOfWork.Repository<Abone>().ListAllAsync().Result on e.AboneId equals a.Id
-                          where a.SahisTip==Domain.Enums.Enums.SahisTip.Uretici &&  e.EndexType == 1 && (e.EndexYear == DateTime.Now.Year || (e.EndexYear == DateTime.Now.Year - 1 && e.EndexMonth == 12))
+                          where a.SahisTip == Domain.Enums.Enums.SahisTip.Uretici && e.EndexType == 1 && (e.EndexYear == DateTime.Now.Year || (e.EndexYear == DateTime.Now.Year - 1 && e.EndexMonth == 12))
                           group e by new { a.DagitimFirmaId, a.SeriNo, a.MahsubaDahil, a.Carpan } into g
                           select new AylikBazdaTumAbonelerTuketimSummary
                           {
-                              Firma = g.Key.DagitimFirmaId.Value,
+                              Firma = firmalar.FirstOrDefault(a => a.Id == g.Key.DagitimFirmaId.Value).Adi,
                               SeriNo = g.Key.SeriNo.Value,
                               MahsubaDahil = g.Key.MahsubaDahil,
                               Carpan = g.Key.Carpan,

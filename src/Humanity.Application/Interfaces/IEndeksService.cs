@@ -18,6 +18,7 @@ namespace Humanity.Application.Interfaces
         Task<SaatlikEndeksRes> Create(List<SaatlikEndeksRequest> req);
 
         Task<List<AylikEndeksRes>> GetAboneDonemEndeks(int aboneId, string donem);
+
         Task<bool> AylikEndeksKaydet(int aboneid, GetEndOfMonthEndexesResponse? res);
     }
 }

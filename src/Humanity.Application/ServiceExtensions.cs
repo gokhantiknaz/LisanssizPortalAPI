@@ -22,6 +22,7 @@ namespace Humanity.Application
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IArilService, ArilService>();
             services.AddScoped<IDashboardService, DashboardService>();
+            services.AddScoped<IFirebaseService, FirebaseService>();
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
         }
     }
