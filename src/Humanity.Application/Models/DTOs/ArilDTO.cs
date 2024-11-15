@@ -93,7 +93,108 @@ namespace Humanity.Application.Models.DTOs
         public string SensorIdentifier { get; set; }
     }
 
-   
 
+    public class Consumption
+    {
+        public decimal cn { get; set; }
+        public decimal ri { get; set; }
+        public decimal rc { get; set; }
+        public decimal gn { get; set; }
+        public decimal rio { get; set; }
+        public decimal rco { get; set; }
+        public decimal ml { get; set; }
+        public decimal rir { get; set; }
+        public decimal rcr { get; set; }
+        public int st { get; set; }
+        public decimal addcn { get; set; }
+        public decimal addgn { get; set; }
+        public long pd { get; set; }
+    }
+
+    public class Sum
+    {
+        public decimal Con { get; set; }
+        public decimal Gen { get; set; }
+        public decimal RI { get; set; }
+        public decimal RC { get; set; }
+        public decimal RIOUT { get; set; }
+        public decimal RCOUT { get; set; }
+    }
+
+    public class Min
+    {
+        public decimal Con { get; set; }
+        public long ConDate { get; set; }
+        public decimal Gen { get; set; }
+        public long GenDate { get; set; }
+        public decimal RI { get; set; }
+        public long RIDate { get; set; }
+        public decimal RC { get; set; }
+        public long RCDate { get; set; }
+        public decimal RIOUT { get; set; }
+        public long RIOUTDate { get; set; }
+        public decimal RCOUT { get; set; }
+        public long RCOUTDate { get; set; }
+    }
+
+    public class Max
+    {
+        public decimal Con { get; set; }
+        public long ConDate { get; set; }
+        public decimal Gen { get; set; }
+        public long GenDate { get; set; }
+        public decimal RI { get; set; }
+        public long RIDate { get; set; }
+        public decimal RC { get; set; }
+        public long RCDate { get; set; }
+        public decimal RIOUT { get; set; }
+        public long RIOUTDate { get; set; }
+        public decimal RCOUT { get; set; }
+        public long RCOUTDate { get; set; }
+    }
+
+    public class Avg
+    {
+        public decimal Con { get; set; }
+        public decimal Gen { get; set; }
+        public decimal RI { get; set; }
+        public decimal RC { get; set; }
+        public decimal RIOUT { get; set; }
+        public decimal RCOUT { get; set; }
+    }
+
+    public class Summary
+    {
+        public long FirstProfileDate { get; set; }
+        public long LastProfileDate { get; set; }
+        public Sum Sum { get; set; }
+        public Min Min { get; set; }
+        public Max Max { get; set; }
+        public Avg Avg { get; set; }
+    }
+
+    public class ConsumptionDetail
+    {
+        public long pd { get; set; }        // Tarih
+        public decimal cn { get; set; }      // Tüketim miktarı
+        public int ml { get; set; }          // Çarpan
+        public int st { get; set; }          // Durum
+        public decimal ri { get; set; }      // Reaktif tüketim
+        public decimal rc { get; set; }      // Reaktif üretim
+    }
+
+    public class ArilSaatlikResponse
+    {
+        public int OwnerSerno { get; set; }
+        public int OwnerType { get; set; }
+        public List<ConsumptionDetail> InConsumption { get; set; }
+        public List<ConsumptionDetail> OutConsumption { get; set; }
+        public List<object> LoadProfiles { get; set; }
+        public decimal TotalMultiplier { get; set; }
+        public string OwnerIdentifier { get; set; }
+        public string OwnerIdentifierSec { get; set; }
+        public List<Consumption> MergedConsumptions { get; set; }
+        public Summary Summary { get; set; }  // Yeni eklenen Summary özelliği
+    }
 
 }

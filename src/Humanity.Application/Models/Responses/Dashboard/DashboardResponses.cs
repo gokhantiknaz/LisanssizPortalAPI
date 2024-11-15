@@ -34,6 +34,10 @@ namespace Humanity.Application.Models.Responses.Dashboard
         public int EndexMonth { get; set; }
         public int EndexYear { get; set; }
 
+        public double? T1Tuketim { get; internal set; }
+        public double? T2Tuketim { get; internal set; }
+        public double? T3Tuketim { get; internal set; }
+
     }
 
 

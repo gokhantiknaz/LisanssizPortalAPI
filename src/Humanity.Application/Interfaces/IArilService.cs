@@ -13,6 +13,9 @@ namespace Humanity.Application.Interfaces
         Task<GetOwnerConsumptionsResponse> GetOwnerConsumptions(int musteriId,DateTime startDate,DateTime endDate);
 
 
+        Task<GetOwnerConsumptionsResponse> GetOwnerConsumption(int seriNo, int aboneId, DateTime startDate, DateTime endDate);
+
+
         Task<CustomerSubscriptionResponse> GetCustomerPortalSubscriptions(int musteriid);
 
 

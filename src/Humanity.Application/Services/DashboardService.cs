@@ -23,7 +23,7 @@ namespace Humanity.Application.Services
         private readonly IFirebaseService _fireService;
         private readonly IMapper mapper;
 
-        const string sqlAylikTuketimUretim = @"
+        const string sqlAboneAktifAylikTuketimUretim = @"
             WITH PreviousMonth AS (
                 SELECT 
                     ""AboneId"",
@@ -112,7 +112,23 @@ SELECT
                 + ""T2Endex"" - COALESCE(PrevT2, 0)
                 + ""T3Endex"" - COALESCE(PrevT3, 0)) * ""Abone"".""Carpan""
             ELSE 0
-        END) AS TuketimMahsubaDahilDegil
+        END) AS TuketimMahsubaDahilDegil,
+       SUM(CASE
+            WHEN ""EndexType"" = 0 THEN
+                (""T1Endex"" - COALESCE(PrevT1, 0)) * ""Abone"".""Carpan""
+            ELSE 0
+        END) AS T1Tuketim,
+         SUM(CASE
+            WHEN ""EndexType"" = 0 THEN
+                (""T2Endex"" - COALESCE(PrevT2, 0)) * ""Abone"".""Carpan""
+            ELSE 0
+        END) AS T2Tuketim,
+         SUM(CASE
+            WHEN ""EndexType"" = 0 THEN
+                (""T3Endex"" - COALESCE(PrevT3, 0)) * ""Abone"".""Carpan""
+            ELSE 0
+        END) AS T3Tuketim
+
 FROM EndeksFark
 JOIN ""Abone"" ON EndeksFark.""AboneId"" = ""Abone"".""Id""
 WHERE ""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE)
@@ -152,11 +168,11 @@ ORDER BY ""EndexType"" DESC, ""Unvan"";";
             this.mapper = mapper;
         }
 
-        public async Task<List<AboneAylikTuketim>> AboneAylikTuketimGetir()
+        public async Task<List<AboneAylikTuketim>> AboneAktifAylikTuketimGetir()
         {
             try
             {
-                var endeksler = await _unitOfWork.Repository<AboneAylikTuketim>().RawSql(sqlAylikTuketimUretim);
+                var endeksler = await _unitOfWork.Repository<AboneAylikTuketim>().RawSql(sqlAboneAktifAylikTuketimUretim);
                 if (endeksler == null)
                     throw new Exception("Endeks Bulunamadı");
 

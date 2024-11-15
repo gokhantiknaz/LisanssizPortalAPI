@@ -26,7 +26,7 @@ namespace Humanity.WebApi.Controllers
 
         public async Task<ActionResult<List<SaatlikEndeksRes>>> AboneAylikTuketimGetir()
         {
-            var result = await _dashBoardService.AboneAylikTuketimGetir();
+            var result = await _dashBoardService.AboneAktifAylikTuketimGetir();
             return Ok(result);
         }
 

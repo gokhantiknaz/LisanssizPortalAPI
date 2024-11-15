@@ -36,6 +36,19 @@ namespace Humanity.WebApi.Controllers
             return Ok(result);
         }
 
+        [HttpGet("GetAboneSaatlikEndeksOzet")]
+
+        public async Task<ActionResult<List<SaatlikEndeksRes>>> GetAboneSaatlikEndeksOzet([FromQuery] int aboneId, [FromQuery] string donem)
+        {
+            var result = await _endeksService.GetAboneSaatlikEndeksOzet(aboneId, donem);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// saatlik endeksleri kaydeden method.saatlik request alır
+        /// </summary>
+        /// <param name="endeksReq"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult<SaatlikEndeksRes>> Create(List<SaatlikEndeksRequest> endeksReq)
         {

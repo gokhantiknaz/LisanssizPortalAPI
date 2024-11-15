@@ -12,7 +12,7 @@ namespace Humanity.Application.Interfaces
 {
     public  interface IDashboardService
     {
-        Task<List<AboneAylikTuketim>> AboneAylikTuketimGetir();
+        Task<List<AboneAylikTuketim>> AboneAktifAylikTuketimGetir();
 
         Task<IEnumerable<YillikUretimTuketim>> AboneUretimTuketimKarsilastirma();
 

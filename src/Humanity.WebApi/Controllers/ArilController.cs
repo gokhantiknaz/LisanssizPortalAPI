@@ -23,28 +23,57 @@ namespace Humanity.WebApi.Controllers
             _arilService = arilService;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<GetOwnerConsumptionsResponse>> Create(GetOwnerConsumptionsRequest request)
-        {
-            DateTime pilktarih = DateTime.ParseExact(request.StartDate, "yyyyMMddHHmmss", null);
-            DateTime pSonTarih = DateTime.ParseExact(request.EndDate, "yyyyMMddHHmmss", null);
 
-            var result = await _arilService.GetOwnerConsumptions(-1,pilktarih, pSonTarih);
+        // müşteriye ait tüm  abonelerde veri ceker
+        [HttpPost("GetOwnerConsumptions")]
+        public async Task<ActionResult<GetOwnerConsumptionsResponse>> GetOwnerConsumptions([FromQuery] int aboneId, [FromQuery] string donem, [FromQuery] string donemSon)
+        {
+           
+            int donemYear = Convert.ToInt32(donem.Split('/')[0]);
+            int donemMonth = Convert.ToInt32(donem.Split('/')[1]);
+
+
+            int donemSonYear = Convert.ToInt32(donemSon.Split('/')[0]);
+            int donemSonMonth = Convert.ToInt32(donemSon.Split('/')[1]);
+
+            DateTime basTarih = new DateTime(donemYear, donemMonth, DateTime.DaysInMonth(donemYear, donemMonth));
+            DateTime sonTarih = new DateTime(donemSonYear, donemSonMonth, DateTime.DaysInMonth(donemSonYear, donemSonMonth));
+
+            var result = await _arilService.GetOwnerConsumptions(aboneId, basTarih, sonTarih);
+            return Ok(result);
+        }
+
+        // abone saatlik veri ceker
+        [HttpGet("GetOwnerConsumption")]
+        public async Task<ActionResult<GetOwnerConsumptionsResponse>> GetOwnerConsumption([FromQuery] int aboneId, [FromQuery] string donem, [FromQuery] string donemSon)
+        {
+
+            int donemYear = Convert.ToInt32(donem.Split('/')[0]);
+            int donemMonth = Convert.ToInt32(donem.Split('/')[1]);
+
+
+            int donemSonYear = Convert.ToInt32(donemSon.Split('/')[0]);
+            int donemSonMonth = Convert.ToInt32(donemSon.Split('/')[1]);
+
+            DateTime basTarih = new DateTime(donemYear, donemMonth, 1);
+            DateTime sonTarih = new DateTime(donemSonYear, donemSonMonth, DateTime.DaysInMonth(donemSonYear, donemSonMonth)).AddDays(1);
+
+            var result = await _arilService.GetOwnerConsumption(-1,aboneId, basTarih, sonTarih);
             return Ok(result);
         }
 
         [HttpGet("GetEndOfMonthEndexes")]
         public async Task<ActionResult<GetEndOfMonthEndexesResponse>> GetEndOfMonthEndexes([FromQuery] int aboneId, [FromQuery] string donem, [FromQuery] string donemSon)
         {
-          
-            var result = await _arilService.GetEndOfMonthEndexes(aboneId,donem, donemSon,true);
+
+            var result = await _arilService.GetEndOfMonthEndexes(aboneId, donem, donemSon, true);
             return Ok(result);
         }
 
         [HttpGet("GetCurrentEndexes")]
         public async Task<ActionResult<GetEndOfMonthEndexesResponse>> GetCurrentEndexes([FromQuery] int aboneId)
         {
-            var result = await _arilService.GetCurrentEndexes(aboneId,true);
+            var result = await _arilService.GetCurrentEndexes(aboneId, true);
             return Ok(result);
         }
 

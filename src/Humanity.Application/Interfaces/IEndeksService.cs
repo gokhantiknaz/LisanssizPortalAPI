@@ -19,6 +19,8 @@ namespace Humanity.Application.Interfaces
 
         Task<List<AylikEndeksRes>> GetAboneDonemEndeks(int aboneId, string donem);
 
+        Task<List<SaatlikEndeksRes>> GetAboneSaatlikEndeksOzet(int aboneId, string donem);
+        
         Task<bool> AylikEndeksKaydet(int aboneid, GetEndOfMonthEndexesResponse? res);
     }
 }

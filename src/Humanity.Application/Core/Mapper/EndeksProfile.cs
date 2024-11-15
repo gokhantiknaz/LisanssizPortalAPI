@@ -42,6 +42,7 @@ namespace Humanity.Application.Core.Mapper
        .ForMember(dest => dest.ProfilTarihi, opt => opt.MapFrom(src => src.ProfilDate.ToLocalTime().ToString()))
        .ForMember(dest => dest.AboneId, opt => opt.MapFrom(src => src.AboneId))
        .ForMember(dest => dest.Carpan, opt => opt.MapFrom(src => src.Carpan)).ReverseMap();
+
         }
     }
     public class AylikEndeksProfile : Profile
