@@ -41,7 +41,8 @@ namespace Humanity.Application.Services
             if (endeksler == null)
                 throw new Exception("Endeks Bulunamadı");
 
-            return mapper.Map<List<SaatlikEndeksRes>>(endeksler.ToList());
+            var retVal = mapper.Map<List<SaatlikEndeksRes>>(endeksler.ToList());
+            return retVal;
         }
 
         public async Task<List<SaatlikEndeksRes>> GetAboneSaatlikEndeksOzet(int aboneId, string donem)
@@ -61,6 +62,7 @@ namespace Humanity.Application.Services
                              ReakIndVeris= groupedData.Sum(x => x.ReakIndVeris),
                              ReakKapVeris= groupedData.Sum(x => x.ReakKapVeris),
                              UretimVeris= groupedData.Sum(x => x.UretimVeris),
+                             TotalRows = groupedData.Count()
                          };
 
             return result.ToList();
@@ -89,7 +91,7 @@ namespace Humanity.Application.Services
                 throw new Exception("Endeks Bulunamadı");
             if (endeksler.Count() > 0)
             {
-                return mapper.Map<List<AylikEndeksRes>>(endeksler);
+                return mapper.Map<List<AylikEndeksRes>>(endeksler).OrderByDescending(a=>a.EndexYear).ThenByDescending(a=>a.EndexMonth).ToList();
             }
             else
                 throw new Exception("Endeks Bulunamadı");
@@ -101,30 +103,7 @@ namespace Humanity.Application.Services
             var saatlikEndeks = await _unitOfWork.Repository<AboneSaatlikEndeks>().AddRandeAsync(saatlikEndkeksler);
 
 
-            // aylıgı burdan kaydetmeyelim.
-            //var donemYear = Convert.ToInt32(saatlikEndeks.First().Donem.Split('/')[0]);
-            //var donemMonth = Convert.ToInt32(saatlikEndeks.First().Donem.Split('/')[1]);
-            //var aylikEndeksKontrol = new BaseSpecification<AboneEndeks>(a => a.AboneId == saatlikEndeks.First().AboneId && a.EndexMonth == donemMonth && donemYear == a.EndexYear);
-            //var endeksVarmi = await _unitOfWork.Repository<AboneEndeks>().CountAsync(aylikEndeksKontrol);
-            //if (endeksVarmi == 0)
-            //{
-            //    var aylikVeriler = saatlikEndeks
-            //                       .GroupBy(v => new { v.AboneId, v.Donem, v.Carpan })
-            //                       .Select(g => new AboneEndeks
-            //                       {
-            //                           AboneId = g.Key.AboneId,
-            //                           EndexYear = Convert.ToInt32(g.Key.Donem.Substring(4)),
-            //                           EndexMonth = Convert.ToInt32(g.Key.Donem.Substring(4, 2)),
-            //                           T1Endex = (double)g.Sum(a=>a.CekisTuketim),
-            //                           T2Endex = 0,
-            //                           T3Endex = 0,
-            //                           T4Endex = 0
-            //                       })
-            //                       .First();
-
-            //    var aylikEndeksSonuc = await _unitOfWork.Repository<AboneEndeks>().AddAsync(aylikVeriler);
-            //}
-
+          
             try
             {
                 await _unitOfWork.SaveChangesAsync();

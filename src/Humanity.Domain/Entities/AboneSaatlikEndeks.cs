@@ -18,7 +18,7 @@ namespace Humanity.Domain.Entities
         [ForeignKey(nameof(AboneId))]
         public Abone Abone { get; set; }
 
-        public DateTimeOffset ProfilDate { get; set; }
+        public long ProfilDate { get; set; }
 
         public decimal CekisTuketim { get; set; }
 

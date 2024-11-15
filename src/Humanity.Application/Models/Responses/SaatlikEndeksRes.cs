@@ -25,6 +25,8 @@ namespace Humanity.Application.Models.Responses
 
         public string? Donem { get; set; }
 
+        public int? TotalRows { get; set; }
+
     }
 
     public class AylikEndeksRes

@@ -5,6 +5,7 @@ using Humanity.Application.Models.Responses;
 using Humanity.Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -17,8 +18,6 @@ namespace Humanity.Application.Core.Mapper
     {
         public SaatlikEndeksProfile()
         {
-            var gmtPlus3 = TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time");
-
             CreateMap<SaatlikEndeksRequest, AboneSaatlikEndeks>()
            .ForMember(dest => dest.CekisTuketim, opt => opt.MapFrom(src => src.TuketimCekis))
            .ForMember(dest => dest.CekisReaktifInduktif, opt => opt.MapFrom(src => src.ReakIndCekis))
@@ -27,7 +26,7 @@ namespace Humanity.Application.Core.Mapper
            .ForMember(dest => dest.VerisReaktifKapasitif, opt => opt.MapFrom(src => src.ReakKapVeris))
            .ForMember(dest => dest.Uretim, opt => opt.MapFrom(src => src.UretimVeris))
            .ForMember(dest => dest.Donem, opt => opt.MapFrom(src => src.Donem))
-           .ForMember(dest => dest.ProfilDate, opt => opt.MapFrom(src => TimeZoneInfo.ConvertTimeFromUtc(DateTime.Parse(src.ProfilTarihi), gmtPlus3)))
+           .ForMember(dest => dest.ProfilDate, opt => opt.MapFrom(src => Convert.ToInt64(src.ProfilTarihi)))
            .ForMember(dest => dest.AboneId, opt => opt.MapFrom(src => src.AboneId))
            .ForMember(dest => dest.Carpan, opt => opt.MapFrom(src => src.Carpan)).ReverseMap();
 
@@ -39,9 +38,29 @@ namespace Humanity.Application.Core.Mapper
        .ForMember(dest => dest.ReakKapVeris, opt => opt.MapFrom(src => src.VerisReaktifKapasitif))
        .ForMember(dest => dest.UretimVeris, opt => opt.MapFrom(src => src.Uretim))
        .ForMember(dest => dest.Donem, opt => opt.MapFrom(src => src.Donem))
-       .ForMember(dest => dest.ProfilTarihi, opt => opt.MapFrom(src => src.ProfilDate.ToLocalTime().ToString()))
+       .ForMember(dest => dest.ProfilTarihi, opt => opt.MapFrom(src => src.ProfilDate.ToString()))
        .ForMember(dest => dest.AboneId, opt => opt.MapFrom(src => src.AboneId))
        .ForMember(dest => dest.Carpan, opt => opt.MapFrom(src => src.Carpan)).ReverseMap();
+
+        }
+    }
+
+    public class ArilSaatlikResponseProfile : Profile
+    {
+        public ArilSaatlikResponseProfile()
+        {
+            CreateMap<ConsumptionDetail, AboneSaatlikEndeks>()
+           .ForMember(dest => dest.CekisTuketim, opt => opt.MapFrom(src => src.cn))
+           .ForMember(dest => dest.CekisReaktifInduktif, opt => opt.MapFrom(src => src.ri))
+           .ForMember(dest => dest.CekisReaktifKapasitif, opt => opt.MapFrom(src => src.rc))
+           .ForMember(dest => dest.VerisReaktifInduktif, opt => opt.MapFrom(src => 0))
+           .ForMember(dest => dest.VerisReaktifKapasitif, opt => opt.MapFrom(src => 0))
+           .ForMember(dest => dest.Uretim, opt => opt.MapFrom(src => 0))
+           .ForMember(dest => dest.ProfilDate, opt => opt.MapFrom(src => src.pd))
+           .ForMember(dest => dest.Donem, opt => opt.MapFrom(src => src.pd.ToString().Substring(0, 4) + "/" + src.pd.ToString().Substring(4, 2)))
+           .ForMember(dest => dest.Carpan, opt => opt.MapFrom(src => src.ml)).ReverseMap();
+
+
 
         }
     }

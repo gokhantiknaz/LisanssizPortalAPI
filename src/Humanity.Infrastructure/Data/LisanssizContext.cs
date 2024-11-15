@@ -24,6 +24,9 @@ namespace Humanity.Infrastructure.Data
 
             base.OnModelCreating(builder);
 
+
+
+
             builder.Entity<AboneIletisim>().HasKey(table => new
             {
                 table.AboneId,
@@ -66,8 +69,8 @@ namespace Humanity.Infrastructure.Data
 
         }
 
-        
-                public DbSet<YillikUretimTuketim> YillikUretimTuketim { get; set; }
+        public DbSet<YillikUretimTuketim> YillikUretimTuketim { get; set; }
+
         public DbSet<AylikUretimTuketim> AylikUretimTuketim { get; set; }
 
         public DbSet<AylikBazdaTumAbonelerTuketimSummary> AylikUTuketimSummaryretimTuketim { get; set; }

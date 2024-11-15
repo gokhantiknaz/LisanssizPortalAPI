@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Humanity.Application.Core.Mapper;
 using Humanity.Application.Core.Services;
 using Humanity.Application.Interfaces;
 using Humanity.Application.Models.DTOs;
@@ -27,13 +28,14 @@ namespace Humanity.Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IFirmaService _firmaService;
         private readonly IEndeksService _endeksService;
+        private readonly IMapper mapper;
 
-
-        public ArilService(IUnitOfWork unitOfWork, IFirmaService firmaService, IEndeksService endeksService)
+        public ArilService(IUnitOfWork unitOfWork, IFirmaService firmaService, IEndeksService endeksService, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _firmaService = firmaService;
             _endeksService = endeksService;
+            this.mapper = mapper;
             // _ = GetToken();
         }
 
@@ -185,7 +187,7 @@ namespace Humanity.Application.Services
             if (abone == null)
                 throw new Exception("Abone Bulunamadı");
 
-            string donem = startDate.Year.ToString() + "/" + startDate.Month.ToString();
+            string donem = startDate.Year.ToString() + "/" + startDate.Month.ToString().PadLeft(2, '0');
 
             // bu donem vars silip tekrar ceksin.
 
@@ -242,47 +244,18 @@ namespace Humanity.Application.Services
 
                 var saatlikDatalar = JsonSerializer.Deserialize<ArilSaatlikResponse>(json);
 
-                foreach (var item in saatlikDatalar.InConsumption)
+
+                var saatlikEndkeksler = mapper.Map<List<AboneSaatlikEndeks>>(saatlikDatalar.InConsumption);
+                foreach (var item in saatlikEndkeksler)
                 {
-                    if (saatlikDatalar.OwnerType == 2)//tüketim
-                    {
-
-                    }
-                    else //üretim
-                    {
-
-                    }
-
-                    DateTime dateTime = DateTime.ParseExact(item.pd.ToString(), "yyyyMMddHHmmss", CultureInfo.InvariantCulture);
-                    DateTime utcDateTime = TimeZoneInfo.ConvertTimeToUtc(dateTime, TimeZoneInfo.Local);
-
-
-                    DateTime adjustedDateTime = dateTime.ToLocalTime();
-
-                    DateTime adjustedDateTimex = DateTime.SpecifyKind(dateTime, DateTimeKind.Unspecified);
-
-
-
-                    AboneSaatlikEndeks saatlikEndeks = new AboneSaatlikEndeks()
-                    {
-                        AboneId = abone.Id,
-                        ProfilDate = adjustedDateTime,
-                        CekisTuketim = item.cn,
-                        CekisReaktifInduktif = item.ri,
-                        CekisReaktifKapasitif = item.rc,
-                        Carpan = item.ml,
-                        CreatedOn = DateTime.Now,
-                        CreatedBy = new Guid(),
-                        Donem = donem,
-                        VerisReaktifInduktif = 0,
-                        VerisReaktifKapasitif = 0,
-                        Uretim = 0,
-                        LastModifiedOn = DateTime.Now,
-                        LastModifiedBy = new Guid(),
-                    };
-
-                    _unitOfWork.Repository<AboneSaatlikEndeks>().AddAsync(saatlikEndeks);
+                    item.AboneId = aboneId;
+                    item.CreatedOn= DateTime.Now;
+                    item.LastModifiedOn= DateTime.Now;
+                    item.CreatedBy = new Guid();
+                    item.LastModifiedBy = new Guid();
                 }
+
+                var saatlikEndeks = await _unitOfWork.Repository<AboneSaatlikEndeks>().AddRandeAsync(saatlikEndkeksler);
 
                 await _unitOfWork.SaveChangesAsync();
 
