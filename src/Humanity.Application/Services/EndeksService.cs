@@ -46,28 +46,25 @@ namespace Humanity.Application.Services
 
         public async Task<List<SaatlikEndeksRes>> GetAboneSaatlikEndeksOzet(int aboneId, string donem)
         {
-
             var saatlikEndeksler =await GetAboneSaatlikEndeks(aboneId, donem);
             var result = from endeks in saatlikEndeksler // Veri kaynağı
                          group endeks by new { endeks.Donem, endeks.AboneId, endeks.Carpan } into groupedData
                          select new SaatlikEndeksRes
                          {
+                             ProfilTarihi = donem + "/01",
                              Donem = groupedData.Key.Donem,
                              AboneId = groupedData.Key.AboneId,
                              Carpan = groupedData.Key.Carpan,
                              TuketimCekis = groupedData.Sum(x => x.TuketimCekis),
                              ReakIndCekis = groupedData.Sum(x => x.ReakIndCekis),
                              ReakKapCekis = groupedData.Sum(x => x.ReakKapCekis),
-                             ProfilTarihi= donem+"/01",
-                             ReakIndVeris=0,
-                             ReakKapVeris=0,
-                             UretimVeris=0
+                             ReakIndVeris= groupedData.Sum(x => x.ReakIndVeris),
+                             ReakKapVeris= groupedData.Sum(x => x.ReakKapVeris),
+                             UretimVeris= groupedData.Sum(x => x.UretimVeris),
                          };
 
             return result.ToList();
         }
-
-
 
         public async Task<List<AylikEndeksRes>> GetAboneDonemEndeks(int aboneId, string donem)
         {
@@ -97,8 +94,6 @@ namespace Humanity.Application.Services
             else
                 throw new Exception("Endeks Bulunamadı");
         }
-
-       
 
         public async Task<SaatlikEndeksRes> Create(List<SaatlikEndeksRequest> req)
         {
