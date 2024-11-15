@@ -210,7 +210,7 @@ namespace Humanity.Application.Services
                 IsOnlySuccess = true,       // Sadece başarılı kayıtlar (sabit)
                 IncludeLoadProfiles = false, // Yük profilleri dahil değil
                 WithoutMultiplier = false,  // Çarpansız veri
-                MergeResult = false         // Sonuçları birleştirme
+                MergeResult = true         // Sonuçları birleştirme
             };
 
             var entegrasyonSpec = new BaseSpecification<MusteriEntegrasyon>(a => a.DagitimFirmaId == abone.DagitimFirmaId && a.MusteriId == abone.MusteriId);
@@ -223,10 +223,8 @@ namespace Humanity.Application.Services
             await GetToken(-1, entegre);
             var content = new StringContent(JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
 
-
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Add("aril-service-token", token);
-
 
             string firmaArilAdres = entegre.ServisAdres;
 
@@ -236,8 +234,6 @@ namespace Humanity.Application.Services
             //string url = "https://osos.dedas.com.tr/aril-portalserver/customer-rest-api/proxy-aril/GetOwnerConsumptions";
             var response = await client.PostAsync(url, content);
 
-
-            var gmtPlus3 = TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time");
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
@@ -245,12 +241,15 @@ namespace Humanity.Application.Services
                 var saatlikDatalar = JsonSerializer.Deserialize<ArilSaatlikResponse>(json);
 
 
-                var saatlikEndkeksler = mapper.Map<List<AboneSaatlikEndeks>>(saatlikDatalar.InConsumption);
+                var saatlikEndkeksler = mapper.Map<List<AboneSaatlikEndeks>>(saatlikDatalar.MergedConsumptions);
+
+                //var saatlikEndkekslerUretim = mapper.Map<List<AboneSaatlikEndeks>>(saatlikDatalar.OutConsumption);
+
                 foreach (var item in saatlikEndkeksler)
                 {
                     item.AboneId = aboneId;
-                    item.CreatedOn= DateTime.Now;
-                    item.LastModifiedOn= DateTime.Now;
+                    item.CreatedOn = DateTime.Now;
+                    item.LastModifiedOn = DateTime.Now;
                     item.CreatedBy = new Guid();
                     item.LastModifiedBy = new Guid();
                 }
@@ -378,6 +377,8 @@ namespace Humanity.Application.Services
             var startDate = Convert.ToDateTime(DateTime.Now.Year.ToString() + "/" + DateTime.Now.Month.ToString().PadLeft(2, '0') + "/01");
             var endDate = Convert.ToDateTime(DateTime.Now.Year.ToString() + "/" + DateTime.Now.Month.ToString().PadLeft(2, '0') + "/01").AddMonths(1);
             var abone = await _unitOfWork.Repository<Abone>().GetByIdAsync(aboneid);
+
+
             var postData = new
             {
                 OwnerSerno = abone.SeriNo,  // Dinamik olarak serno geliyor
@@ -392,7 +393,7 @@ namespace Humanity.Application.Services
                 EndexDirection = 0 // 1 üretim endeksi 0 tüketim endeksi
             };
 
-            var entegreList = await _unitOfWork.Repository<MusteriEntegrasyon>().ListAsync(new BaseSpecification<MusteriEntegrasyon>(a => a.MusteriId == abone.MusteriId));
+            var entegreList = await _unitOfWork.Repository<MusteriEntegrasyon>().ListAsync(new BaseSpecification<MusteriEntegrasyon>(a => a.DagitimFirmaId == abone.DagitimFirmaId && a.MusteriId == abone.MusteriId));
             var entegre = entegreList.FirstOrDefault();
 
             await GetToken(-1, entegre);
@@ -424,6 +425,39 @@ namespace Humanity.Application.Services
                 if (kaydet)
                 {
                     await _endeksService.AylikEndeksKaydet(aboneid, res);
+                }
+
+
+                if (abone.SahisTip == Domain.Enums.Enums.SahisTip.Uretici)
+                {
+                    postData = new
+                    {
+                        OwnerSerno = abone.SeriNo,  // Dinamik olarak serno geliyor
+                        StartDate = startDate.ToString("yyyyMMddHHmmss"), // Başlangıç tarihi (sabit)
+                        EndDate = endDate.ToString("yyyyMMddHHmmss"),   // Bitiş tarihi (sabit)
+                        PageSize = 1000,            // Sayfa boyutu (sabit)
+                        PageNumber = 1,             // Sayfa numarası (sabit)
+                        IsOnlySuccess = true,       // Sadece başarılı kayıtlar (sabit)
+                        IncludeLoadProfiles = false, // Yük profilleri dahil değil
+                        WithoutMultiplier = false,  // Çarpansız veri
+                        MergeResult = false,// Sonuçları birleştirme
+                        EndexDirection = 1 // 1 üretim endeksi 0 tüketim endeksi
+                    };
+
+                    content = new StringContent(JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
+
+                    response = await client.PostAsync(url, content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        json = await response.Content.ReadAsStringAsync();
+                        res = JsonSerializer.Deserialize<GetEndOfMonthEndexesResponse>(json);
+
+                        if (kaydet)
+                        {
+                            await _endeksService.AylikEndeksKaydet(aboneid, res);
+                        }
+                    }
                 }
                 return res;  // Gelen cevabı deserialize et ve döndür
             }

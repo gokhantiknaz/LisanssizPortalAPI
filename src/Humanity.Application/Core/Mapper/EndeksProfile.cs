@@ -61,6 +61,19 @@ namespace Humanity.Application.Core.Mapper
            .ForMember(dest => dest.Carpan, opt => opt.MapFrom(src => src.ml)).ReverseMap();
 
 
+            CreateMap<Consumption, AboneSaatlikEndeks>()
+           .ForMember(dest => dest.CekisTuketim, opt => opt.MapFrom(src => src.cn))
+           .ForMember(dest => dest.CekisReaktifInduktif, opt => opt.MapFrom(src => src.ri))
+           .ForMember(dest => dest.CekisReaktifKapasitif, opt => opt.MapFrom(src => src.rc))
+
+           .ForMember(dest => dest.Uretim, opt => opt.MapFrom(src => src.gn))
+           .ForMember(dest => dest.VerisReaktifInduktif, opt => opt.MapFrom(src => src.rio))
+           .ForMember(dest => dest.VerisReaktifKapasitif, opt => opt.MapFrom(src => src.rco))
+
+           
+           .ForMember(dest => dest.ProfilDate, opt => opt.MapFrom(src => src.pd))
+           .ForMember(dest => dest.Donem, opt => opt.MapFrom(src => src.pd.ToString().Substring(0, 4) + "/" + src.pd.ToString().Substring(4, 2)))
+           .ForMember(dest => dest.Carpan, opt => opt.MapFrom(src => src.ml)).ReverseMap();
 
         }
     }

@@ -36,7 +36,7 @@ namespace Humanity.Application.Services
                 FROM 
                     ""AboneEndeks""
                 WHERE
-                  
+                  ""EndexType""=0 and 
                      (""EndexMonth"" = EXTRACT(MONTH FROM CURRENT_DATE) - 1 
                      AND ""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE))
                     OR
@@ -54,7 +54,7 @@ namespace Humanity.Application.Services
                 FROM 
                     ""AboneEndeks""
                 WHERE 
-                 
+                  ""EndexType""=0 and 
                     ""EndexMonth"" = EXTRACT(MONTH FROM CURRENT_DATE)
                     AND ""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE)
             )
@@ -87,7 +87,7 @@ namespace Humanity.Application.Services
         ""T2Endex"",
         ""T3Endex""
     FROM ""AboneEndeks""
-    WHERE ""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE) OR (""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE) - 1 AND ""EndexMonth"" = 12)
+    WHERE  ""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE) OR (""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE) - 1 AND ""EndexMonth"" = 12)
 )
 SELECT
     ""EndexMonth"",
