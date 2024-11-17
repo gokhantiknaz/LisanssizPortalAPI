@@ -23,6 +23,55 @@ namespace Humanity.Application.Services
         private readonly IFirebaseService _fireService;
         private readonly IMapper mapper;
 
+
+        const string sqlGunlukUretimTuketimMiktar = @"select ""Donem"",
+       EXTRACT(day FROM TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD')) as Gun,
+       sum(""Uretim"")                                                              as ToplamUretim,
+       sum(""CekisTuketim"")                                                        as ToplamTuketim
+from ""AboneSaatlikEndeks""
+where EXTRACT(YEAR FROM TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD')) = EXTRACT(YEAR FROM CURRENT_DATE)
+  and EXTRACT(MONTH FROM TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD')) = EXTRACT(MONTH FROM CURRENT_DATE)
+group by ""Donem"", EXTRACT(day FROM TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD'));";
+
+        const string sqlAyliEnDusukEnYUksekKullanimMiktarveGunleri = @"
+WITH DailyConsumption AS (
+    SELECT
+        TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD') AS ""Day"",
+        ""Donem"",
+        SUM(""CekisTuketim"") AS ""TotalDailyConsumption""
+    FROM
+        ""AboneSaatlikEndeks""
+     where    EXTRACT(YEAR FROM TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD')) = EXTRACT(YEAR FROM CURRENT_DATE)
+    GROUP BY
+        TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD'), ""Donem""
+),
+MonthlyHighLow AS (
+    SELECT
+        ""Donem"",
+        MAX(""TotalDailyConsumption"") AS ""HighConsumption"",
+        MIN(""TotalDailyConsumption"") AS ""LowConsumption""
+    FROM
+        DailyConsumption
+    GROUP BY
+        ""Donem""
+)
+SELECT
+    mh.""Donem"",
+    mh.""HighConsumption"",
+    (SELECT ""Day""
+     FROM DailyConsumption
+     WHERE ""Donem"" = mh.""Donem"" AND ""TotalDailyConsumption"" = mh.""HighConsumption""
+     LIMIT 1) AS ""HighDay"",
+    mh.""LowConsumption"",
+    (SELECT ""Day""
+     FROM DailyConsumption
+     WHERE ""Donem"" = mh.""Donem"" AND ""TotalDailyConsumption"" = mh.""LowConsumption""
+     LIMIT 1) AS ""LowDay""
+FROM
+    MonthlyHighLow mh;
+";
+
+
         const string sqlAboneAktifAylikTuketimUretim = @"
             WITH PreviousMonth AS (
                 SELECT 
@@ -177,6 +226,40 @@ ORDER BY ""EndexType"" DESC, ""Unvan"";";
                     throw new Exception("Endeks Bulunamadı");
 
                 return mapper.Map<List<AboneAylikTuketim>>(endeksler.Where(a => a.EndexType == Enums.EnumEndeksDirection.Tuketim.GetHashCode()).ToList());
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        public async Task<List<DailyProductionConsumption>> GunlukUretimTuketimGetir()
+        {
+            try
+            {
+                var endeksler = await _unitOfWork.Repository<DailyProductionConsumption>().RawSql(sqlGunlukUretimTuketimMiktar);
+                if (endeksler == null)
+                    throw new Exception("Endeks Bulunamadı");
+
+                return endeksler.OrderBy(a => a.Gun).ToList();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        public async Task<List<AylikEnYuksekEnDusukTuketimGunveMiktar>> AylikEnYuksekEnDusukTuketimGunveMiktar()
+        {
+            try
+            {
+                var endeksler = await _unitOfWork.Repository<AylikEnYuksekEnDusukTuketimGunveMiktar>().RawSql(sqlAyliEnDusukEnYUksekKullanimMiktarveGunleri);
+                if (endeksler == null)
+                    throw new Exception("Endeks Bulunamadı");
+
+                return endeksler.OrderByDescending(a => a.Donem).ToList();
             }
             catch (Exception ex)
             {

@@ -21,5 +21,9 @@ namespace Humanity.Application.Interfaces
         Task<IEnumerable<AylikBazdaTumAbonelerTuketimSummary>> YillikToplamTuketimGetir();
 
         Task<IEnumerable<AylikBazdaTumAbonelerTuketimSummary>> YillikToplamUretimmGetir();
+
+        Task<List<AylikEnYuksekEnDusukTuketimGunveMiktar>> AylikEnYuksekEnDusukTuketimGunveMiktar();
+
+        Task<List<DailyProductionConsumption>> GunlukUretimTuketimGetir();
     }
 }

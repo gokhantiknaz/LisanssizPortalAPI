@@ -22,8 +22,12 @@ namespace Humanity.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
 
-            base.OnModelCreating(builder);
-
+            builder.Entity<YillikUretimTuketim>().HasNoKey();
+            builder.Entity<AboneAylikTuketim>().HasNoKey();
+            builder.Entity<AylikUretimTuketim>().HasNoKey();
+            builder.Entity<AylikBazdaTumAbonelerTuketimSummary>().HasNoKey();
+            builder.Entity<AylikEnYuksekEnDusukTuketimGunveMiktar>().HasNoKey();
+            builder.Entity<DailyProductionConsumption>().HasNoKey();
 
 
 
@@ -62,13 +66,15 @@ namespace Humanity.Infrastructure.Data
                     .WithMany(u => u.UserRoles).HasForeignKey(ur => ur.UserId).IsRequired();
             });
 
-            builder.Entity<YillikUretimTuketim>().HasNoKey();
-            builder.Entity<AboneAylikTuketim>().HasNoKey();
-            builder.Entity<AylikUretimTuketim>().HasNoKey();
-            builder.Entity<AylikBazdaTumAbonelerTuketimSummary>().HasNoKey();
+
+            base.OnModelCreating(builder);
 
         }
 
+        public DbSet<DailyProductionConsumption> DailyProductionConsumption { get; set; }
+
+        public DbSet<AylikEnYuksekEnDusukTuketimGunveMiktar> AylikEnYuksekEnDusukTuketimGunveMiktar { get; set; }
+       
         public DbSet<YillikUretimTuketim> YillikUretimTuketim { get; set; }
 
         public DbSet<AylikUretimTuketim> AylikUretimTuketim { get; set; }

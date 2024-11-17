@@ -66,7 +66,7 @@ namespace Humanity.Application.Services
                 var json = await response.Content.ReadAsStringAsync();
                 var tokenResponse = JsonSerializer.Deserialize<string>(json);
                 token = tokenResponse;
-                Console.WriteLine($"Token alındı: {token}");
+                //Console.WriteLine($"Token alındı: {token}");
             }
             else
             {
@@ -262,7 +262,7 @@ namespace Humanity.Application.Services
             }
             else
             {
-                Console.WriteLine($"Owner Consumptions API çağrısı başarısız. Status Code: {response.StatusCode}");
+                //Console.WriteLine($"Owner Consumptions API çağrısı başarısız. Status Code: {response.StatusCode}");
                 return null;
             }
         }
@@ -364,7 +364,7 @@ namespace Humanity.Application.Services
             }
             else
             {
-                Console.WriteLine($"Owner Consumptions API çağrısı başarısız. Status Code: {response.StatusCode}");
+                //Console.WriteLine($"Owner Consumptions API çağrısı başarısız. Status Code: {response.StatusCode}");
                 return null;
             }
         }
@@ -463,7 +463,7 @@ namespace Humanity.Application.Services
             }
             else
             {
-                Console.WriteLine($"Owner Consumptions API çağrısı başarısız. Status Code: {response.StatusCode}");
+                //Console.WriteLine($"Owner Consumptions API çağrısı başarısız. Status Code: {response.StatusCode}");
                 return null;
             }
         }

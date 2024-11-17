@@ -7,6 +7,31 @@ using System.Threading.Tasks;
 
 namespace Humanity.Application.Models.Responses.Dashboard
 {
+
+    public class DailyProductionConsumption:BaseEntity
+    {
+        /// <summary>
+        /// Dönem bilgisi (YYYYMM formatında).
+        /// </summary>
+        public string Donem { get; set; }
+
+        /// <summary>
+        /// Gün bilgisi (1-31 arasında bir değer).
+        /// </summary>
+        public int Gun { get; set; }
+
+        /// <summary>
+        /// Günlük toplam üretim miktarı (kWh).
+        /// </summary>
+        public double ToplamUretim { get; set; }
+
+        /// <summary>
+        /// Günlük toplam tüketim miktarı (kWh).
+        /// </summary>
+        public double ToplamTuketim { get; set; }
+    }
+
+
     public class AboneAylikTuketim : BaseEntity
     {
         public string Unvan { get; set; }
@@ -17,6 +42,21 @@ namespace Humanity.Application.Models.Responses.Dashboard
         public double T1Usage { get; set; }
         public double T2Usage { get; set; }
         public double T3Usage { get; set; }
+    }
+
+    public class AylikEnYuksekEnDusukTuketimGunveMiktar : BaseEntity
+    {
+
+        public string Donem { get; set; }
+    
+        public decimal HighConsumption { get; set; }
+
+        public DateTime HighDay { get; set; }
+
+        public decimal LowConsumption { get; set; }
+
+        public DateTime LowDay { get; set; }
+   
     }
 
     public class YillikUretimTuketim : BaseEntity

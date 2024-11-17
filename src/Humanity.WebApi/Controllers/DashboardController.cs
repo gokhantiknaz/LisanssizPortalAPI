@@ -30,6 +30,23 @@ namespace Humanity.WebApi.Controllers
             return Ok(result);
         }
 
+        [HttpGet("GunlukUretimTuketimGetir")]
+
+        public async Task<ActionResult<List<SaatlikEndeksRes>>> GunlukUretimTuketimGetir()
+        {
+            var result = await _dashBoardService.GunlukUretimTuketimGetir();
+            return Ok(result);
+        }
+
+        [HttpGet("AylikEnYuksekEnDusukTuketimGunveMiktar")]
+
+        public async Task<ActionResult<List<AylikEnYuksekEnDusukTuketimGunveMiktar>>> AylikEnYuksekEnDusukTuketimGunveMiktar()
+        {
+            var result = await _dashBoardService.AylikEnYuksekEnDusukTuketimGunveMiktar();
+            return Ok(result);
+        }
+        
+
         [HttpGet("AboneUretimTuketimKarsilastirma")]
 
         public async Task<ActionResult<List<YillikUretimTuketim>>> AboneUretimTuketimKarsilastirma()
