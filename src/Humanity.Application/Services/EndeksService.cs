@@ -27,30 +27,30 @@ namespace Humanity.Application.Services
 
         private readonly IMapper mapper;
 
-        public EndeksService(IUnitOfWork unitOfWork, ILoggerService loggerService, IMapper mapper)
+        public EndeksService(IUnitOfWork unitOfWork, ILoggerService loggerService, IMapper mapper,IFaturaService firmaService)
         {
             _unitOfWork = unitOfWork;
             _logService = loggerService;
             this.mapper = mapper;
         }
 
-        public async Task<List<SaatlikEndeksRes>> GetAboneSaatlikEndeks(int aboneId, string donem)
+        public async Task<List<EndeksResponses>> GetAboneSaatlikEndeks(int aboneId, string donem)
         {
             var endeksler = await _unitOfWork.Repository<AboneSaatlikEndeks>().ListAsync(new BaseSpecification<AboneSaatlikEndeks>(a => a.AboneId == aboneId && a.Donem == donem));
 
             if (endeksler == null)
                 throw new Exception("Endeks Bulunamadı");
 
-            var retVal = mapper.Map<List<SaatlikEndeksRes>>(endeksler.ToList());
+            var retVal = mapper.Map<List<EndeksResponses>>(endeksler.ToList());
             return retVal;
         }
 
-        public async Task<List<SaatlikEndeksRes>> GetAboneSaatlikEndeksOzet(int aboneId, string donem)
+        public async Task<List<EndeksResponses>> GetAboneSaatlikEndeksOzet(int aboneId, string donem)
         {
-            var saatlikEndeksler =await GetAboneSaatlikEndeks(aboneId, donem);
+            var saatlikEndeksler = await GetAboneSaatlikEndeks(aboneId, donem);
             var result = from endeks in saatlikEndeksler // Veri kaynağı
                          group endeks by new { endeks.Donem, endeks.AboneId, endeks.Carpan } into groupedData
-                         select new SaatlikEndeksRes
+                         select new EndeksResponses
                          {
                              ProfilTarihi = donem + "/01",
                              Donem = groupedData.Key.Donem,
@@ -59,9 +59,9 @@ namespace Humanity.Application.Services
                              TuketimCekis = groupedData.Sum(x => x.TuketimCekis),
                              ReakIndCekis = groupedData.Sum(x => x.ReakIndCekis),
                              ReakKapCekis = groupedData.Sum(x => x.ReakKapCekis),
-                             ReakIndVeris= groupedData.Sum(x => x.ReakIndVeris),
-                             ReakKapVeris= groupedData.Sum(x => x.ReakKapVeris),
-                             UretimVeris= groupedData.Sum(x => x.UretimVeris),
+                             ReakIndVeris = groupedData.Sum(x => x.ReakIndVeris),
+                             ReakKapVeris = groupedData.Sum(x => x.ReakKapVeris),
+                             UretimVeris = groupedData.Sum(x => x.UretimVeris),
                              TotalRows = groupedData.Count()
                          };
 
@@ -91,19 +91,17 @@ namespace Humanity.Application.Services
                 throw new Exception("Endeks Bulunamadı");
             if (endeksler.Count() > 0)
             {
-                return mapper.Map<List<AylikEndeksRes>>(endeksler).OrderByDescending(a=>a.EndexYear).ThenByDescending(a=>a.EndexMonth).ToList();
+                return mapper.Map<List<AylikEndeksRes>>(endeksler).OrderByDescending(a => a.EndexYear).ThenByDescending(a => a.EndexMonth).ToList();
             }
             else
                 throw new Exception("Endeks Bulunamadı");
         }
 
-        public async Task<SaatlikEndeksRes> Create(List<SaatlikEndeksRequest> req)
+        public async Task<EndeksResponses> Create(List<SaatlikEndeksRequest> req)
         {
             var saatlikEndkeksler = mapper.Map<List<AboneSaatlikEndeks>>(req);
             var saatlikEndeks = await _unitOfWork.Repository<AboneSaatlikEndeks>().AddRandeAsync(saatlikEndkeksler);
 
-
-          
             try
             {
                 await _unitOfWork.SaveChangesAsync();
@@ -116,7 +114,7 @@ namespace Humanity.Application.Services
             _logService.LogInfo("Firma Kaydedildi");
 
 
-            return new SaatlikEndeksRes() { };
+            return new EndeksResponses() { };
         }
 
         public async Task<bool> AylikEndeksKaydet(int aboneId, GetEndOfMonthEndexesResponse res)
@@ -181,5 +179,6 @@ namespace Humanity.Application.Services
             }
             return true;
         }
+
     }
 }

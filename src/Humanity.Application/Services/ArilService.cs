@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -39,7 +40,7 @@ namespace Humanity.Application.Services
             // _ = GetToken();
         }
 
-        public async Task GetToken(int firmaId, MusteriEntegrasyon musteriEntegrasyon)
+        public async Task GetToken(MusteriEntegrasyon musteriEntegrasyon)
         {
             //dağıtım firmaya göre dinamik gelecek.
             string tokenUrl = "aril-portalserver/customer-rest-api/generate-token";
@@ -77,9 +78,7 @@ namespace Humanity.Application.Services
 
         public async Task<CustomerSubscriptionResponse> GetCustomerPortalSubscriptions(int musteriid)
         {
-
             // müşteriye ait token al.
-
             var spec = new BaseSpecification<MusteriEntegrasyon>(x => x.MusteriId == musteriid);
             spec.AddInclude(a => a.Musteri);
             var entegre = await _unitOfWork.Repository<MusteriEntegrasyon>().ListAsync(spec);
@@ -88,7 +87,7 @@ namespace Humanity.Application.Services
             {
                 foreach (var entegrasyon in entegre)
                 {
-                    await GetToken(entegrasyon.Musteri.DagitimFirmaId, entegrasyon);
+                    await GetToken(entegrasyon);
 
                     var postData = new
                     {
@@ -136,40 +135,29 @@ namespace Humanity.Application.Services
         public async Task<GetOwnerConsumptionsResponse> GetOwnerConsumptions(int musteriId, DateTime startDate, DateTime endDate)
         {
             var currentDate = startDate;
-            var spec = new BaseSpecification<MusteriEntegrasyon>(x => x.MusteriId == musteriId);
-            spec.AddInclude(a => a.Musteri);
-            var entegreList = await _unitOfWork.Repository<MusteriEntegrasyon>().ListAsync(spec);
+            var customers = await GetCustomerPortalSubscriptions(musteriId);
 
-            foreach (var entegrasyon in entegreList)
+            if (customers != null)
             {
                 while (currentDate <= endDate)
                 {
                     // Her ay için tarih aralığını ayarlıyoruz
-                    var startOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
-                    var endOfMonth = startOfMonth.AddMonths(1).AddMinutes(-1); // Ayın son günü
-
-                    string donem = currentDate.Year.ToString() + "/" + currentDate.Month.ToString().PadLeft(2, '0');
-                    var customers = await GetCustomerPortalSubscriptions(musteriId);
-
-                    if (customers != null)
+                    //var startOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+                    //var endOfMonth = startOfMonth.AddMonths(1).AddMinutes(-1); // Ayın son günü
+                    foreach (var result in customers.ResultList)
                     {
-                        foreach (var result in customers.ResultList)
-                        {
+                        string donem = currentDate.Year.ToString() + "/" + currentDate.Month.ToString().PadLeft(2, '0');
+                        var abone = await _unitOfWork.Repository<Abone>().GetBy(new BaseSpecification<Abone>(a => a.SeriNo == result.SubscriptionSerno));
+                        if (abone == null)
+                            continue;
 
-                            var tumData = await _unitOfWork.Repository<OwnerConsumpiton>().ListAsync(new BaseSpecification<OwnerConsumpiton>(x => x.SerNo == result.SubscriptionSerno));
-                            if (tumData.Count(a => a.Donem == donem) > 0)
-                                continue;
-
-                            var consumpiton = await GetOwnerConsumption(result.SubscriptionSerno, -1, startOfMonth, endOfMonth);
-
-                            var jsonStr = JsonSerializer.Serialize(consumpiton, new JsonSerializerOptions { WriteIndented = true });
-
-                            // Bir sonraki aya geçiyoruz
-                            currentDate = currentDate.AddMonths(1);
-                        }
-                        await _unitOfWork.SaveChangesAsync();
+                        var consumpiton = await GetOwnerConsumption(result.SubscriptionSerno, -1, startDate, endDate);
+                        // Bir sonraki aya geçiyoruz
+                        currentDate = currentDate.AddMonths(1);
                     }
+
                 }
+                await _unitOfWork.SaveChangesAsync();
             }
 
             return new GetOwnerConsumptionsResponse() { };
@@ -189,9 +177,15 @@ namespace Humanity.Application.Services
 
             string donem = startDate.Year.ToString() + "/" + startDate.Month.ToString().PadLeft(2, '0');
 
+
+            var startProfileDate = Convert.ToInt64(startDate.Year.ToString() + startDate.Month.ToString() + startDate.Day.ToString() + startDate.Hour.ToString() + startDate.Minute.ToString() + "00");
+            var endProfileDate = Convert.ToInt64(endDate.Year.ToString() + endDate.Month.ToString() + endDate.Day.ToString() + endDate.Hour.ToString() + endDate.Minute.ToString() + "00");
             // bu donem vars silip tekrar ceksin.
 
-            var endekler = await _unitOfWork.Repository<AboneSaatlikEndeks>().ListAsync(new BaseSpecification<AboneSaatlikEndeks>(x => x.AboneId == abone.Id && x.Donem == donem));
+            var endekler = await _unitOfWork.Repository<AboneSaatlikEndeks>().ListAsync(new BaseSpecification<AboneSaatlikEndeks>(
+                x => x.AboneId == abone.Id && x.Donem == donem
+                && x.ProfilDate >= startProfileDate && x.ProfilDate <= endProfileDate
+                ));
 
             foreach (var item in endekler)
             {
@@ -220,7 +214,7 @@ namespace Humanity.Application.Services
                 throw new Exception("Entegrasyon Bilgileri Hatalı");
             }
 
-            await GetToken(-1, entegre);
+            await GetToken(entegre);
             var content = new StringContent(JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
 
             client.DefaultRequestHeaders.Clear();
@@ -239,24 +233,23 @@ namespace Humanity.Application.Services
                 var json = await response.Content.ReadAsStringAsync();
 
                 var saatlikDatalar = JsonSerializer.Deserialize<ArilSaatlikResponse>(json);
-
-
                 var saatlikEndkeksler = mapper.Map<List<AboneSaatlikEndeks>>(saatlikDatalar.MergedConsumptions);
 
                 //var saatlikEndkekslerUretim = mapper.Map<List<AboneSaatlikEndeks>>(saatlikDatalar.OutConsumption);
-
-                foreach (var item in saatlikEndkeksler)
+                if (saatlikEndkeksler.Count > 0)
                 {
-                    item.AboneId = aboneId;
-                    item.CreatedOn = DateTime.Now;
-                    item.LastModifiedOn = DateTime.Now;
-                    item.CreatedBy = new Guid();
-                    item.LastModifiedBy = new Guid();
+                    foreach (var item in saatlikEndkeksler)
+                    {
+                        item.AboneId = abone.Id;
+                        item.CreatedOn = DateTime.Now;
+                        item.LastModifiedOn = DateTime.Now;
+                        item.CreatedBy = new Guid();
+                        item.LastModifiedBy = new Guid();
+                    }
+
+                    var saatlikEndeks = await _unitOfWork.Repository<AboneSaatlikEndeks>().AddRandeAsync(saatlikEndkeksler);
+                    await _unitOfWork.SaveChangesAsync();
                 }
-
-                var saatlikEndeks = await _unitOfWork.Repository<AboneSaatlikEndeks>().AddRandeAsync(saatlikEndkeksler);
-
-                await _unitOfWork.SaveChangesAsync();
 
                 return new GetOwnerConsumptionsResponse() { };
             }
@@ -303,7 +296,7 @@ namespace Humanity.Application.Services
             var entegreList = await _unitOfWork.Repository<MusteriEntegrasyon>().ListAsync(new BaseSpecification<MusteriEntegrasyon>(a => a.MusteriId == abone.MusteriId));
             var entegre = entegreList.FirstOrDefault(a => a.DagitimFirmaId == abone.DagitimFirmaId);
 
-            await GetToken(-1, entegre);
+            await GetToken(entegre);
 
             // Post verisini JSON formatına çevirip istek gönderiyoruz
             var content = new StringContent(JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
@@ -396,7 +389,7 @@ namespace Humanity.Application.Services
             var entegreList = await _unitOfWork.Repository<MusteriEntegrasyon>().ListAsync(new BaseSpecification<MusteriEntegrasyon>(a => a.DagitimFirmaId == abone.DagitimFirmaId && a.MusteriId == abone.MusteriId));
             var entegre = entegreList.FirstOrDefault();
 
-            await GetToken(-1, entegre);
+            await GetToken(entegre);
 
             // Post verisini JSON formatına çevirip istek gönderiyoruz
             var content = new StringContent(JsonSerializer.Serialize(postData), Encoding.UTF8, "application/json");
@@ -515,6 +508,35 @@ namespace Humanity.Application.Services
           .ToList();
 
             return groupedData;
+        }
+
+
+        public async Task<bool> GetVeriDurumuAsync(DateTime tarih)
+        {
+            var endeksVeriDurumu = await _unitOfWork.Repository<EndeksVeriDurumu>().GetBy(new BaseSpecification<EndeksVeriDurumu>(x => x.Tarih.Date == tarih.Date));
+            if (endeksVeriDurumu != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> FetchAndSaveDataAsync(DateTime tarih)
+        {
+            // Servisten verileri çek ve kaydet
+            var musteriler = await _unitOfWork.Repository<Musteri>().ListAsync(new BaseSpecification<Musteri>(a => a.Durum == Domain.Enums.Enums.Status.Aktif));
+
+            foreach (var item in musteriler)
+            {
+                await GetOwnerConsumptions(item.Id, tarih.AddDays(-1), tarih);
+            }
+
+            // Veri durumu güncelle
+            var durum = new EndeksVeriDurumu() { Tarih = tarih, VeriCekildi = true };
+            await _unitOfWork.Repository<EndeksVeriDurumu>().AddAsync(durum);
+            var inserted =
+             await _unitOfWork.SaveChangesAsync();
+            return inserted > 0;
         }
     }
 }

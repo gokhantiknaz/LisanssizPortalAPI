@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Humanity.Application.Models.Responses
 {
-    public class SaatlikEndeksRes
+    public class EndeksResponses
     {
         public int? AboneId { get; set; }
         public string? ProfilTarihi { get; set; }

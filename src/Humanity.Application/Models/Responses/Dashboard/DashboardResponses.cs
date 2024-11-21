@@ -42,6 +42,7 @@ namespace Humanity.Application.Models.Responses.Dashboard
         public double T1Usage { get; set; }
         public double T2Usage { get; set; }
         public double T3Usage { get; set; }
+     
     }
 
     public class AylikEnYuksekEnDusukTuketimGunveMiktar : BaseEntity

@@ -30,7 +30,7 @@ namespace Humanity.Application.Core.Mapper
            .ForMember(dest => dest.AboneId, opt => opt.MapFrom(src => src.AboneId))
            .ForMember(dest => dest.Carpan, opt => opt.MapFrom(src => src.Carpan)).ReverseMap();
 
-            CreateMap<AboneSaatlikEndeks, SaatlikEndeksRes>()
+            CreateMap<AboneSaatlikEndeks, EndeksResponses>()
        .ForMember(dest => dest.TuketimCekis, opt => opt.MapFrom(src => src.CekisTuketim))
        .ForMember(dest => dest.ReakIndCekis, opt => opt.MapFrom(src => src.CekisReaktifInduktif))
        .ForMember(dest => dest.ReakKapCekis, opt => opt.MapFrom(src => src.CekisReaktifKapasitif))

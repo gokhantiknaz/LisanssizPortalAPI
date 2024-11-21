@@ -11,5 +11,8 @@ namespace Humanity.Application.Interfaces
     public interface IFirebaseService
     {
         Task<IEnumerable<DagitimFirma>> GetDagitimFirmalar();
+        Task<IEnumerable<TarifeTanim>> GetTarifeTanim();
+        Task<IEnumerable<TarifeFiyat>> GetTarifeFiyat();
+        Task<TarifeFiyat> GetTarifeFiyatById(int tarife);
     }
 }

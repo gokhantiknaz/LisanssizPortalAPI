@@ -30,7 +30,7 @@ namespace Humanity.WebApi.Controllers
 
         [HttpGet("GetSaatlikEndeks")]
 
-        public async Task<ActionResult<List<SaatlikEndeksRes>>> GetSaatlikEndeks([FromQuery] int aboneId, [FromQuery] string donem)
+        public async Task<ActionResult<List<EndeksResponses>>> GetSaatlikEndeks([FromQuery] int aboneId, [FromQuery] string donem)
         {
             var result = await _endeksService.GetAboneSaatlikEndeks(aboneId, donem);
             return Ok(result);
@@ -38,7 +38,7 @@ namespace Humanity.WebApi.Controllers
 
         [HttpGet("GetAboneSaatlikEndeksOzet")]
 
-        public async Task<ActionResult<List<SaatlikEndeksRes>>> GetAboneSaatlikEndeksOzet([FromQuery] int aboneId, [FromQuery] string donem)
+        public async Task<ActionResult<List<EndeksResponses>>> GetAboneSaatlikEndeksOzet([FromQuery] int aboneId, [FromQuery] string donem)
         {
             var result = await _endeksService.GetAboneSaatlikEndeksOzet(aboneId, donem);
             return Ok(result);
@@ -50,14 +50,14 @@ namespace Humanity.WebApi.Controllers
         /// <param name="endeksReq"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult<SaatlikEndeksRes>> Create(List<SaatlikEndeksRequest> endeksReq)
+        public async Task<ActionResult<EndeksResponses>> Create(List<SaatlikEndeksRequest> endeksReq)
         {
             var result = await _endeksService.Create(endeksReq);
             return Ok(result);
         }
         [HttpGet("GetAboneBazliTuketim")]
 
-        public async Task<ActionResult<List<SaatlikEndeksRes>>> GetAboneBazliTuketim()
+        public async Task<ActionResult<List<EndeksResponses>>> GetAboneBazliTuketim()
         {
             return Ok();
         }

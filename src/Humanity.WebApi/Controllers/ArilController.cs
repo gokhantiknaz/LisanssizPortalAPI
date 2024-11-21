@@ -28,7 +28,7 @@ namespace Humanity.WebApi.Controllers
         [HttpPost("GetOwnerConsumptions")]
         public async Task<ActionResult<GetOwnerConsumptionsResponse>> GetOwnerConsumptions([FromQuery] int aboneId, [FromQuery] string donem, [FromQuery] string donemSon)
         {
-           
+
             int donemYear = Convert.ToInt32(donem.Split('/')[0]);
             int donemMonth = Convert.ToInt32(donem.Split('/')[1]);
 
@@ -58,7 +58,7 @@ namespace Humanity.WebApi.Controllers
             DateTime basTarih = new DateTime(donemYear, donemMonth, 1);
             DateTime sonTarih = new DateTime(donemSonYear, donemSonMonth, DateTime.DaysInMonth(donemSonYear, donemSonMonth)).AddDays(1);
 
-            var result = await _arilService.GetOwnerConsumption(-1,aboneId, basTarih, sonTarih);
+            var result = await _arilService.GetOwnerConsumption(-1, aboneId, basTarih, sonTarih);
             return Ok(result);
         }
 
@@ -82,6 +82,25 @@ namespace Humanity.WebApi.Controllers
         {
             var result = await _arilService.GetCurrentEndexesAll(musteriId);
             return Ok(result);
+        }
+
+        [HttpPost("check-and-fetch")]
+        public async Task<IActionResult> CheckAndFetchData()
+        {
+            var today = DateTime.UtcNow.Date;
+            var veriDurumu = await _arilService.GetVeriDurumuAsync(today);
+
+            if (!veriDurumu)
+            {
+                var res = await _arilService.FetchAndSaveDataAsync(today);
+                if (res)
+                    return Ok(new { message = "Günün verileri başarıyla çekildi.", data = res });
+                else
+                    return Ok(new { message = "Veriler Çekilemedi." });
+
+            }
+
+            return Ok(new { message = "Bugün için veri zaten çekilmiş." });
         }
     }
 }

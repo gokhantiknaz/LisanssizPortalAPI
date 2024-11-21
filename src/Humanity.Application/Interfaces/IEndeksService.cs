@@ -13,13 +13,13 @@ namespace Humanity.Application.Interfaces
 {
     public interface IEndeksService
     {
-        Task<List<SaatlikEndeksRes>> GetAboneSaatlikEndeks(int aboneId, string donem);
+        Task<List<EndeksResponses>> GetAboneSaatlikEndeks(int aboneId, string donem);
 
-        Task<SaatlikEndeksRes> Create(List<SaatlikEndeksRequest> req);
+        Task<EndeksResponses> Create(List<SaatlikEndeksRequest> req);
 
         Task<List<AylikEndeksRes>> GetAboneDonemEndeks(int aboneId, string donem);
 
-        Task<List<SaatlikEndeksRes>> GetAboneSaatlikEndeksOzet(int aboneId, string donem);
+        Task<List<EndeksResponses>> GetAboneSaatlikEndeksOzet(int aboneId, string donem);
         
         Task<bool> AylikEndeksKaydet(int aboneid, GetEndOfMonthEndexesResponse? res);
     }

@@ -37,5 +37,30 @@ namespace Humanity.Application.Services
 
             return result;
         }
+
+
+        public async Task<IEnumerable<TarifeTanim>> GetTarifeTanim()
+        {
+            FirebaseResponse response = await client.GetAsync("TarifeTanim");
+            List<TarifeTanim> result = response.ResultAs<List<TarifeTanim>>();
+            return result;
+        }
+
+
+        public async Task<IEnumerable<TarifeFiyat>> GetTarifeFiyat()
+        {
+            FirebaseResponse response = await client.GetAsync("TarifeFiyat");
+            List<TarifeFiyat> result = response.ResultAs<List<TarifeFiyat>>();
+
+            return result;
+        }
+
+        public async Task<TarifeFiyat> GetTarifeFiyatById(int tarife)
+        {
+            FirebaseResponse response = await client.GetAsync($"TarifeFiyat/{tarife}");
+            TarifeFiyat result = response.ResultAs<TarifeFiyat>();
+
+            return result;
+        }
     }
 }

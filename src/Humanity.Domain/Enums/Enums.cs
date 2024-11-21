@@ -80,5 +80,14 @@ namespace Humanity.Domain.Enums
             Tuketim = 0,
             Uretim = 1
         }
+
+        public enum SqlQuery
+        {
+            GunlukUretimTuketimMiktar,
+            AyliEnDusukEnYUksekKullanimMiktarveGunleri,
+            AboneAktifAylikTuketimUretim,
+            YillikTuketimUretim,
+            YillikUretimTuketimToplam
+        }
     }
 }

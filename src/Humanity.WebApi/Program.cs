@@ -26,14 +26,11 @@ builder.Services.AddDbContext<LisanssizContext>(x =>
     //    options.MigrationsAssembly(Assembly.GetAssembly(typeof(AppDbContext)).GetName().Name);
     //});
 
-
     x.UseNpgsql(builder.Configuration.GetConnectionString("PostgreConnection"), options =>
     {
         options.MigrationsAssembly(Assembly.GetAssembly(typeof(LisanssizContext)).GetName().Name);
 
     });
-
-
 });
 
 builder.Services.ConfigureApplication();

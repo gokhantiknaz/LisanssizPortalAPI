@@ -71,7 +71,6 @@ FROM
     MonthlyHighLow mh;
 ";
 
-
         const string sqlAboneAktifAylikTuketimUretim = @"
             WITH PreviousMonth AS (
                 SELECT 

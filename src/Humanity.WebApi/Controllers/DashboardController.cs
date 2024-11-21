@@ -24,7 +24,7 @@ namespace Humanity.WebApi.Controllers
 
         [HttpGet("AboneAylikTuketimGetir")]
 
-        public async Task<ActionResult<List<SaatlikEndeksRes>>> AboneAylikTuketimGetir()
+        public async Task<ActionResult<List<EndeksResponses>>> AboneAylikTuketimGetir()
         {
             var result = await _dashBoardService.AboneAktifAylikTuketimGetir();
             return Ok(result);
@@ -32,7 +32,7 @@ namespace Humanity.WebApi.Controllers
 
         [HttpGet("GunlukUretimTuketimGetir")]
 
-        public async Task<ActionResult<List<SaatlikEndeksRes>>> GunlukUretimTuketimGetir()
+        public async Task<ActionResult<List<EndeksResponses>>> GunlukUretimTuketimGetir()
         {
             var result = await _dashBoardService.GunlukUretimTuketimGetir();
             return Ok(result);

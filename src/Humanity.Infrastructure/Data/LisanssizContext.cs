@@ -30,6 +30,7 @@ namespace Humanity.Infrastructure.Data
             builder.Entity<DailyProductionConsumption>().HasNoKey();
 
 
+            base.OnModelCreating(builder);
 
             builder.Entity<AboneIletisim>().HasKey(table => new
             {
@@ -66,15 +67,17 @@ namespace Humanity.Infrastructure.Data
                     .WithMany(u => u.UserRoles).HasForeignKey(ur => ur.UserId).IsRequired();
             });
 
-
-            base.OnModelCreating(builder);
-
         }
+
+
+        public DbSet<Fatura> Fatura { get; set; }
+
+        public DbSet<EndeksVeriDurumu> EndeksVeriDurumu { get; set; }
 
         public DbSet<DailyProductionConsumption> DailyProductionConsumption { get; set; }
 
         public DbSet<AylikEnYuksekEnDusukTuketimGunveMiktar> AylikEnYuksekEnDusukTuketimGunveMiktar { get; set; }
-       
+
         public DbSet<YillikUretimTuketim> YillikUretimTuketim { get; set; }
 
         public DbSet<AylikUretimTuketim> AylikUretimTuketim { get; set; }
@@ -115,9 +118,8 @@ namespace Humanity.Infrastructure.Data
 
         public DbSet<AboneSaatlikEndeks> AboneSaatlikEndeks { get; set; }
 
-        public DbSet<OwnerConsumpiton> OwnerConsumpiton { get; set; }
-
         public DbSet<AboneEndeks> AboneEndeks { get; set; }
+
         public DbSet<AboneEndeksPeriod> AboneEndeksPeriod { get; set; }
 
     }

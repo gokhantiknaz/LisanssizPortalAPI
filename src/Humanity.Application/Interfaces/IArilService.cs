@@ -24,5 +24,9 @@ namespace Humanity.Application.Interfaces
         Task<GetEndOfMonthEndexesResponse> GetCurrentEndexes(int aboneid,bool kaydet=false);
 
         Task<object> GetCurrentEndexesAll(int musteriId);
+
+        Task<bool> GetVeriDurumuAsync(DateTime today);
+
+        Task<bool> FetchAndSaveDataAsync(DateTime today);
     }
 }
