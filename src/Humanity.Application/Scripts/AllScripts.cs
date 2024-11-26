@@ -31,7 +31,9 @@ group by ""Donem"", EXTRACT(day FROM TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 
                     ""EndexType"",
                     ""T1Endex"" AS PreviousT1Endex,
                     ""T2Endex"" AS PreviousT2Endex,
-                    ""T3Endex"" AS PreviousT3Endex
+                    ""T3Endex"" AS PreviousT3Endex,
+  ""ReactiveInductive"" AS ""PreviousInduktifUsage"",
+                    ""ReactiveCapasitive"" AS ""PreviousKapasitifUsage""
                 FROM 
                     ""AboneEndeks""
                 WHERE
@@ -46,7 +48,9 @@ group by ""Donem"", EXTRACT(day FROM TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 
                     ""EndexType"",
                     ""T1Endex"",
                     ""T2Endex"",
-                    ""T3Endex""
+                    ""T3Endex"",
+  ""ReactiveInductive"",
+                    ""ReactiveCapasitive""
                 FROM 
                     ""AboneEndeks""
                 WHERE 1=1
@@ -54,6 +58,7 @@ group by ""Donem"", EXTRACT(day FROM TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 
                     {1}
             )
             SELECT 
+                a.""Id"" as ""AboneId"",
                 a.""Adi"" as ""Unvan"",
                 c.""EndexMonth"",
                 c.""EndexYear"",
@@ -61,7 +66,9 @@ group by ""Donem"", EXTRACT(day FROM TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 
                 c.""EndexType"",
                 COALESCE(c.""T1Endex"" - p.PreviousT1Endex, 0) * a.""Carpan"" AS ""T1Usage"",
                 COALESCE(c.""T2Endex"" - p.PreviousT2Endex, 0) * a.""Carpan"" AS ""T2Usage"",
-                COALESCE(c.""T3Endex"" - p.PreviousT3Endex, 0) * a.""Carpan"" AS ""T3Usage""
+                COALESCE(c.""T3Endex"" - p.PreviousT3Endex, 0) * a.""Carpan"" AS ""T3Usage"",
+ COALESCE(c.""ReactiveInductive"" - p.""PreviousInduktifUsage"", 0) * a.""Carpan"" AS ""InduktifUsage"",
+  COALESCE(c.""ReactiveCapasitive"" - p.""PreviousKapasitifUsage"", 0) * a.""Carpan"" AS ""KapasitifUsage""
         
             FROM 
                 CurrentMonth c inner join ""Abone"" a on a.""Id""= c.""AboneId""

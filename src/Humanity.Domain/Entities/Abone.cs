@@ -31,8 +31,7 @@ namespace Humanity.Domain.Entities
         public string? EtsoKodu { get; set; }
         public int? DagitimFirmaId { get; set; }
         public long? SeriNo { get; set; }
-        public double? SozlesmeGucu { get; set; }
-        public double BaglantiGucu { get; set; }
+        public double SozlesmeGucu { get; set; }
         public double? KuruluGuc { get; set; }
         public SahisTip SahisTip { get; set; }
         public int Terim { get; set; }
@@ -53,6 +52,8 @@ namespace Humanity.Domain.Entities
         public bool IsDeleted { get; set; }
 
         public decimal Carpan { get; set; }
+
+        public EmumSayacZaman SayacZaman { get; set; }
     }
 
 }

@@ -62,5 +62,13 @@ namespace Humanity.Application.Services
 
             return result;
         }
+
+        public async Task<IEnumerable<Vergiler>> GetVergiler()
+        {
+            FirebaseResponse response = await client.GetAsync("Vergiler");
+            List<Vergiler> result = response.ResultAs<List<Vergiler>>();
+
+            return result;
+        }
     }
 }

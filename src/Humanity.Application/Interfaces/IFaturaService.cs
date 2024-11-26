@@ -10,6 +10,6 @@ namespace Humanity.Application.Interfaces
     public interface IFaturaService
     {
 
-        Task<FaturaDTO> AboneAylikFaturaHesapla(int aboneid, string donem);
+        Task<List<FaturaDTO>> AboneAylikFaturaHesapla(int aboneid, string donem);
     }
 }

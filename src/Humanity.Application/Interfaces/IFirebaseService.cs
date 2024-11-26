@@ -14,5 +14,6 @@ namespace Humanity.Application.Interfaces
         Task<IEnumerable<TarifeTanim>> GetTarifeTanim();
         Task<IEnumerable<TarifeFiyat>> GetTarifeFiyat();
         Task<TarifeFiyat> GetTarifeFiyatById(int tarife);
+        Task<IEnumerable<Vergiler>> GetVergiler();
     }
 }

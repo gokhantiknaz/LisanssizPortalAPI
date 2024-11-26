@@ -28,4 +28,9 @@ namespace Humanity.Domain.Entities
         public EnumEnerjiCinsi EnerjiCinsi { get; set; }
     }
 
+    public class Vergiler
+    {
+        public string Adi { get; set; }
+        public decimal Deger { get; set; }
+    }
 }

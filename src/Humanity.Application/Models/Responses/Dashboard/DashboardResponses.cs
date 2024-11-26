@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Humanity.Application.Models.Responses.Dashboard
 {
 
-    public class DailyProductionConsumption:BaseEntity
+    public class DailyProductionConsumption : BaseEntity
     {
         /// <summary>
         /// Dönem bilgisi (YYYYMM formatında).
@@ -35,6 +35,7 @@ namespace Humanity.Application.Models.Responses.Dashboard
     public class AboneAylikTuketim : BaseEntity
     {
         public string Unvan { get; set; }
+        public int AboneId { get; set; }
         public int SeriNo { get; set; }
         public int EndexMonth { get; set; }
         public int EndexYear { get; set; }
@@ -42,14 +43,19 @@ namespace Humanity.Application.Models.Responses.Dashboard
         public double T1Usage { get; set; }
         public double T2Usage { get; set; }
         public double T3Usage { get; set; }
-     
-    }
+        public double InduktifUsage { get; internal set; }
+        public double TSum
+        {
+            get { return T1Usage + T2Usage + T3Usage; }
+        }
 
+        public double KapasitifUsage { get; internal set; }
+    }
     public class AylikEnYuksekEnDusukTuketimGunveMiktar : BaseEntity
     {
 
         public string Donem { get; set; }
-    
+
         public decimal HighConsumption { get; set; }
 
         public DateTime HighDay { get; set; }
@@ -57,7 +63,7 @@ namespace Humanity.Application.Models.Responses.Dashboard
         public decimal LowConsumption { get; set; }
 
         public DateTime LowDay { get; set; }
-   
+
     }
 
     public class YillikUretimTuketim : BaseEntity

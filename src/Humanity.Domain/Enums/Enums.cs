@@ -47,9 +47,14 @@ namespace Humanity.Domain.Enums
             Pasif = 2
         }
 
-
+        public enum EmumSayacZaman
+        {
+            TekZaman = 1,
+            CiftZaman = 2
+        }
         public enum EnumTerim
         {
+
             TekTerim = 1,
             CiftTerim = 2,
             TekTerimPuant = 3,
@@ -88,6 +93,19 @@ namespace Humanity.Domain.Enums
             AboneAktifAylikTuketimUretim,
             YillikTuketimUretim,
             YillikUretimTuketimToplam
+        }
+
+        public enum EnumThkKod
+        {
+            Gunduz=1,
+            Puant =2,
+            Gece=3,
+            ReaktifIndudkif=4,
+            ReaktifKapasitif=5,
+            Kdv=6,
+            GucBedeli=7,
+            GucAsimBedeli=8,
+            DagitimBaglantiBedeli = 9
         }
     }
 }
