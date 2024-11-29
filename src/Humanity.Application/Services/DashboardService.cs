@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Humanity.Application.Core.Services;
 using Humanity.Application.Interfaces;
+using Humanity.Application.Models.DTOs;
 using Humanity.Application.Models.Responses;
 using Humanity.Application.Models.Responses.Dashboard;
+using Humanity.Application.Scripts;
 using Humanity.Domain.Core.Repositories;
 using Humanity.Domain.Core.Specifications;
 using Humanity.Domain.Entities;
@@ -13,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Humanity.Application.Services
 {
@@ -22,205 +25,217 @@ namespace Humanity.Application.Services
         private readonly ILoggerService _logService;
         private readonly IFirebaseService _fireService;
         private readonly IMapper mapper;
+        private readonly IFaturaService _faturaService;
 
 
-        const string sqlGunlukUretimTuketimMiktar = @"select ""Donem"",
-       EXTRACT(day FROM TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD')) as Gun,
-       sum(""Uretim"")                                                              as ToplamUretim,
-       sum(""CekisTuketim"")                                                        as ToplamTuketim
-from ""AboneSaatlikEndeks""
-where EXTRACT(YEAR FROM TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD')) = EXTRACT(YEAR FROM CURRENT_DATE)
-  and EXTRACT(MONTH FROM TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD')) = EXTRACT(MONTH FROM CURRENT_DATE)
-group by ""Donem"", EXTRACT(day FROM TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD'));";
+        //        const string sqlGunlukUretimTuketimMiktar = @"select ""Donem"",
+        //       EXTRACT(day FROM TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD')) as Gun,
+        //       sum(""Uretim"")                                                              as ToplamUretim,
+        //       sum(""CekisTuketim"")                                                        as ToplamTuketim
+        //from ""AboneSaatlikEndeks""
+        //where EXTRACT(YEAR FROM TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD')) = EXTRACT(YEAR FROM CURRENT_DATE)
+        //  and EXTRACT(MONTH FROM TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD')) = EXTRACT(MONTH FROM CURRENT_DATE)
+        //group by ""Donem"", EXTRACT(day FROM TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD'));";
 
-        const string sqlAyliEnDusukEnYUksekKullanimMiktarveGunleri = @"
-WITH DailyConsumption AS (
-    SELECT
-        TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD') AS ""Day"",
-        ""Donem"",
-        SUM(""CekisTuketim"") AS ""TotalDailyConsumption""
-    FROM
-        ""AboneSaatlikEndeks""
-     where    EXTRACT(YEAR FROM TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD')) = EXTRACT(YEAR FROM CURRENT_DATE)
-    GROUP BY
-        TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD'), ""Donem""
-),
-MonthlyHighLow AS (
-    SELECT
-        ""Donem"",
-        MAX(""TotalDailyConsumption"") AS ""HighConsumption"",
-        MIN(""TotalDailyConsumption"") AS ""LowConsumption""
-    FROM
-        DailyConsumption
-    GROUP BY
-        ""Donem""
-)
-SELECT
-    mh.""Donem"",
-    mh.""HighConsumption"",
-    (SELECT ""Day""
-     FROM DailyConsumption
-     WHERE ""Donem"" = mh.""Donem"" AND ""TotalDailyConsumption"" = mh.""HighConsumption""
-     LIMIT 1) AS ""HighDay"",
-    mh.""LowConsumption"",
-    (SELECT ""Day""
-     FROM DailyConsumption
-     WHERE ""Donem"" = mh.""Donem"" AND ""TotalDailyConsumption"" = mh.""LowConsumption""
-     LIMIT 1) AS ""LowDay""
-FROM
-    MonthlyHighLow mh;
-";
+        //        const string sqlAyliEnDusukEnYUksekKullanimMiktarveGunleri = @"
+        //WITH DailyConsumption AS (
+        //    SELECT
+        //        TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD') AS ""Day"",
+        //        ""Donem"",
+        //        SUM(""CekisTuketim"") AS ""TotalDailyConsumption""
+        //    FROM
+        //        ""AboneSaatlikEndeks""
+        //     where    EXTRACT(YEAR FROM TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD')) = EXTRACT(YEAR FROM CURRENT_DATE)
+        //    GROUP BY
+        //        TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD'), ""Donem""
+        //),
+        //MonthlyHighLow AS (
+        //    SELECT
+        //        ""Donem"",
+        //        MAX(""TotalDailyConsumption"") AS ""HighConsumption"",
+        //        MIN(""TotalDailyConsumption"") AS ""LowConsumption""
+        //    FROM
+        //        DailyConsumption
+        //    GROUP BY
+        //        ""Donem""
+        //)
+        //SELECT
+        //    mh.""Donem"",
+        //    mh.""HighConsumption"",
+        //    (SELECT ""Day""
+        //     FROM DailyConsumption
+        //     WHERE ""Donem"" = mh.""Donem"" AND ""TotalDailyConsumption"" = mh.""HighConsumption""
+        //     LIMIT 1) AS ""HighDay"",
+        //    mh.""LowConsumption"",
+        //    (SELECT ""Day""
+        //     FROM DailyConsumption
+        //     WHERE ""Donem"" = mh.""Donem"" AND ""TotalDailyConsumption"" = mh.""LowConsumption""
+        //     LIMIT 1) AS ""LowDay""
+        //FROM
+        //    MonthlyHighLow mh;
+        //";
 
-        const string sqlAboneAktifAylikTuketimUretim = @"
-            WITH PreviousMonth AS (
-                SELECT 
-                    ""AboneId"",
-                    ""EndexMonth"",
-                    ""EndexYear"",
-                    ""EndexType"",
-                    ""T1Endex"" AS PreviousT1Endex,
-                    ""T2Endex"" AS PreviousT2Endex,
-                    ""T3Endex"" AS PreviousT3Endex
-                FROM 
-                    ""AboneEndeks""
-                WHERE
-                  ""EndexType""=0 and 
-                     (""EndexMonth"" = EXTRACT(MONTH FROM CURRENT_DATE) - 1 
-                     AND ""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE))
-                    OR
-                    (""EndexMonth"" = 12 AND EXTRACT(MONTH FROM CURRENT_DATE) = 1 AND ""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE) - 1)
-            ),
-            CurrentMonth AS (
-                SELECT 
-                    ""AboneId"",
-                    ""EndexMonth"",
-                    ""EndexYear"",
-                    ""EndexType"",
-                    ""T1Endex"",
-                    ""T2Endex"",
-                    ""T3Endex""
-                FROM 
-                    ""AboneEndeks""
-                WHERE 
-                  ""EndexType""=0 and 
-                    ""EndexMonth"" = EXTRACT(MONTH FROM CURRENT_DATE)
-                    AND ""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE)
-            )
-            SELECT 
-                a.""Adi"" as ""Unvan"",
-                c.""EndexMonth"",
-                c.""EndexYear"",
-                a.""SeriNo"",
-                c.""EndexType"",
-                COALESCE(c.""T1Endex"" - p.PreviousT1Endex, 0) * a.""Carpan"" AS ""T1Usage"",
-                COALESCE(c.""T2Endex"" - p.PreviousT2Endex, 0) * a.""Carpan"" AS ""T2Usage"",
-                COALESCE(c.""T3Endex"" - p.PreviousT3Endex, 0) * a.""Carpan"" AS ""T3Usage""
-            FROM 
-                CurrentMonth c inner join ""Abone"" a on a.""Id""= c.""AboneId""
-            LEFT JOIN 
-                PreviousMonth p ON c.""AboneId"" = p.""AboneId"";
-        ";
+        //        const string sqlAboneAktifAylikTuketimUretim = @"
+        //            WITH PreviousMonth AS (
+        //                SELECT 
+        //                    ""AboneId"",
+        //                    ""EndexMonth"",
+        //                    ""EndexYear"",
+        //                    ""EndexType"",
+        //                    ""T1Endex"" AS PreviousT1Endex,
+        //                    ""T2Endex"" AS PreviousT2Endex,
+        //                    ""T3Endex"" AS PreviousT3Endex
+        //                FROM 
+        //                    ""AboneEndeks""
+        //                WHERE
+        //                  ""EndexType""=0 and 
+        //                     (""EndexMonth"" = EXTRACT(MONTH FROM CURRENT_DATE) - 1 
+        //                     AND ""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE))
+        //                    OR
+        //                    (""EndexMonth"" = 12 AND EXTRACT(MONTH FROM CURRENT_DATE) = 1 AND ""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE) - 1)
+        //            ),
+        //            CurrentMonth AS (
+        //                SELECT 
+        //                    ""AboneId"",
+        //                    ""EndexMonth"",
+        //                    ""EndexYear"",
+        //                    ""EndexType"",
+        //                    ""T1Endex"",
+        //                    ""T2Endex"",
+        //                    ""T3Endex""
+        //                FROM 
+        //                    ""AboneEndeks""
+        //                WHERE 
+        //                  ""EndexType""=0 and 
+        //                    ""EndexMonth"" = EXTRACT(MONTH FROM CURRENT_DATE)
+        //                    AND ""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE)
+        //            )
+        //            SELECT 
+        //                a.""Adi"" as ""Unvan"",
+        //                c.""EndexMonth"",
+        //                c.""EndexYear"",
+        //                a.""SeriNo"",
+        //                c.""EndexType"",
+        //                COALESCE(c.""T1Endex"" - p.PreviousT1Endex, 0) * a.""Carpan"" AS ""T1Usage"",
+        //                COALESCE(c.""T2Endex"" - p.PreviousT2Endex, 0) * a.""Carpan"" AS ""T2Usage"",
+        //                COALESCE(c.""T3Endex"" - p.PreviousT3Endex, 0) * a.""Carpan"" AS ""T3Usage""
+        //            FROM 
+        //                CurrentMonth c inner join ""Abone"" a on a.""Id""= c.""AboneId""
+        //            LEFT JOIN 
+        //                PreviousMonth p ON c.""AboneId"" = p.""AboneId"";
+        //        ";
 
-        const string sqlYillikTuketimUretim = @"
-         WITH EndeksFark AS (
-    SELECT
-        ""AboneId"",
-        ""EndexMonth"",
-        ""EndexYear"",
-        ""EndexType"",
-        LAG(""T1Endex"") OVER(PARTITION BY ""AboneId"", ""EndexType"" ORDER BY ""EndexYear"", ""EndexMonth"") AS PrevT1,
-        LAG(""T2Endex"") OVER(PARTITION BY ""AboneId"", ""EndexType"" ORDER BY ""EndexYear"", ""EndexMonth"") AS PrevT2,
-        LAG(""T3Endex"") OVER(PARTITION BY ""AboneId"", ""EndexType"" ORDER BY ""EndexYear"", ""EndexMonth"") AS PrevT3,
-        ""T1Endex"",
-        ""T2Endex"",
-        ""T3Endex""
-    FROM ""AboneEndeks""
-    WHERE  ""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE) OR (""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE) - 1 AND ""EndexMonth"" = 12)
-)
-SELECT
-    ""EndexMonth"",
-    ""EndexYear"",
-    SUM(CASE
-            WHEN ""EndexType"" = 1 THEN
-                (""T1Endex"" - COALESCE(PrevT1, 0)
-                + ""T2Endex"" - COALESCE(PrevT2, 0)
-                + ""T3Endex"" - COALESCE(PrevT3, 0)) * ""Abone"".""Carpan""
-            ELSE 0
-        END) AS Uretim,
-    SUM(CASE
-            WHEN ""EndexType"" = 0 AND ""Abone"".""MahsubaDahil"" = TRUE THEN
-                (""T1Endex"" - COALESCE(PrevT1, 0)
-                + ""T2Endex"" - COALESCE(PrevT2, 0)
-                + ""T3Endex"" - COALESCE(PrevT3, 0)) * ""Abone"".""Carpan""
-            ELSE 0
-        END) AS Tuketim,
-    SUM(CASE
-            WHEN ""EndexType"" = 0 AND ""Abone"".""MahsubaDahil"" = FALSE THEN
-                (""T1Endex"" - COALESCE(PrevT1, 0)
-                + ""T2Endex"" - COALESCE(PrevT2, 0)
-                + ""T3Endex"" - COALESCE(PrevT3, 0)) * ""Abone"".""Carpan""
-            ELSE 0
-        END) AS TuketimMahsubaDahilDegil,
-       SUM(CASE
-            WHEN ""EndexType"" = 0 THEN
-                (""T1Endex"" - COALESCE(PrevT1, 0)) * ""Abone"".""Carpan""
-            ELSE 0
-        END) AS T1Tuketim,
-         SUM(CASE
-            WHEN ""EndexType"" = 0 THEN
-                (""T2Endex"" - COALESCE(PrevT2, 0)) * ""Abone"".""Carpan""
-            ELSE 0
-        END) AS T2Tuketim,
-         SUM(CASE
-            WHEN ""EndexType"" = 0 THEN
-                (""T3Endex"" - COALESCE(PrevT3, 0)) * ""Abone"".""Carpan""
-            ELSE 0
-        END) AS T3Tuketim
+        //        const string sqlYillikTuketimUretim = @"
+        //         WITH EndeksFark AS (
+        //    SELECT
+        //        ""AboneId"",
+        //        ""EndexMonth"",
+        //        ""EndexYear"",
+        //        ""EndexType"",
+        //        LAG(""T1Endex"") OVER(PARTITION BY ""AboneId"", ""EndexType"" ORDER BY ""EndexYear"", ""EndexMonth"") AS PrevT1,
+        //        LAG(""T2Endex"") OVER(PARTITION BY ""AboneId"", ""EndexType"" ORDER BY ""EndexYear"", ""EndexMonth"") AS PrevT2,
+        //        LAG(""T3Endex"") OVER(PARTITION BY ""AboneId"", ""EndexType"" ORDER BY ""EndexYear"", ""EndexMonth"") AS PrevT3,
+        //        ""T1Endex"",
+        //        ""T2Endex"",
+        //        ""T3Endex""
+        //    FROM ""AboneEndeks""
+        //    WHERE  ""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE) OR (""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE) - 1 AND ""EndexMonth"" = 12)
+        //)
+        //SELECT
+        //    ""EndexMonth"",
+        //    ""EndexYear"",
+        //    SUM(CASE
+        //            WHEN ""EndexType"" = 1 THEN
+        //                (""T1Endex"" - COALESCE(PrevT1, 0)
+        //                + ""T2Endex"" - COALESCE(PrevT2, 0)
+        //                + ""T3Endex"" - COALESCE(PrevT3, 0)) * ""Abone"".""Carpan""
+        //            ELSE 0
+        //        END) AS Uretim,
+        //    SUM(CASE
+        //            WHEN ""EndexType"" = 0 AND ""Abone"".""MahsubaDahil"" = TRUE THEN
+        //                (""T1Endex"" - COALESCE(PrevT1, 0)
+        //                + ""T2Endex"" - COALESCE(PrevT2, 0)
+        //                + ""T3Endex"" - COALESCE(PrevT3, 0)) * ""Abone"".""Carpan""
+        //            ELSE 0
+        //        END) AS Tuketim,
+        //    SUM(CASE
+        //            WHEN ""EndexType"" = 0 AND ""Abone"".""MahsubaDahil"" = FALSE THEN
+        //                (""T1Endex"" - COALESCE(PrevT1, 0)
+        //                + ""T2Endex"" - COALESCE(PrevT2, 0)
+        //                + ""T3Endex"" - COALESCE(PrevT3, 0)) * ""Abone"".""Carpan""
+        //            ELSE 0
+        //        END) AS TuketimMahsubaDahilDegil,
+        //       SUM(CASE
+        //            WHEN ""EndexType"" = 0 THEN
+        //                (""T1Endex"" - COALESCE(PrevT1, 0)) * ""Abone"".""Carpan""
+        //            ELSE 0
+        //        END) AS T1Tuketim,
+        //         SUM(CASE
+        //            WHEN ""EndexType"" = 0 THEN
+        //                (""T2Endex"" - COALESCE(PrevT2, 0)) * ""Abone"".""Carpan""
+        //            ELSE 0
+        //        END) AS T2Tuketim,
+        //         SUM(CASE
+        //            WHEN ""EndexType"" = 0 THEN
+        //                (""T3Endex"" - COALESCE(PrevT3, 0)) * ""Abone"".""Carpan""
+        //            ELSE 0
+        //        END) AS T3Tuketim
 
-FROM EndeksFark
-JOIN ""Abone"" ON EndeksFark.""AboneId"" = ""Abone"".""Id""
-WHERE ""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE)
-GROUP BY ""EndexMonth"",""EndexYear""
-ORDER BY ""EndexMonth"";
+        //FROM EndeksFark
+        //JOIN ""Abone"" ON EndeksFark.""AboneId"" = ""Abone"".""Id""
+        //WHERE ""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE)
+        //GROUP BY ""EndexMonth"",""EndexYear""
+        //ORDER BY ""EndexMonth"";
 
-        ";
+        //        ";
 
-        const string sqlYillikUretimTuketimToplam = @"
-WITH RankedData AS (
-    SELECT 
-        ""AboneEndeks"".""EndexType"",  
-        (MAX(""TSum"") - MIN(""TSum"")) * ""Carpan"" as Tuketim , 
-        A.""Unvan"",
-        ROW_NUMBER() OVER (PARTITION BY ""EndexType"" ORDER BY (MAX(""TSum"") - MIN(""TSum"")) * ""Carpan"" DESC) AS rn
-    FROM ""AboneEndeks""
-    INNER JOIN public.""Abone"" A ON ""AboneEndeks"".""AboneId"" = A.""Id""
-    GROUP BY ""EndexType"", A.""Id"", A.""Unvan""
-)
-SELECT 
-    ""EndexType"",
-    CASE 
-        WHEN rn <= 4 THEN ""Unvan"" 
-        ELSE 'Diğer' 
-    END AS ""Unvan"",
-    SUM(Tuketim) AS TotalEndex
-FROM RankedData
-GROUP BY ""EndexType"", 
-         CASE WHEN rn <= 4 THEN ""Unvan"" ELSE 'Diğer' END
-ORDER BY ""EndexType"" DESC, ""Unvan"";";
+        //        const string sqlYillikUretimTuketimToplam = @"
+        //WITH RankedData AS (
+        //    SELECT 
+        //        ""AboneEndeks"".""EndexType"",  
+        //        (MAX(""TSum"") - MIN(""TSum"")) * ""Carpan"" as Tuketim , 
+        //        A.""Unvan"",
+        //        ROW_NUMBER() OVER (PARTITION BY ""EndexType"" ORDER BY (MAX(""TSum"") - MIN(""TSum"")) * ""Carpan"" DESC) AS rn
+        //    FROM ""AboneEndeks""
+        //    INNER JOIN public.""Abone"" A ON ""AboneEndeks"".""AboneId"" = A.""Id""
+        //    GROUP BY ""EndexType"", A.""Id"", A.""Unvan""
+        //)
+        //SELECT 
+        //    ""EndexType"",
+        //    CASE 
+        //        WHEN rn <= 4 THEN ""Unvan"" 
+        //        ELSE 'Diğer' 
+        //    END AS ""Unvan"",
+        //    SUM(Tuketim) AS TotalEndex
+        //FROM RankedData
+        //GROUP BY ""EndexType"", 
+        //         CASE WHEN rn <= 4 THEN ""Unvan"" ELSE 'Diğer' END
+        //ORDER BY ""EndexType"" DESC, ""Unvan"";";
 
-        public DashboardService(IUnitOfWork unitOfWork, ILoggerService loggerService, IMapper mapper, IFirebaseService fireService)
+        public DashboardService(IUnitOfWork unitOfWork, ILoggerService loggerService, IMapper mapper, IFirebaseService fireService, IFaturaService faturaService)
         {
             _unitOfWork = unitOfWork;
             _logService = loggerService;
             _fireService = fireService;
             this.mapper = mapper;
+            _faturaService = faturaService;
         }
 
         public async Task<List<AboneAylikTuketim>> AboneAktifAylikTuketimGetir()
         {
             try
             {
-                var endeksler = await _unitOfWork.Repository<AboneAylikTuketim>().RawSql(sqlAboneAktifAylikTuketimUretim);
+                string prevWhereStr = @"AND (""EndexMonth"" = EXTRACT(MONTH FROM CURRENT_DATE) - 1 AND ""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE))
+                    OR
+                    (""EndexMonth"" = 12 AND EXTRACT(MONTH FROM CURRENT_DATE) = 1 AND ""EndexYear"" = EXTRACT(YEAR FROM CURRENT_DATE) - 1)";
+
+
+                string donemWhereClause = @$" AND ""EndexYear"" = {DateTime.Now.Year} AND ""EndexMonth"" = {DateTime.Now.Month}";
+
+
+                var queryStr = String.Format(SqlQueryProvider.GetQuery(Domain.Enums.Enums.SqlQuery.AboneAktifAylikTuketimUretim), prevWhereStr, donemWhereClause);
+                var endeksler = await _unitOfWork.Repository<AboneAylikTuketim>().RawSql(queryStr);
+
                 if (endeksler == null)
                     throw new Exception("Endeks Bulunamadı");
 
@@ -237,7 +252,10 @@ ORDER BY ""EndexType"" DESC, ""Unvan"";";
         {
             try
             {
-                var endeksler = await _unitOfWork.Repository<DailyProductionConsumption>().RawSql(sqlGunlukUretimTuketimMiktar);
+
+                var queryStr = String.Format(SqlQueryProvider.GetQuery(Domain.Enums.Enums.SqlQuery.GunlukUretimTuketimMiktar));
+                var endeksler = await _unitOfWork.Repository<DailyProductionConsumption>().RawSql(queryStr);
+
                 if (endeksler == null)
                     throw new Exception("Endeks Bulunamadı");
 
@@ -254,7 +272,9 @@ ORDER BY ""EndexType"" DESC, ""Unvan"";";
         {
             try
             {
-                var endeksler = await _unitOfWork.Repository<AylikEnYuksekEnDusukTuketimGunveMiktar>().RawSql(sqlAyliEnDusukEnYUksekKullanimMiktarveGunleri);
+                var queryStr = String.Format(SqlQueryProvider.GetQuery(Domain.Enums.Enums.SqlQuery.AyliEnDusukEnYUksekKullanimMiktarveGunleri));
+                var endeksler = await _unitOfWork.Repository<AylikEnYuksekEnDusukTuketimGunveMiktar>().RawSql(queryStr);
+
                 if (endeksler == null)
                     throw new Exception("Endeks Bulunamadı");
 
@@ -272,8 +292,6 @@ ORDER BY ""EndexType"" DESC, ""Unvan"";";
         {
             try
             {
-
-
 
                 //            var endeksSpect = new BaseSpecification<AboneEndeks>(a => a.EndexYear == DateTime.Now.Year);
                 //            endeksSpect.AddInclude(a => a.Abone);
@@ -346,8 +364,8 @@ ORDER BY ""EndexType"" DESC, ""Unvan"";";
 
                 //topFourTuketici.Add(otjhers);
 
-                var endeksler = await _unitOfWork.Repository<YillikUretimTuketim>().RawSql(sqlYillikUretimTuketimToplam);
-
+                var queryStr = String.Format(SqlQueryProvider.GetQuery(Domain.Enums.Enums.SqlQuery.YillikUretimTuketimToplam));
+                var endeksler = await _unitOfWork.Repository<YillikUretimTuketim>().RawSql(queryStr);
                 return endeksler.ToList();
 
             }
@@ -361,8 +379,8 @@ ORDER BY ""EndexType"" DESC, ""Unvan"";";
         {
             try
             {
-                var endeksler = await _unitOfWork.Repository<AylikUretimTuketim>().RawSql(sqlYillikTuketimUretim);
-
+                var queryStr = String.Format(SqlQueryProvider.GetQuery(Domain.Enums.Enums.SqlQuery.YillikTuketimUretim));
+                var endeksler = await _unitOfWork.Repository<AylikUretimTuketim>().RawSql(queryStr);
                 return endeksler.ToList();
             }
             catch (Exception er)
@@ -498,6 +516,40 @@ ORDER BY ""EndexType"" DESC, ""Unvan"";";
             }).ToList();
 
             return aylikBazdaTuketimSummary;
+        }
+
+        public async Task<FaturaDTO> AktifToplamFaturaGetir()
+        {
+            var donem = DateTime.Now.Year + "/" + DateTime.Now.Month;
+
+            var faturalar = await _faturaService.AboneAylikFaturaHesapla(-1, donem);
+
+            var topluFatura = new FaturaDTO
+            {
+                AboneId = 0, // Abone bazsız toplama olduğu için
+                Donem = donem,
+                SeriNo = 0,
+                Fonlar = faturalar.Sum(f => f.Fonlar),
+                KDV = faturalar.Sum(f => f.KDV),
+                FaturaDetaylar = faturalar
+                 .SelectMany(f => f.FaturaDetaylar)
+                 .GroupBy(d => d.KalemKod)
+                 .Select(g => new FaturaDetayDTO
+                 {
+                     KalemKod = g.Key,
+                     KalemAdi = g.First().KalemAdi, // İlk kaydın adını alıyoruz
+                     Kwh = g.Sum(d => d.Kwh),
+                     Tutar = g.Sum(d => d.Tutar),
+                     KdvOran = g.First().KdvOran, // Oran sabit varsayılıyor
+                     KdvTuar = g.Sum(d => d.KdvTuar),
+                     BirimFiyat = g.First().BirimFiyat // İlk kaydın birim fiyatı
+                 })
+                 .ToList()
+            };
+
+
+
+            return topluFatura;
         }
     }
 }

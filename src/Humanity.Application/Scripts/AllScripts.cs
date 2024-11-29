@@ -75,7 +75,7 @@ group by ""Donem"", EXTRACT(day FROM TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 
             LEFT JOIN 
                 PreviousMonth p ON c.""AboneId"" = p.""AboneId"";
         ",
-           
+
                 SqlQuery.YillikUretimTuketimToplam => @"
 WITH RankedData AS (
     SELECT 
@@ -162,6 +162,44 @@ GROUP BY ""EndexMonth"",""EndexYear""
 ORDER BY ""EndexMonth"";
         ",
 
+                SqlQuery.AyliEnDusukEnYUksekKullanimMiktarveGunleri =>
+                 @"
+WITH DailyConsumption AS (
+    SELECT
+        TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD') AS ""Day"",
+        ""Donem"",
+        SUM(""CekisTuketim"") AS ""TotalDailyConsumption""
+    FROM
+        ""AboneSaatlikEndeks""
+     where    EXTRACT(YEAR FROM TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD')) = EXTRACT(YEAR FROM CURRENT_DATE)
+    GROUP BY
+        TO_DATE(SUBSTRING(""ProfilDate""::TEXT, 1, 8), 'YYYYMMDD'), ""Donem""
+),
+MonthlyHighLow AS (
+    SELECT
+        ""Donem"",
+        MAX(""TotalDailyConsumption"") AS ""HighConsumption"",
+        MIN(""TotalDailyConsumption"") AS ""LowConsumption""
+    FROM
+        DailyConsumption
+    GROUP BY
+        ""Donem""
+)
+SELECT
+    mh.""Donem"",
+    mh.""HighConsumption"",
+    (SELECT ""Day""
+     FROM DailyConsumption
+     WHERE ""Donem"" = mh.""Donem"" AND ""TotalDailyConsumption"" = mh.""HighConsumption""
+     LIMIT 1) AS ""HighDay"",
+    mh.""LowConsumption"",
+    (SELECT ""Day""
+     FROM DailyConsumption
+     WHERE ""Donem"" = mh.""Donem"" AND ""TotalDailyConsumption"" = mh.""LowConsumption""
+     LIMIT 1) AS ""LowDay""
+FROM
+    MonthlyHighLow mh;
+ ",
                 _ => throw new ArgumentException("Unknown query")
             };
         }

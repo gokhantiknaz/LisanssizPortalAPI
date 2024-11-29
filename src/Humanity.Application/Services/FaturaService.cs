@@ -166,7 +166,7 @@ namespace Humanity.Application.Services
                 decimal gucAsimBedeliTutar = 0;
                 if (abone.KuruluGuc >= 15.01) // reaktif hesap
                 {
-                    FaturaDetayDTO reaktifDetay = ReaktifCezaHesapla(abone, aboneendex, reaktifBrFiyat);
+                    FaturaDetayDTO reaktifDetay = ReaktifCezaHesapla(abone, aboneendex, reaktifBrFiyat, vergiler.FirstOrDefault(a => a.Adi == "KDV").Deger);
                     if (reaktifDetay.Tutar > 0)
                         detaySatirlar.Add(reaktifDetay);
 
@@ -217,11 +217,11 @@ namespace Humanity.Application.Services
             return retListDto;
         }
 
-        private FaturaDetayDTO ReaktifCezaHesapla(Abone abone, AboneAylikTuketim endex, decimal reaktifBrFiyat)
+        private FaturaDetayDTO ReaktifCezaHesapla(Abone abone, AboneAylikTuketim endex, decimal reaktifBrFiyat,decimal kdvOran)
         {
             var enduktifOran = endex.InduktifUsage / endex.TSum;
-            var fdInd = new FaturaDetayDTO() { Tutar = 0 };
-            var fdKap = new FaturaDetayDTO() { Tutar = 0 };
+            var fdInd = new FaturaDetayDTO() { Tutar = 0, KdvTuar = 0 };
+            var fdKap = new FaturaDetayDTO() { Tutar = 0, KdvTuar = 0 };
 
             var cezaOranlari = CezaOranlari(abone.KuruluGuc.Value);
 
@@ -234,33 +234,37 @@ namespace Humanity.Application.Services
                     enduktifTutar = (endex.InduktifUsage) * (double)reaktifBrFiyat;
                 }
 
+                decimal kdv = (decimal)enduktifTutar * kdvOran;
+
                 fdInd = new FaturaDetayDTO()
                 {
                     KalemAdi = EnumThkKod.ReaktifIndudkif.ToString(),
                     BirimFiyat = reaktifBrFiyat,
                     KalemKod = EnumThkKod.ReaktifIndudkif,
-                    KdvOran = 1,
+                    KdvOran = kdvOran,
+                    KdvTuar = kdv,
                     Kwh = (decimal)endex.InduktifUsage,
                     Tutar = (decimal)enduktifTutar
                 };
             }
 
             var kapasiifOran = endex.KapasitifUsage / endex.TSum;
-            if ((abone.KuruluGuc > 15.01 && abone.KuruluGuc < 50 && kapasiifOran > 0.33) ||
-       (abone.KuruluGuc > 50.01 && kapasiifOran > 0.2))
+            if ((abone.KuruluGuc > 15.01 && abone.KuruluGuc < 50 && kapasiifOran > 0.33) || (abone.KuruluGuc > 50.01 && kapasiifOran > 0.2))
             {
                 var kapasitifTutar = 0.0;
                 if (endex.KapasitifUsage > (endex.TSum * cezaOranlari.dKapasitifCezaOrani))
                 {
                     kapasitifTutar = (endex.KapasitifUsage) * (double)reaktifBrFiyat;
                 }
-             
+                decimal kdv = (decimal)kapasitifTutar * kdvOran;
+
                 fdKap = new FaturaDetayDTO()
                 {
                     KalemAdi = EnumThkKod.ReaktifKapasitif.ToString(),
                     BirimFiyat = reaktifBrFiyat,
                     KalemKod = EnumThkKod.ReaktifKapasitif,
-                    KdvOran = 1,
+                    KdvOran = kdvOran,
+                    KdvTuar = kdv,
                     Kwh = (decimal)endex.KapasitifUsage,
                     Tutar = (decimal)kapasitifTutar
                 };

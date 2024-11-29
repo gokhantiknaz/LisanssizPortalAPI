@@ -25,5 +25,7 @@ namespace Humanity.Application.Interfaces
         Task<List<AylikEnYuksekEnDusukTuketimGunveMiktar>> AylikEnYuksekEnDusukTuketimGunveMiktar();
 
         Task<List<DailyProductionConsumption>> GunlukUretimTuketimGetir();
+
+        Task<FaturaDTO> AktifToplamFaturaGetir();
     }
 }

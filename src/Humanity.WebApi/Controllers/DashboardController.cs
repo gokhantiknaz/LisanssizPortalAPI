@@ -1,5 +1,6 @@
 ﻿using Humanity.Application.Core.Services;
 using Humanity.Application.Interfaces;
+using Humanity.Application.Models.DTOs;
 using Humanity.Application.Models.Responses;
 using Humanity.Application.Models.Responses.Dashboard;
 using Humanity.Application.Services;
@@ -76,6 +77,13 @@ namespace Humanity.WebApi.Controllers
         public async Task<ActionResult<List<AylikBazdaTumAbonelerTuketimSummary>>> AylikBazdaTumAbonelerUretimSummary()
         {
             var result = await _dashBoardService.YillikToplamUretimmGetir();
+            return Ok(result);
+        }
+
+        [HttpGet("AktifToplamFaturaGetir")]
+        public async Task<ActionResult<FaturaDTO>> AktifToplamFaturaGetir()
+        {
+            var result = await _dashBoardService.AktifToplamFaturaGetir();
             return Ok(result);
         }
     }
