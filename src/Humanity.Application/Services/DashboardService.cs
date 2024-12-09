@@ -541,7 +541,7 @@ namespace Humanity.Application.Services
                      Kwh = g.Sum(d => d.Kwh),
                      Tutar = g.Sum(d => d.Tutar),
                      KdvOran = g.First().KdvOran, // Oran sabit varsayılıyor
-                     KdvTuar = g.Sum(d => d.KdvTuar),
+                     KdvTutar = g.Sum(d => d.KdvTutar),
                      BirimFiyat = g.First().BirimFiyat // İlk kaydın birim fiyatı
                  })
                  .ToList()

@@ -100,7 +100,7 @@ namespace Humanity.Domain.Enums
             Gunduz=1,
             Puant =2,
             Gece=3,
-            ReaktifIndudkif=4,
+            ReaktifInduktif=4,
             ReaktifKapasitif=5,
             Kdv=6,
             GucBedeli=7,

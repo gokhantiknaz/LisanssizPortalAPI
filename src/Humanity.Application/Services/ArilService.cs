@@ -511,14 +511,23 @@ namespace Humanity.Application.Services
         }
 
 
-        public async Task<bool> GetVeriDurumuAsync(DateTime tarih)
+        public async Task<DateTime?> GetVeriDurumuAsync()
         {
-            var endeksVeriDurumu = await _unitOfWork.Repository<EndeksVeriDurumu>().GetBy(new BaseSpecification<EndeksVeriDurumu>(x => x.Tarih.Date == tarih.Date));
-            if (endeksVeriDurumu != null)
-            {
-                return true;
-            }
-            return false;
+            //var endeksVeriDurumu = await _unitOfWork.Repository<EndeksVeriDurumu>().GetBy(new BaseSpecification<EndeksVeriDurumu>(x => x.Tarih.Date == tarih.Date));
+            //if (endeksVeriDurumu != null)
+            //{
+            //    return true;
+            //}
+            //return false;
+
+
+            var query = new BaseSpecification<EndeksVeriDurumu>(x=>x.VeriCekildi==true);
+            query.ApplyOrderByDescending(a => a.Tarih);
+
+            var lastData = await _unitOfWork.Repository<EndeksVeriDurumu>().GetBy(query);
+      
+
+            return lastData?.Tarih;
         }
 
         public async Task<bool> FetchAndSaveDataAsync(DateTime tarih)

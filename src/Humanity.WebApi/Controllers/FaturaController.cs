@@ -18,11 +18,19 @@ namespace Humanity.WebApi.Controllers
             _faturaService = faturaService;
         }
 
-        [HttpGet]
+        [HttpGet("AktifToplamFaturaGetir")]
         public async Task<ActionResult<AylikEndeksRes>> Get([FromQuery] int aboneId, [FromQuery] string donem)
         {
             var result = await _faturaService.AboneAylikFaturaHesapla(aboneId, donem);
             return Ok(result);
         }
+
+        [HttpGet("GetSonAyFatura")]
+        public async Task<ActionResult<AylikEndeksRes>> GetSonAyFatura([FromQuery] int aboneId, [FromQuery] string donem)
+        {
+            var result = await _faturaService.AboneAylikFaturaHesapla(aboneId, donem);
+            return Ok(result);
+        }
+
     }
 }

@@ -26,7 +26,7 @@ namespace Humanity.Application.Models.DTOs
         public decimal Kwh { get; set; }
         public decimal Tutar { get; set; }
         public decimal KdvOran { get; set; }
-        public decimal KdvTuar { get; set; }
+        public decimal KdvTutar { get; set; }
         public decimal BirimFiyat { get; internal set; }
     }
 

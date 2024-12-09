@@ -25,7 +25,7 @@ namespace Humanity.Application.Interfaces
 
         Task<object> GetCurrentEndexesAll(int musteriId);
 
-        Task<bool> GetVeriDurumuAsync(DateTime today);
+        Task<DateTime?> GetVeriDurumuAsync();
 
         Task<bool> FetchAndSaveDataAsync(DateTime today);
     }

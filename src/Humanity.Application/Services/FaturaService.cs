@@ -103,7 +103,7 @@ namespace Humanity.Application.Services
                     Kwh = (decimal)aboneendex.T1Usage,
                     Tutar = t1Tl,
                     KdvOran = vergiler.FirstOrDefault(a => a.Adi == "KDV").Deger,
-                    KdvTuar = vergiler.FirstOrDefault(a => a.Adi == "KDV").Deger * t1Tl,
+                    KdvTutar = vergiler.FirstOrDefault(a => a.Adi == "KDV").Deger * t1Tl,
                     BirimFiyat = gunduzBrFiyat
                 };
                 detaySatirlar.Add(faturaDetayGunduzDto);
@@ -119,7 +119,7 @@ namespace Humanity.Application.Services
                     KalemAdi = EnumThkKod.Puant.ToString(),
                     Tutar = t2Tl,
                     KdvOran = vergiler.FirstOrDefault(a => a.Adi == "KDV").Deger,
-                    KdvTuar = vergiler.FirstOrDefault(a => a.Adi == "KDV").Deger * t2Tl,
+                    KdvTutar = vergiler.FirstOrDefault(a => a.Adi == "KDV").Deger * t2Tl,
                     BirimFiyat = puantBrFiyat
                 };
                 detaySatirlar.Add(faturaDetayPuantDto);
@@ -134,7 +134,7 @@ namespace Humanity.Application.Services
                     Kwh = (decimal)aboneendex.T3Usage,
                     Tutar = t3Tl,
                     KdvOran = vergiler.FirstOrDefault(a => a.Adi == "KDV").Deger,
-                    KdvTuar = vergiler.FirstOrDefault(a => a.Adi == "KDV").Deger * t3Tl,
+                    KdvTutar = vergiler.FirstOrDefault(a => a.Adi == "KDV").Deger * t3Tl,
                     BirimFiyat = geceBrFiyat
                 };
                 detaySatirlar.Add(faturaDetayGeceDto);
@@ -151,7 +151,7 @@ namespace Humanity.Application.Services
                     Kwh = (decimal)aboneendex.T1Usage + (decimal)aboneendex.T2Usage + (decimal)aboneendex.T3Usage,
                     Tutar = dagitimBedeli,
                     KdvOran = vergiler.FirstOrDefault(a => a.Adi == "KDV").Deger,
-                    KdvTuar = vergiler.FirstOrDefault(a => a.Adi == "KDV").Deger * dagitimBedeli,
+                    KdvTutar = vergiler.FirstOrDefault(a => a.Adi == "KDV").Deger * dagitimBedeli,
                     BirimFiyat = dagBedBrFiyat
                 };
 
@@ -191,12 +191,30 @@ namespace Humanity.Application.Services
                             dAlinacakGucAsim = dDemandGucKwh - abone.SozlesmeGucu;
                         dAlinacakGuc = abone.SozlesmeGucu;
                         gucBedeliTutar = Convert.ToDecimal(dAlinacakGuc * (double)gucbedeli);
-                        var faturaDetayDto = new FaturaDetayDTO() { KalemAdi = EnumThkKod.GucBedeli.ToString(), KalemKod = EnumThkKod.GucBedeli, Kwh = (decimal)dAlinacakGuc, Tutar = gucBedeliTutar, KdvOran = 1, KdvTuar = 1 };
+                        var kdv = gucBedeliTutar * vergiler.FirstOrDefault(a => a.Adi == "KDV").Deger;
+                        var faturaDetayDto = new FaturaDetayDTO()
+                        {
+                            KalemAdi = EnumThkKod.GucBedeli.ToString(),
+                            KalemKod = EnumThkKod.GucBedeli,
+                            Kwh = (decimal)dAlinacakGuc,
+                            Tutar = gucBedeliTutar,
+                            KdvOran = vergiler.FirstOrDefault(a => a.Adi == "KDV").Deger,
+                            KdvTutar = kdv
+                        };
                         detaySatirlar.Add(faturaDetayDto);
                         gucAsimBedeliTutar = Convert.ToDecimal(dAlinacakGucAsim * (double)gucAsimbedeli);
                         if (gucAsimBedeliTutar > 0)
                         {
-                            faturaDetayDto = new FaturaDetayDTO() { KalemAdi = EnumThkKod.GucAsimBedeli.ToString(), KalemKod = EnumThkKod.GucAsimBedeli, Kwh = (decimal)dAlinacakGucAsim, Tutar = gucAsimBedeliTutar, KdvOran = 1, KdvTuar = 1 };
+                            kdv = gucAsimBedeliTutar * vergiler.FirstOrDefault(a => a.Adi == "KDV").Deger;
+                            faturaDetayDto = new FaturaDetayDTO()
+                            {
+                                KalemAdi = EnumThkKod.GucAsimBedeli.ToString(),
+                                KalemKod = EnumThkKod.GucAsimBedeli,
+                                Kwh = (decimal)dAlinacakGucAsim,
+                                Tutar = gucAsimBedeliTutar,
+                                KdvOran = vergiler.FirstOrDefault(a => a.Adi == "KDV").Deger,
+                                KdvTutar = kdv
+                            };
                             detaySatirlar.Add(faturaDetayDto);
                         }
                     }
@@ -217,11 +235,11 @@ namespace Humanity.Application.Services
             return retListDto;
         }
 
-        private FaturaDetayDTO ReaktifCezaHesapla(Abone abone, AboneAylikTuketim endex, decimal reaktifBrFiyat,decimal kdvOran)
+        private FaturaDetayDTO ReaktifCezaHesapla(Abone abone, AboneAylikTuketim endex, decimal reaktifBrFiyat, decimal kdvOran)
         {
             var enduktifOran = endex.InduktifUsage / endex.TSum;
-            var fdInd = new FaturaDetayDTO() { Tutar = 0, KdvTuar = 0 };
-            var fdKap = new FaturaDetayDTO() { Tutar = 0, KdvTuar = 0 };
+            var fdInd = new FaturaDetayDTO() { Tutar = 0, KdvTutar = 0 };
+            var fdKap = new FaturaDetayDTO() { Tutar = 0, KdvTutar = 0 };
 
             var cezaOranlari = CezaOranlari(abone.KuruluGuc.Value);
 
@@ -238,11 +256,11 @@ namespace Humanity.Application.Services
 
                 fdInd = new FaturaDetayDTO()
                 {
-                    KalemAdi = EnumThkKod.ReaktifIndudkif.ToString(),
+                    KalemAdi = EnumThkKod.ReaktifInduktif.ToString(),
                     BirimFiyat = reaktifBrFiyat,
-                    KalemKod = EnumThkKod.ReaktifIndudkif,
+                    KalemKod = EnumThkKod.ReaktifInduktif,
                     KdvOran = kdvOran,
-                    KdvTuar = kdv,
+                    KdvTutar = kdv,
                     Kwh = (decimal)endex.InduktifUsage,
                     Tutar = (decimal)enduktifTutar
                 };
@@ -264,7 +282,7 @@ namespace Humanity.Application.Services
                     BirimFiyat = reaktifBrFiyat,
                     KalemKod = EnumThkKod.ReaktifKapasitif,
                     KdvOran = kdvOran,
-                    KdvTuar = kdv,
+                    KdvTutar = kdv,
                     Kwh = (decimal)endex.KapasitifUsage,
                     Tutar = (decimal)kapasitifTutar
                 };
